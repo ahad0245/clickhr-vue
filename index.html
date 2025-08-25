@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click-HR</title>
+  <link rel="shortcut icon" href="./src/assets/icon.png" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': 'var(--primary-color, #3B82F6)', // Default to blue-500
+            'primary-dark': 'var(--primary-dark-color, #2563EB)',
+            'sidebar-bg': 'var(--sidebar-bg, #1f2937)', // gray-800
+            'sidebar-text': 'var(--sidebar-text, #d1d5db)', // gray-300
+            'sidebar-hover-bg': 'var(--sidebar-hover-bg, #374151)', // gray-700
+            'sidebar-active-bg': 'var(--sidebar-active-bg, #3B82F6)', // blue-500
+            'header-bg': 'var(--header-bg, #ffffff)',
+            'content-bg': 'var(--content-bg, #f3f4f6)', // gray-100
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- The importmap has been removed. Vite will handle module resolution. -->
+
+</head>
+<body class="bg-content-bg">
+  <div id="app"></div>
+  <!-- Assuming your main.ts is in a 'src' folder -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

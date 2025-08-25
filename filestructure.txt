@@ -1,0 +1,507 @@
+AHAD-VUE-FINAL/
+├── node_modules/
+├── src/
+│   ├── assets/
+│   ├── backOffice/
+│   ├── candidate/
+│   ├── company/
+│   ├── components/
+│   ├── icons/
+│   ├── layouts/
+│   ├── pages/
+│   ├── router/
+│   ├── stores/
+│   ├── App.vue
+│   ├── constants.ts
+│   ├── main.ts
+│   ├── roles.ts
+│   └── style.css
+├── .env.local
+├── .gitignore
+├── index.html
+├── metadata.json
+├── package-lock.json
+├── package.json
+├── README.md
+└── tsconfig.json
+
+
+
+| Folder/File    | Description                                                     |
+| -------------- | --------------------------------------------------------------- |
+| `backOffice/`  | Admin-specific views and logic                                  |
+| `candidate/`   | Candidate-specific components (profile, resume, jobs)           |
+| `company/`     | Recruiter-specific pages (job postings, applications)           |
+| `layouts/`     | Layout wrappers (e.g., BackOfficeLayout.vue, CompanyLayout.vue) |
+| `router/`      | Vue Router configuration (with role-based routes)               |
+| `stores/`      | Pinia stores (e.g., auth.ts, user.ts)                           |
+| `components/`  | Reusable UI components (buttons, modals, forms)                 |
+| `App.vue`      | Root Vue component                                              |
+| `main.ts`      | Entry point — mounts app, injects plugins                       |
+| `constants.ts` | App-wide constants (e.g., roles, API URLs)                      |
+| `roles.ts`     | Optional role map file (for guards or dropdowns)                |
+| `.env.local`   | Environment-specific variables like `VITE_API_URL`              |
+
+
+
+update file structure for the vue.js file according to instruction
+
+AHAD-VUE-FINAL/
+├── node_modules/
+├── public/
+├── src/
+│   ├── modules/                   # 🔌 Core separation by role/module
+│   │   ├── auth/                  # 🔐 Login, registration, reset, verification
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── services/
+│   │   │   └── index.ts
+│   │   ├── backoffice/            # 🛠️ Admin module
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── services/
+│   │   │   ├── routes.ts
+│   │   │   └── index.ts
+│   │   ├── company/               # 🧑‍💼 Recruiter module
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── services/
+│   │   │   ├── routes.ts
+│   │   │   └── index.ts
+│   │   ├── candidate/             # 🧑‍🎓 Candidate module
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── services/
+│   │   │   ├── routes.ts
+│   │   │   └── index.ts
+│   │   └── shared/                # 📦 Shared module between all roles
+│   │       ├── components/
+│   │       ├── utils/
+│   │       ├── hooks/
+│   │       └── services/
+│
+│   ├── layouts/                   # 💡 Layouts: One per module (Admin, Recruiter, Candidate)
+│   │   ├── BackOfficeLayout.vue
+│   │   ├── CompanyLayout.vue
+│   │   └── CandidateLayout.vue
+│
+│   ├── router/
+│   │   ├── index.ts
+│   │   └── guards.ts              # 🚧 Role guards and route protection
+│
+│   ├── stores/                    # 🧠 Pinia stores
+│   │   ├── auth.ts
+│   │   └── user.ts
+│
+│   ├── assets/                    # 🎨 Static images, logos
+│   ├── icons/
+│   ├── constants.ts
+│   ├── roles.ts                   # 🎭 Role mapping & access control
+│   ├── App.vue
+│   ├── main.ts
+│   └── style.css
+│
+├── .env.local
+├── .gitignore
+├── index.html
+├── metadata.json
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── README.md
+
+
+
+
+
+
+
+
+talent fields 
+
+Of course. Here are the field names from your SQL schema, grouped by their respective tables.
+
+talent
+talent_id
+
+first_name
+
+last_name
+
+headline
+
+country
+
+address_1
+
+address_2
+
+city
+
+state_province_region
+
+zip_postal_code
+
+home_office
+
+geo_location
+
+school_district
+
+mobile_phone
+
+work_phone
+
+home_phone
+
+email
+
+email_2
+
+ssn
+
+employment_type
+
+telegram_username
+
+discord_username
+
+personal_site
+
+custom_fields
+
+talent_status
+
+applicant_tags
+
+details_notes
+
+industry_experience
+
+applicant_source
+
+certification
+
+add_to_hotlist
+
+is_active
+
+is_deleted
+
+online_applicant
+
+created_date_time
+
+show_contact_info
+
+show_personal_info
+
+show_social_media_info
+
+terms_and_conditions_accepted
+
+email_verified
+
+email_verification_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_job_board_profile
+talent_job_board_profile_id
+
+talent_id
+
+first_name
+
+last_name
+
+linked_in_profile
+
+indeed_profile
+
+monster_profile
+
+glassdoor_profile
+
+zip_recruiter_profile
+
+career_builder_profile
+
+simply_hired_profile
+
+upwork_profile
+
+freelancer_profile
+
+guru_profile
+
+people_per_hour_profile
+
+fiverr_profile
+
+created_at
+
+created_by
+
+updated_by
+
+updated_at
+
+talent_socilal_media_profiles
+talent_socilal_media_profiles_id
+
+talent_id
+
+facebook_profile
+
+twitter_profile
+
+instagram_profile
+
+youtube_profile
+
+tiktok_profile
+
+pinterest_profile
+
+skype_id
+
+whatsapp_number
+
+wechat_id
+
+viber_id
+
+signal_id
+
+telegram_id
+
+discord_id
+
+slack_id
+
+created_at
+
+created_by
+
+updated_by
+
+updated_at
+
+talent_version_control_system_profiles
+talent_version_control_system_profiles_id
+
+talent_id
+
+github
+
+gitlab
+
+bitbucket
+
+sourceforge
+
+codeberg
+
+gitea
+
+created_at
+
+created_by
+
+updated_by
+
+updated_at
+
+talent_skills
+talent_skills_id
+
+talent_id
+
+skill_category_id
+
+skill_category_name
+
+skill_id
+
+skill_name
+
+skill_proficiency_level
+
+skill_years_of_experience
+
+notes
+
+created_at
+
+created_by
+
+updated_at
+
+updated_by
+
+talent_work_history
+talent_work_history_id
+
+talent_id
+
+company_name
+
+job_title
+
+job_description
+
+start_date
+
+end_date
+
+is_current_job
+
+job_location
+
+job_type
+
+job_status
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_education_history
+talent_education_history_id
+
+talent_id
+
+institution_name
+
+degree
+
+field_of_study
+
+start_date
+
+end_date
+
+is_current_education
+
+education_location
+
+education_status
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_certifications
+talent_certifications_id
+
+talent_id
+
+certification_name
+
+certification_body
+
+certification_date
+
+expiration_date
+
+certification_status
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_resumes
+talent_resume_id
+
+resume_title
+
+talent_id
+
+resume_file_path
+
+resume_file_name
+
+resume_file_type
+
+resume_file_size
+
+resume_upload_date
+
+resume_status
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_resumes_text
+talent_resumes_text_id
+
+talent_id
+
+resume_text_title
+
+resume_text
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by
+
+talent_applyed_history
+talent_applyed_history_id
+
+talent_resume_id
+
+talent_id
+
+job_id
+
+job_title
+
+company_id
+
+company_name
+
+notes
+
+created_date_time
+
+created_by
+
+updated_date_time
+
+updated_by

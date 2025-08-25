@@ -1,0 +1,12 @@
+.input {
+    @apply px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#11376d];
+  }
+  .vuecal__header button {
+    font-size: 12px !important;
+}
+.vuecal--month-view .vuecal__heading, .vuecal--week-view .vuecal__heading, .vuecal--day-view .vuecal__heading {
+    font-size: 12px !important;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+}
