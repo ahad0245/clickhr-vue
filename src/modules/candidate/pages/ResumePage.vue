@@ -4,8 +4,8 @@
     <p class="text-gray-600 mb-8">Select a template to begin building your resume.</p>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="template in templatesList" :key="template.id" class="template-card relative group">
-        <div class="template-preview-placeholder">
-          <p class="text-gray-400">Preview of {{ template.name }}</p>
+        <div class="template-preview-wrapper">
+          <img :src="template.previewImage" :alt="`${template.name} preview`" class="template-preview-image" />
         </div>
         <div class="p-4 flex justify-between items-center">
           <h3 class="font-semibold text-lg">{{ template.name }}</h3>
@@ -51,13 +51,18 @@ function selectTemplateAndNavigate(templateId: string) {
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.template-preview-placeholder {
+.template-preview-wrapper {
   height: 200px;
   background-color: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid #e2e8f0;
+}
+.template-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .use-template-button {
   background-color: #2563eb;

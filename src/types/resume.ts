@@ -3,53 +3,76 @@ export interface PersonalInfo {
   lastName: string;
   headline: string;
   country: string;
-  address: string;
+  address1: string;
+  address2?: string;
   city: string;
   state: string;
   zipCode: string;
-  homeOffice?: string; // Added field
-  geoCode?: string; // Added field
-  schoolDistrict?: string; // Added field
-  mobilePhone?: string; // Added field
-  workPhone?: string; // Added field
-  homePhone?: string; // Added field
+  homeOffice?: string;
+  geoLocation?: string;
+  schoolDistrict?: string;
+  mobilePhone: string;
+  workPhone?: string;
+  homePhone?: string;
   email1: string;
-  email2?: string; // Added field
-  ssn?: string; // Added field
+  email2?: string;
+  ssn?: string;
 }
 
 export interface EmploymentInfo {
-  employmentType?: string; // Added field
-  linkedinProfile: string;
-  personalSite: string;
-  skillSet: string;
-  custom1?: string; // Added field
-  custom2?: string; // Added field
-  talentStatus?: string; // Added field
-  positionCategory?: string; // Added field
-  applicantTags?: string; // Added field
-  details?: string; // Added field
-  industryExperience?: string; // Added field
-  companyExperience?: string; // Added field
-  applicantSource?: string; // Added field
-  citizenship?: string; // Added field
-  certification?: string; // Added field
+  employmentType?: string;
+  talentStatus?: string;
+  positionCategory?: string;
+  skillSet?: string;
+  applicantTags?: string;
+  detailsNotes?: string;
+  industryExperience?: string;
+  applicantSource?: string;
 }
 
 export interface WorkHistoryItem {
-  company: string;
-  position?: string; // Added field from other components
-  description?: string; // Added field from other components
-  from: string;
-  to: string;
+  companyName: string;
+  jobTitle: string;
+  jobDescription?: string;
+  startDate: string;
+  endDate: string;
+  isCurrentJob: boolean;
+  jobLocation?: string;
+  jobType?: string;
 }
 
 export interface EducationHistoryItem {
-  school: string;
+  institutionName: string;
   degree: string;
-  field?: string; // Added field
-  from: string;
-  to: string;
+  fieldOfStudy?: string;
+  startDate: string;
+  endDate: string;
+  isCurrentEducation: boolean;
+  educationLocation?: string;
+}
+
+export interface CertificationItem {
+  certificationName: string;
+  certificationBody: string;
+  certificationDate: string;
+  expirationDate?: string;
+}
+
+export interface OnlinePresenceInfo {
+  linkedInProfile?: string;
+  personalSite?: string;
+  github?: string;
+  gitlab?: string;
+  bitbucket?: string;
+  facebookProfile?: string;
+  twitterProfile?: string;
+  instagramProfile?: string;
+  youtubeProfile?: string;
+}
+
+export interface AdditionalInfo {
+  resumeText: string;
+  addToHotlist?: boolean;
 }
 
 export interface FormData {
@@ -59,9 +82,7 @@ export interface FormData {
     workHistory: WorkHistoryItem[];
     educationHistory: EducationHistoryItem[];
   };
-  additional: {
-    resumeText: string;
-    tagsRating?: number; // Added field
-    hotlist?: boolean; // Added field
-  };
+  onlinePresence: OnlinePresenceInfo;
+  certifications: CertificationItem[];
+  additional: AdditionalInfo;
 }
