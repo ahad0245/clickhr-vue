@@ -1,64 +1,81 @@
 <template>
-  <div class="resume-layout-container">
-    <div class="template-selection-buttons">
-      <button 
-        v-for="template in templatesList" 
-        :key="template.id" 
-        @click="switchTemplate(template.id)"
-        class="template-button"
-      >
-        {{ template.name }}
-      </button>
+  <div class="template-gallery-container p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Resume Templates</h1>
+    <p class="text-gray-600 mb-8">Select a template to begin building your resume.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-for="template in templatesList" :key="template.id" class="template-card">
+        <div class="template-preview-placeholder">
+          <p class="text-gray-400">Preview of {{ template.name }}</p>
+        </div>
+        <div class="p-4 flex justify-between items-center">
+          <h3 class="font-semibold text-lg">{{ template.name }}</h3>
+          <button @click="selectTemplateAndNavigate(template.id)" class="use-template-button">
+            Use this template
+          </button>
+        </div>
+      </div>
     </div>
-    
-    <component :is="currentTemplate" :formData="resumeStore.formData" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 
+const router = useRouter();
 const resumeStore = useResumeStore();
 
-// Expose the list of templates to the template for the v-for loop
 const templatesList = ATS_TEMPLATES;
 
-// Create a mapping from template ID to the actual component
-const templatesMap = ATS_TEMPLATES.reduce((map, template) => {
-  map[template.id] = template.layoutComponent;
-  return map;
-}, {} as Record<string, any>);
-
-// Compute the current component based on the selected template's ID
-const currentTemplate = computed(() => {
-  return templatesMap[resumeStore.selectedTemplate];
-});
-
-// Function to update the selected template in the Pinia store
-function switchTemplate(templateId: string) {
+function selectTemplateAndNavigate(templateId: string) {
+  // 1. Update the selectedTemplate in the Pinia store
   resumeStore.switchTemplate(templateId);
+
+  // 2. Navigate to the resume creation page
+  router.push('/candidate/create-resume');
 }
 </script>
 
 <style scoped>
-/* Add styling to position the buttons correctly */
-.template-selection-buttons {
-  margin-bottom: 20px;
+.template-gallery-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.template-button {
+.template-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.template-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.template-preview-placeholder {
+  height: 200px;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.use-template-button {
+  background-color: #2563eb;
+  color: white;
   padding: 8px 16px;
-  margin: 0 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
-.template-button:hover {
-  background-color: #e0e0e0;
+.use-template-button:hover {
+  background-color: #1d4ed8;
 }
 </style>
