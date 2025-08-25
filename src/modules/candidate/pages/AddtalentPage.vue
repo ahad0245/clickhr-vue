@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-semibold text-gray-700 mb-2">Talent Application Form</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
       </div>
-
+      
       <div class="mb-8 flex justify-center space-x-2"> 
         <div v-for="stepNum in totalSteps" :key="stepNum"
              @click="currentStep = stepNum"
@@ -209,7 +209,7 @@
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Current Job</label>
                   </div>
-                  <button v-if="formData.history.workHistory.length > 1" type="button" @click="removeRow('history', 'workHistory', index)"
+                  <button v-if="formData.history.workHistory.length > 1" type="button" @click="removeRow('history', index, 'workHistory')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -261,7 +261,7 @@
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Currently Enrolled</label>
                   </div>
-                  <button v-if="formData.history.educationHistory.length > 1" type="button" @click="removeRow('history', 'educationHistory', index)"
+                  <button v-if="formData.history.educationHistory.length > 1" type="button" @click="removeRow('history', index, 'educationHistory')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -304,17 +304,17 @@
                      class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Name</label>
-                    <input type="text" v-model="cert.certificationName" @input="e => updateArrayField('certifications', index, 'certificationName', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="cert.certificationName" @input="e => updateArrayField('certifications', undefined, index, 'certificationName', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Body</label>
-                    <input type="text" v-model="cert.certificationBody" @input="e => updateArrayField('certifications', index, 'certificationBody', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="cert.certificationBody" @input="e => updateArrayField('certifications', undefined, index, 'certificationBody', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Date</label>
-                    <input type="date" v-model="cert.certificationDate" @input="e => updateArrayField('certifications', index, 'certificationDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="cert.certificationDate" @input="e => updateArrayField('certifications', undefined, index, 'certificationDate', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
@@ -361,7 +361,7 @@
       </div>
     </div>
 
-    <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md">
+    <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <h2 class="text-xl font-bold text-gray-800 mb-1">Applicant Data Preview</h2>
       <p class="text-gray-600 text-sm mb-4">Live summary of your application data</p>
 
