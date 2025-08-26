@@ -8,6 +8,8 @@ import TwoColumnModern from '@/components/resume/templates/TwoColumnModern.vue';
 import ProfessionalTemplate from '@/components/resume/templates/ProfessionalTemplate.vue';
 import PhotoTwoColumn from '@/components/resume/templates/PhotoTwoColumn.vue';
 import PhotoSingleColumn from '@/components/resume/templates/PhotoSingleColumn.vue';
+import ClassicTemplate from '@/components/resume/templates/ClassicTemplate.vue';
+import TraditionalTemplate from '@/components/resume/templates/TraditionalTemplate.vue';
 
 
 export interface ResumeTemplate {
@@ -73,6 +75,20 @@ export const ATS_TEMPLATES: ResumeTemplate[] = [
         name: 'Photo Single-Column',
         layoutComponent: PhotoSingleColumn,
         previewImage: '/resume-previews/photo-single-column-preview.png',
+        hasColorPalette: false,
+    },
+    {
+        id: 'classic',
+        name: 'Classic Template',
+        layoutComponent: ClassicTemplate,
+        previewImage: '/resume-previews/classic-preview.png',
+        hasColorPalette: false,
+    },
+    {
+        id: 'traditional',
+        name: 'Traditional Template',
+        layoutComponent: TraditionalTemplate,
+        previewImage: '/resume-previews/traditional-preview.png',
         hasColorPalette: false,
     },
 ];
