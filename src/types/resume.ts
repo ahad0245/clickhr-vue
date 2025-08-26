@@ -1,109 +1,111 @@
 export interface PersonalInfo {
-  firstName: string;
-  lastName: string;
+  first_name?: string;
+  last_name?: string;
   headline?: string;
   country?: string;
-  address1?: string;
-  address2?: string;
+  address_1?: string;
+  address_2?: string;
   city?: string;
-  state?: string;
-  zipCode?: string;
-  homeOffice?: string;
-  geoLocation?: string;
-  schoolDistrict?: string;
-  mobilePhone?: string;
-  workPhone?: string;
-  homePhone?: string;
-  email1: string;
-  email2?: string;
+  state_province_region?: string;
+  zip_postal_code?: string;
+  home_office?: string;
+  geo_location?: string;
+  school_district?: string;
+  mobile_phone?: string;
+  work_phone?: string;
+  home_phone?: string;
+  email_0: string;
+  email_1?: string;
   ssn?: string;
 }
 
 export interface EmploymentInfo {
-  employmentType?: string;
-  talentStatus?: string;
-  positionCategory?: string;
-  skillSet?: string;
-  applicantTags?: string;
-  detailsNotes?: string;
-  industryExperience?: string;
-  applicantSource?: string;
+  employment_type?: string;
+  talent_status?: string;
+  applicant_tags?: string;
+  details_notes?: string;
+  industry_experience?: string;
+  applicant_source?: string;
+  certification?: string;
 }
 
 export interface WorkHistoryItem {
-  companyName: string;
-  jobTitle?: string;
-  jobDescription?: string;
-  startDate?: string;
-  endDate?: string;
-  isCurrentJob?: boolean;
-  jobLocation?: string;
-  jobType?: string;
+  company_name?: string;
+  job_title?: string;
+  job_description?: string;
+  start_date?: string;
+  end_date?: string;
+  is_current_job?: boolean;
+  job_location?: string;
+  job_type?: string;
+  job_status?: string;
 }
 
 export interface EducationHistoryItem {
-  institutionName: string;
-  degree: string;
-  fieldOfStudy?: string;
-  startDate?: string;
-  endDate?: string;
-  isCurrentEducation?: boolean;
-  educationLocation?: string;
+  institution_name?: string;
+  degree?: string;
+  field_of_study?: string;
+  start_date?: string;
+  end_date?: string;
+  is_current_education?: boolean;
+  education_location?: string;
+  education_status?: string;
 }
 
 export interface OnlinePresenceInfo {
-  linkedInProfile?: string;
-  indeedProfile?: string;
-  monsterProfile?: string;
-  glassdoorProfile?: string;
-  zipRecruiterProfile?: string;
-  careerBuilderProfile?: string;
-  simplyHiredProfile?: string;
-  upworkProfile?: string;
-  freelancerProfile?: string;
-  guruProfile?: string;
+  linked_in_profile?: string;
+  indeed_profile?: string;
+  monster_profile?: string;
+  glassdoor_profile?: string;
+  zip_recruiter_profile?: string;
+  career_builder_profile?: string;
+  simply_hired_profile?: string;
+  upwork_profile?: string;
+  freelancer_profile?: string;
+  guru_profile?: string;
   peoplePerHourProfile?: string;
   fiverrProfile?: string;
-  personalSite?: string;
+  personal_site?: string;
   github?: string;
   gitlab?: string;
   bitbucket?: string;
-  facebookProfile?: string;
-  twitterProfile?: string;
-  instagramProfile?: string;
-  youtubeProfile?: string;
-  tiktokProfile?: string;
-  pinterestProfile?: string;
-  skypeId?: string;
-  whatsappNumber?: string;
-  wechatId?: string;
-  viberId?: string;
-  signalId?: string;
-  telegramId?: string;
-  discordId?: string;
-  slackId?: string;
+  facebook_profile?: string;
+  twitter_profile?: string;
+  instagram_profile?: string;
+  youtube_profile?: string;
+  tiktok_profile?: string;
+  pinterest_profile?: string;
+  skype_id?: string;
+  whatsapp_number?: string;
+  wechat_id?: string;
+  viber_id?: string;
+  signal_id?: string;
+  telegram_id?: string;
+  discord_id?: string;
+  slack_id?: string;
+  photoUrl?: string; // New field for the photo
 }
 
 export interface CertificationItem {
-  certificationName: string;
-  certificationBody?: string;
-  certificationDate?: string;
-  expirationDate?: string;
+  certification_name?: string;
+  certification_body?: string;
+  certification_date?: string;
+  expiration_date?: string;
 }
 
 export interface AdditionalInfo {
-  resumeText: string;
-  addToHotlist?: boolean;
+  resume_text: string;
+  add_to_hotlist?: boolean;
 }
 
 export interface FormData {
   personal: PersonalInfo;
   employment: EmploymentInfo;
   history: {
-    workHistory: WorkHistoryItem[];
-    educationHistory: EducationHistoryItem[];
+    work_history: WorkHistoryItem[];
+    education_history: EducationHistoryItem[];
   };
-  onlinePresence: OnlinePresenceInfo;
+  online_presence: OnlinePresenceInfo;
   certifications: CertificationItem[];
   additional: AdditionalInfo;
 }

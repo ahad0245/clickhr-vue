@@ -2,6 +2,8 @@
 import type { Component } from 'vue';
 import BasicTemplate from '../components/resume/templates/BasicTemplate.vue';
 import ModernTemplate from '../components/resume/templates/ModernTemplate.vue';
+import CompactTemplate from '../components/resume/templates/CompactTemplate.vue';
+import PhotoTemplate from '../components/resume/templates/PhotoTemplate.vue';
 
 export interface ResumeTemplate {
     id: string;
@@ -22,5 +24,17 @@ export const ATS_TEMPLATES: ResumeTemplate[] = [
         name: 'Modern ATS Template',
         layoutComponent: ModernTemplate,
         previewImage: '/src/assets/resume-previews/modern-ats-preview.png',
+    },
+    {
+        id: 'compact',
+        name: 'Compact Template',
+        layoutComponent: CompactTemplate,
+        previewImage: '/src/assets/resume-previews/compact-preview.png',
+    },
+    {
+        id: 'photo',
+        name: 'Photo Template',
+        layoutComponent: PhotoTemplate,
+        previewImage: '/src/assets/resume-previews/photo-preview.png',
     },
 ];

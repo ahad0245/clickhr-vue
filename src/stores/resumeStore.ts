@@ -1,58 +1,136 @@
-import type { FormData } from '@/types/resume';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
+export interface FormData {
+  personal: {
+    first_name: string;
+    last_name: string;
+    headline: string;
+    country: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    home_office: string;
+    geo_location: string;
+    school_district: string;
+    mobile_phone: string;
+    work_phone: string;
+    home_phone: string;
+    email_0: string;
+    email_1: string;
+    ssn: string;
+  };
+  employment: {
+    employment_type: string;
+    talent_status: string;
+    applicant_tags: string;
+    notes: string;
+    industry: string;
+    source: string;
+    certification: string;
+    skill_set: string; // added for compatibility
+  };
+  history: {
+    work_history: {
+      company_name: string;
+      job_title: string;
+      job_description: string;
+      start_date: string;
+      end_date: string;
+      is_current_job: boolean;
+      job_location: string;
+      job_type: string;
+      job_status: string;
+    }[];
+    education_history: {
+      institution_name: string;
+      degree: string;
+      field_of_study: string;
+      start_date: string;
+      end_date: string;
+      is_current_education: boolean;
+      education_location: string;
+      education_status: string;
+    }[];
+  };
+  online_presence: {
+    linkedin: string;
+    personal_site: string;
+    github: string;
+    twitter: string;
+    facebook: string;
+    instagram: string;
+    youtube: string;
+    tiktok: string;
+  };
+  certifications: {
+    certification_name: string;
+    certification_body: string;
+    certification_date: string;
+    expiration_date: string;
+  }[];
+  additional: {
+    resume_text: string;
+    add_to_hotlist: boolean;
+  };
+}
+
 export const useResumeStore = defineStore('resume', () => {
-const formData = ref<FormData>({
+  const formData = ref<FormData>({
     personal: {
-      firstName: 'Qirrat Fatima',
-      lastName: 'Zaidi',
-      headline: 'Front-End Developer',
-      country: 'India',
-      address: 'Karachi',
-      city: 'Karachi',
-      state: 'Sindh',
-      zipCode: '74000',
-      email1: 'qirrat.zaidi@example.com',
-      mobilePhone: '+92 312 3456789',
-      homeOffice: 'Remote',
-      geoCode: '24.860966, 66.990501',
-      schoolDistrict: 'Karachi Board',
-      workPhone: '+92 321 9876543',
-      homePhone: '+92 21 1234567',
-      email2: 'qirrat.f@example.com',
-      ssn: 'XXX-XX-1234'
+      first_name: '',
+      last_name: '',
+      headline: '',
+      country: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      zip_code: '',
+      home_office: '',
+      geo_location: '',
+      school_district: '',
+      mobile_phone: '',
+      work_phone: '',
+      home_phone: '',
+      email_0: '',
+      email_1: '',
+      ssn: ''
     },
     employment: {
-      linkedinProfile: 'https://www.linkedin.com/in/qirrat',
-      personalSite: 'https://qirrat.dev',
-      skillSet: 'Vue.js, TypeScript, Tailwind CSS',
-      employmentType: 'Full-time',
-      talentStatus: 'Applicant',
-      positionCategory: 'Software Engineer',
-      applicantTags: 'Frontend, Web Development',
-      details: 'Passionate about building intuitive user interfaces.',
-      industryExperience: 'Technology',
-      companyExperience: 'Google, Apple',
-      applicantSource: 'LinkedIn',
-      citizenship: 'Pakistani',
-      certification: 'AWS Certified Cloud Practitioner'
+      employment_type: '',
+      talent_status: '',
+      applicant_tags: '',
+      notes: '',
+      industry: '',
+      source: '',
+      certification: '',
+      skill_set: ''
     },
     history: {
-      workHistory: [
-        { company: 'Tech Solutions Inc.', from: '2020-01-01', to: 'Present' }
-      ],
-      educationHistory: [
-        { school: 'University of Karachi', degree: 'BSCS', field: 'Computer Science', from: '2016-09-01', to: '2020-06-01' }
-      ],
+      work_history: [],
+      education_history: []
     },
+    online_presence: {
+      linkedin: '',
+      personal_site: '',
+      github: '',
+      twitter: '',
+      facebook: '',
+      instagram: '',
+      youtube: '',
+      tiktok: ''
+    },
+    certifications: [],
     additional: {
-      resumeText: 'A highly motivated and skilled frontend developer with a passion for building intuitive user interfaces. Proficient in Vue.js, JavaScript, and modern web development practices.',
-      hotlist: true,
-      tagsRating: 5
+      resume_text: '',
+      add_to_hotlist: false
     }
   });
-  const selectedTemplate = ref('basic-ats'); // Ensure a default value is set
+
+  const selectedTemplate = ref('basic-template');
 
   function switchTemplate(template: string) {
     selectedTemplate.value = template;

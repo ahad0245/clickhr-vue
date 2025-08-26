@@ -33,11 +33,11 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">First Name</label>
-                  <input type="text" v-model="formData.personal.firstName" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.first_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Last Name</label>
-                  <input type="text" v-model="formData.personal.lastName" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.last_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Headline</label>
@@ -56,11 +56,11 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Address 1</label>
-                  <input type="text" v-model="formData.personal.address1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.address_1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Address 2</label>
-                  <input type="text" v-model="formData.personal.address2" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.address_2" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">City</label>
@@ -68,43 +68,43 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">State/Province/Region</label>
-                  <input type="text" v-model="formData.personal.state" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.state_province_region" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Zip/Postal Code</label>
-                  <input type="text" v-model="formData.personal.zipCode" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.zip_postal_code" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Home Office</label>
-                  <input type="text" v-model="formData.personal.homeOffice" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.home_office" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Geo Location</label>
-                  <input type="text" v-model="formData.personal.geoLocation" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.geo_location" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">School District</label>
-                  <input type="text" v-model="formData.personal.schoolDistrict" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.school_district" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Mobile Phone</label>
-                  <input type="text" v-model="formData.personal.mobilePhone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.mobile_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Work Phone</label>
-                  <input type="text" v-model="formData.personal.workPhone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.work_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Home Phone</label>
-                  <input type="text" v-model="formData.personal.homePhone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.personal.home_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Primary Email</label>
-                  <input type="email" v-model="formData.personal.email1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="email" v-model="formData.personal.email_0" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Secondary Email</label>
-                  <input type="email" v-model="formData.personal.email2" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="email" v-model="formData.personal.email_1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">SSN</label>
@@ -118,11 +118,11 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Employment Type</label>
-                  <input type="text" v-model="formData.employment.employmentType" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.employment.employment_type" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Talent Status</label>
-                  <select v-model="formData.employment.talentStatus" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                  <select v-model="formData.employment.talent_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
                     <option value="Applicant">Applicant</option>
                     <option value="Candidate">Candidate</option>
                     <option value="Employee">Employee</option>
@@ -130,34 +130,20 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Position Category</label>
-                  <select v-model="formData.employment.positionCategory" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                    <option value="Nothing selected">Nothing selected</option>
-                    <option value="Software Engineer">Software Engineer</option>
-                    <option value="Product Manager">Product Manager</option>
-                    <option value="Data Scientist">Data Scientist</option>
-                    <option value="UX Designer">UX Designer</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Skill Set</label>
-                  <input type="text" v-model="formData.employment.skillSet" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
                   <label class="block text-sm font-medium text-gray-600">Applicant Tags</label>
-                  <input type="text" v-model="formData.employment.applicantTags" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.employment.applicant_tags" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Details</label>
-                  <input type="text" v-model="formData.employment.detailsNotes" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Details / Notes</label>
+                  <input type="text" v-model="formData.employment.details_notes" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Industry Experience</label>
-                  <input type="text" v-model="formData.employment.industryExperience" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.employment.industry_experience" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Applicant Source</label>
-                  <input type="text" v-model="formData.employment.applicantSource" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.employment.applicant_source" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
             </div>
@@ -167,49 +153,49 @@
               <div class="space-y-4 border border-gray-200 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
                   Work History
-                  <button type="button" @click="addRow('history', 'workHistory')"
+                  <button type="button" @click="addRow('history', 'work_history')"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Work
                   </button>
                 </h3>
-                <div v-for="(work, index) in formData.history.workHistory" :key="index"
+                <div v-for="(work, index) in formData.history.work_history" :key="index"
                      class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Company Name</label>
-                    <input type="text" v-model="work.companyName" @input="e => updateArrayField('history', 'workHistory', index, 'companyName', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="work.company_name" @input="e => updateArrayField('history', 'work_history', index, 'company_name', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Job Title</label>
-                    <input type="text" v-model="work.jobTitle" @input="e => updateArrayField('history', 'workHistory', index, 'jobTitle', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="work.job_title" @input="e => updateArrayField('history', 'work_history', index, 'job_title', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-4">
                     <label class="block text-sm font-medium text-gray-600">Job Description</label>
-                    <textarea v-model="work.jobDescription" @input="e => updateArrayField('history', 'workHistory', index, 'jobDescription', (e.target as HTMLInputElement).value)"
+                    <textarea v-model="work.job_description" @input="e => updateArrayField('history', 'work_history', index, 'job_description', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">Start Date</label>
-                    <input type="date" v-model="work.startDate" @input="e => updateArrayField('history', 'workHistory', index, 'startDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="work.start_date" @input="e => updateArrayField('history', 'work_history', index, 'start_date', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">End Date</label>
-                    <input type="date" v-model="work.endDate" @input="e => updateArrayField('history', 'workHistory', index, 'endDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="work.end_date" @input="e => updateArrayField('history', 'work_history', index, 'end_date', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">Job Location</label>
-                    <input type="text" v-model="work.jobLocation" @input="e => updateArrayField('history', 'workHistory', index, 'jobLocation', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="work.job_location" @input="e => updateArrayField('history', 'work_history', index, 'job_location', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="flex items-center space-x-2">
-                    <input type="checkbox" v-model="work.isCurrentJob" @change="e => updateArrayField('history', 'workHistory', index, 'isCurrentJob', (e.target as HTMLInputElement).checked)"
+                    <input type="checkbox" v-model="work.is_current_job" @change="e => updateArrayField('history', 'work_history', index, 'is_current_job', (e.target as HTMLInputElement).checked)"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Current Job</label>
                   </div>
-                  <button v-if="formData.history.workHistory.length > 1" type="button" @click="removeRow('history', index, 'workHistory')"
+                  <button v-if="formData.history.work_history.length > 1" type="button" @click="removeRow('history', index, 'work_history')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -224,44 +210,44 @@
               <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
                 <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
                   Education History
-                  <button type="button" @click="addRow('history', 'educationHistory')"
+                  <button type="button" @click="addRow('history', 'education_history')"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Education
                   </button>
                 </h3>
-                <div v-for="(edu, index) in formData.history.educationHistory" :key="index"
+                <div v-for="(edu, index) in formData.history.education_history" :key="index"
                      class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Institution Name</label>
-                    <input type="text" v-model="edu.institutionName" @input="e => updateArrayField('history', 'educationHistory', index, 'institutionName', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="edu.institution_name" @input="e => updateArrayField('history', 'education_history', index, 'institution_name', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Degree</label>
-                    <input type="text" v-model="edu.degree" @input="e => updateArrayField('history', 'educationHistory', index, 'degree', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="edu.degree" @input="e => updateArrayField('history', 'education_history', index, 'degree', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-600">Field of Study</label>
-                    <input type="text" v-model="edu.fieldOfStudy" @input="e => updateArrayField('history', 'educationHistory', index, 'fieldOfStudy', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="edu.field_of_study" @input="e => updateArrayField('history', 'education_history', index, 'field_of_study', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">Start Date</label>
-                    <input type="date" v-model="edu.startDate" @input="e => updateArrayField('history', 'educationHistory', index, 'startDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="edu.start_date" @input="e => updateArrayField('history', 'education_history', index, 'start_date', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">End Date</label>
-                    <input type="date" v-model="edu.endDate" @input="e => updateArrayField('history', 'educationHistory', index, 'endDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="edu.end_date" @input="e => updateArrayField('history', 'education_history', index, 'end_date', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                    <div class="flex items-center space-x-2">
-                    <input type="checkbox" v-model="edu.isCurrentEducation" @change="e => updateArrayField('history', 'educationHistory', index, 'isCurrentEducation', (e.target as HTMLInputElement).checked)"
+                    <input type="checkbox" v-model="edu.is_current_education" @change="e => updateArrayField('history', 'education_history', index, 'is_current_education', (e.target as HTMLInputElement).checked)"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Currently Enrolled</label>
                   </div>
-                  <button v-if="formData.history.educationHistory.length > 1" type="button" @click="removeRow('history', index, 'educationHistory')"
+                  <button v-if="formData.history.education_history.length > 1" type="button" @click="removeRow('history', index, 'education_history')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -276,19 +262,35 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">LinkedIn Profile</label>
-                  <input type="text" v-model="formData.onlinePresence.linkedInProfile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.linked_in_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Personal Site</label>
-                  <input type="text" v-model="formData.onlinePresence.personalSite" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.personal_site" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">GitHub Profile</label>
-                  <input type="text" v-model="formData.onlinePresence.github" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.github" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Twitter Profile</label>
-                  <input type="text" v-model="formData.onlinePresence.twitterProfile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.twitter_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Facebook Profile</label>
+                  <input type="text" v-model="formData.online_presence.facebook_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Instagram Profile</label>
+                  <input type="text" v-model="formData.online_presence.instagram_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Youtube Profile</label>
+                  <input type="text" v-model="formData.online_presence.youtube_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">TikTok Profile</label>
+                  <input type="text" v-model="formData.online_presence.tiktok_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
               
@@ -304,17 +306,17 @@
                      class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Name</label>
-                    <input type="text" v-model="cert.certificationName" @input="e => updateArrayField('certifications', undefined, index, 'certificationName', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="cert.certification_name" @input="e => updateArrayField('certifications', undefined, index, 'certification_name', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Body</label>
-                    <input type="text" v-model="cert.certificationBody" @input="e => updateArrayField('certifications', undefined, index, 'certificationBody', (e.target as HTMLInputElement).value)"
+                    <input type="text" v-model="cert.certification_body" @input="e => updateArrayField('certifications', undefined, index, 'certification_body', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-1">
                     <label class="block text-sm font-medium text-gray-600">Date</label>
-                    <input type="date" v-model="cert.certificationDate" @input="e => updateArrayField('certifications', undefined, index, 'certificationDate', (e.target as HTMLInputElement).value)"
+                    <input type="date" v-model="cert.certification_date" @input="e => updateArrayField('certifications', undefined, index, 'certification_date', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
@@ -331,13 +333,13 @@
               <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-center space-x-2">
-                  <input type="checkbox" id="hotlist" v-model="formData.additional.addToHotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
+                  <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                   <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
                 </div>
               </div>
               <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-600">Resume Text</label>
-                <textarea v-model="formData.additional.resumeText" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
+                <textarea v-model="formData.additional.resume_text" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
               </div>
             </div>
           </div>
@@ -364,17 +366,6 @@
     <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <h2 class="text-xl font-bold text-gray-800 mb-1">Applicant Data Preview</h2>
       <p class="text-gray-600 text-sm mb-4">Live summary of your application data</p>
-
-      <div class="template-selection-buttons mb-4">
-        <button 
-          v-for="template in templatesList" 
-          :key="template.id" 
-          @click="switchTemplate(template.id)"
-          class="template-button"
-        >
-          {{ template.name }}
-        </button>
-      </div>
       
       <component :is="currentTemplate" :formData="formData" />
 
@@ -387,14 +378,14 @@ import { ref, reactive, computed } from 'vue';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import type { FormData, WorkHistoryItem, EducationHistoryItem, CertificationItem } from '@/types/resume';
-import { storeToRefs } from 'pinia';
 
+// Store
+const resumeStore = useResumeStore();
+
+// Form State
 const currentStep = ref(1);
 const totalSteps = 6;
-
-// Use storeToRefs to maintain reactivity for the whole formData object
-const resumeStore = useResumeStore();
-const { formData } = storeToRefs(resumeStore);
+const formData = reactive(resumeStore.formData);
 
 // Template Selection Logic
 const templatesList = ATS_TEMPLATES;
@@ -431,37 +422,36 @@ const prevStep = () => {
   }
 };
 
-const addRow = (section: 'history' | 'certifications', field?: 'workHistory' | 'educationHistory') => {
+const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 'education_history') => {
   if (section === 'history') {
-    if (field === 'workHistory') {
-      formData.value.history.workHistory.push({ companyName: '', jobTitle: '', jobDescription: '', startDate: '', endDate: '', isCurrentJob: false });
-    } else if (field === 'educationHistory') {
-      formData.value.history.educationHistory.push({ institutionName: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', isCurrentEducation: false });
+    if (field === 'work_history') {
+      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false });
+    } else if (field === 'education_history') {
+      formData.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false });
     }
   } else if (section === 'certifications') {
-    formData.value.certifications.push({ certificationName: '', certificationBody: '', certificationDate: '' });
+    formData.certifications.push({ certification_name: '', certification_body: '', certification_date: '' });
   }
 };
 
-const removeRow = (section: 'history' | 'certifications', index: number, field?: 'workHistory' | 'educationHistory') => {
+const removeRow = (section: 'history' | 'certifications', index: number, field?: 'work_history' | 'education_history') => {
     if (section === 'history' && field) {
-        formData.value.history[field].splice(index, 1);
+        formData.history[field].splice(index, 1);
     } else if (section === 'certifications') {
-        formData.value.certifications.splice(index, 1);
+        formData.certifications.splice(index, 1);
     }
 };
 
-const updateArrayField = (section: 'history' | 'certifications', field: 'workHistory' | 'educationHistory' | undefined, index: number, subField: string, value: any) => {
+const updateArrayField = (section: 'history' | 'certifications', field: 'work_history' | 'education_history' | undefined, index: number, subField: string, value: any) => {
   if (section === 'history' && field) {
-    (formData.value.history[field][index] as any)[subField] = value;
+    (formData.history[field][index] as any)[subField] = value;
   } else if (section === 'certifications') {
-    (formData.value.certifications[index] as any)[subField] = value;
+    (formData.certifications[index] as any)[subField] = value;
   }
 };
 
 const submitForm = async () => {
   console.log("Form data submitted:", formData);
-
   try {
     await new Promise(resolve => setTimeout(resolve, 500));
     alert('Your application has been submitted successfully! Check the preview on the right.');
