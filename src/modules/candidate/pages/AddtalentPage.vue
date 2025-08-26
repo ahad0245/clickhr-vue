@@ -354,17 +354,6 @@
           Change Template
         </button>
       </div>
-
-      <div class="template-selection-buttons mb-4">
-        <button 
-          v-for="template in templatesList" 
-          :key="template.id" 
-          @click="switchTemplate(template.id)"
-          :class="['template-button', {'bg-blue-500 text-white': resumeStore.selectedTemplate === template.id, 'bg-gray-200 text-gray-700': resumeStore.selectedTemplate !== template.id}]"
-        >
-          {{ template.name }}
-        </button>
-      </div>
       
       <component :is="currentTemplate" :resume="formData" />
 

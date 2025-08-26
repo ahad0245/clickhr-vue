@@ -1,7 +1,5 @@
-<!-- NotificationDropdown.vue -->
 <template>
   <div class="relative" ref="dropdownRef">
-    <!-- Bell Icon with Badge -->
     <button @click="handleToggleDropdown" class="relative focus:outline-none">
       <BellIcon class="h-6 w-6 text-gray-600 cursor-pointer" />
       <span v-if="unreadCount" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -9,7 +7,6 @@
       </span>
     </button>
 
-    <!-- Dropdown -->
     <div v-if="show" class="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-lg z-50">
       <div class="p-4 border-b flex items-center justify-between">
         <h3 class="text-sm font-semibold text-gray-700">USER NOTIFICATIONS</h3>
@@ -26,7 +23,10 @@
       <ul class="max-h-64 overflow-y-auto divide-y">
         <li v-for="item in filteredItems" :key="item.id" class="flex items-start space-x-3 p-4 hover:bg-gray-50">
           <span class="mt-1 text-green-600">
-            <MessageIcon class="h-5 w-5" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
           </span>
           <div>
             <p class="text-sm text-gray-800">{{ item.message }}</p>
@@ -41,7 +41,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import BellIcon from '../../../assets/icons/BellIcon.vue';
-// import MessageIcon from '../icons/MessageIcon.vue';
 
 const show = ref(false);
 const tabs = ['Alerts', 'Task', 'Logs'];
