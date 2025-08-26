@@ -276,22 +276,6 @@
                   <label class="block text-sm font-medium text-gray-600">Twitter Profile</label>
                   <input type="text" v-model="formData.online_presence.twitter_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Facebook Profile</label>
-                  <input type="text" v-model="formData.online_presence.facebook_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Instagram Profile</label>
-                  <input type="text" v-model="formData.online_presence.instagram_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Youtube Profile</label>
-                  <input type="text" v-model="formData.online_presence.youtube_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">TikTok Profile</label>
-                  <input type="text" v-model="formData.online_presence.tiktok_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
               </div>
               
               <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
@@ -366,6 +350,17 @@
     <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <h2 class="text-xl font-bold text-gray-800 mb-1">Applicant Data Preview</h2>
       <p class="text-gray-600 text-sm mb-4">Live summary of your application data</p>
+
+      <div class="template-selection-buttons mb-4">
+        <button 
+          v-for="template in templatesList" 
+          :key="template.id" 
+          @click="switchTemplate(template.id)"
+          class="template-button"
+        >
+          {{ template.name }}
+        </button>
+      </div>
       
       <component :is="currentTemplate" :formData="formData" />
 
@@ -379,15 +374,12 @@ import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import type { FormData, WorkHistoryItem, EducationHistoryItem, CertificationItem } from '@/types/resume';
 
-// Store
-const resumeStore = useResumeStore();
-
-// Form State
 const currentStep = ref(1);
-const totalSteps = 6;
-const formData = reactive(resumeStore.formData);
+const totalSteps = 7;
 
-// Template Selection Logic
+const resumeStore = useResumeStore();
+const formData = resumeStore.formData;
+
 const templatesList = ATS_TEMPLATES;
 
 const currentTemplate = computed(() => {
@@ -404,8 +396,9 @@ const getStepName = (step: number) => {
     case 2: return 'Employment';
     case 3: return 'Work History';
     case 4: return 'Education History';
-    case 5: return 'Online Presence & Certifications';
-    case 6: return 'Additional Info';
+    case 5: return 'Online Presence';
+    case 6: return 'Certifications';
+    case 7: return 'Additional Info';
     default: return '';
   }
 };
@@ -450,8 +443,10 @@ const updateArrayField = (section: 'history' | 'certifications', field: 'work_hi
   }
 };
 
+
 const submitForm = async () => {
   console.log("Form data submitted:", formData);
+
   try {
     await new Promise(resolve => setTimeout(resolve, 500));
     alert('Your application has been submitted successfully! Check the preview on the right.');
