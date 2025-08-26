@@ -21,7 +21,8 @@ export const mockData: FormData = {
     home_phone: '',
     email_0: 'john.doe@example.com',
     email_1: '',
-    ssn: 'XXX-XX-XXXX'
+    ssn: 'XXX-XX-XXXX',
+    profile_photo_url: null,
   },
   employment: {
     employment_type: 'Full-time',
@@ -43,8 +44,7 @@ export const mockData: FormData = {
         is_current_job: false,
         job_location: 'San Francisco, CA',
         job_type: 'Full-time',
-        job_status: 'Active',
-        employment_type: 'Full-time'
+        job_status: 'Active'
       },
       {
         company_name: 'Creative Minds Agency',
@@ -55,8 +55,7 @@ export const mockData: FormData = {
         is_current_job: false,
         job_location: 'Anytown, CA',
         job_type: 'Full-time',
-        job_status: 'Active',
-        employment_type: 'Full-time'
+        job_status: 'Active'
       }
     ],
     education_history: [
@@ -68,7 +67,8 @@ export const mockData: FormData = {
         end_date: '2017-05-31',
         is_current_education: false,
         education_location: 'State, US',
-        education_status: 'Completed'
+        education_status: 'Completed',
+        degree_image_url: null,
       }
     ]
   },
@@ -81,7 +81,6 @@ export const mockData: FormData = {
     instagram: '',
     youtube: '',
     tiktok: '',
-    photoUrl: ''
   },
   certifications: [
     {

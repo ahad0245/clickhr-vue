@@ -7,7 +7,7 @@
            class="template-card relative group"
            :class="{ 'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedTemplate === template.id }">
         <div class="template-preview-wrapper">
-          <component :is="template.layoutComponent" :resume="mockData" class="transform scale-50 origin-top-left absolute top-0 left-0" />
+          <img :src="template.previewImage" :alt="`${template.name} preview`" class="template-preview-image" />
         </div>
         <div class="p-4 flex justify-between items-center">
           <h3 class="font-semibold text-lg">{{ template.name }}</h3>

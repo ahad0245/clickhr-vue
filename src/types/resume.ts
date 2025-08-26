@@ -19,6 +19,7 @@ export interface EducationHistoryItem {
   is_current_education: boolean;
   education_location: string;
   education_status: string;
+  degree_image_url?: string | ArrayBuffer | null;
 }
 
 export interface CertificationItem {
@@ -48,6 +49,7 @@ export interface FormData {
     email_0: string;
     email_1: string;
     ssn: string;
+    profile_photo_url?: string | ArrayBuffer | null;
   };
   employment: {
     employment_type: string;

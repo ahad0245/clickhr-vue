@@ -6,25 +6,22 @@
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
       </div>
       
-      <div class="mb-8 flex justify-center space-x-2"> 
+      <div class="mb-8 flex flex-wrap justify-center sm:justify-start gap-2">
         <div v-for="stepNum in totalSteps" :key="stepNum"
              @click="currentStep = stepNum"
-             :class="{
-               'flex items-center space-x-1 p-1 rounded-full cursor-pointer transition-all duration-300': true, 
-               'bg-blue-500 text-white shadow-lg': currentStep === stepNum,
-               'bg-gray-200 text-gray-600': currentStep > stepNum ? 'bg-green-500' : 'bg-gray-200'
-             }">
-          <div :class="{
-                 'w-6 h-6 flex items-center justify-center rounded-full font-bold text-sm': true, 
-                 'bg-white text-blue-500': currentStep === stepNum,
-                 'bg-white text-green-500': currentStep > stepNum
-               }">
+             :class="['flex items-center space-x-2 p-2 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-105',
+                      currentStep === stepNum ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700',
+                      currentStep > stepNum ? 'bg-green-500 text-white' : ''
+                     ]">
+          <div :class="['w-8 h-8 flex items-center justify-center rounded-full font-bold',
+                         currentStep === stepNum ? 'bg-white text-blue-600' : 'bg-gray-300 text-gray-700',
+                         currentStep > stepNum ? 'bg-white text-green-500' : ''
+                        ]">
             {{ stepNum }}
           </div>
-          <span class="hidden lg:inline text-sm" :class="{'text-white': currentStep === stepNum}">{{ getStepName(stepNum) }}</span> 
+          <span class="hidden lg:inline font-medium" :class="{'text-white': currentStep >= stepNum}">{{ getStepName(stepNum) }}</span>
         </div>
       </div>
-
       <div class="bg-white rounded-lg shadow p-6 space-y-6 mb-8">
         <transition name="fade" mode="out-in">
           <div :key="currentStep">
@@ -109,6 +106,11 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-600">SSN</label>
                   <input type="text" v-model="formData.personal.ssn" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-600">Profile Photo</label>
+                  <input type="file" @change="e => handleProfilePhotoUpload(e)" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <img v-if="formData.personal.profile_photo_url" :src="formData.personal.profile_photo_url as string" class="mt-2 w-24 h-24 object-cover rounded-full" alt="Profile Photo Preview" />
                 </div>
               </div>
             </div>
@@ -247,6 +249,12 @@
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Currently Enrolled</label>
                   </div>
+                  <div v-if="!edu.is_current_education" class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600">Degree Image (Completed)</label>
+                    <input type="file" @change="e => handleDegreeImageUpload(e, index)" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    <img v-if="edu.degree_image_url" :src="edu.degree_image_url as string" class="mt-2 w-32 object-contain" alt="Degree Image Preview" />
+                  </div>
+
                   <button v-if="formData.history.education_history.length > 1" type="button" @click="removeRow('history', index, 'education_history')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -258,7 +266,7 @@
             </div>
 
             <div v-if="currentStep === 5" class="space-y-6">
-              <h2 class="text-xl font-semibold text-gray-700">Online Presence & Certifications</h2>
+              <h2 class="text-xl font-semibold text-gray-700">Online Presence</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">LinkedIn Profile</label>
@@ -277,54 +285,57 @@
                   <input type="text" v-model="formData.online_presence.twitter" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
-              
-              <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
-                <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
-                  Certifications
-                  <button type="button" @click="addRow('certifications')"
-                          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
-                    Add Certification
-                  </button>
-                </h3>
-                <div v-for="(cert, index) in formData.certifications" :key="index"
-                     class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
-                  <div class="md:col-span-1">
-                    <label class="block text-sm font-medium text-gray-600">Name</label>
-                    <input type="text" v-model="cert.certification_name" @input="e => updateArrayField('certifications', undefined, index, 'certification_name', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                  </div>
-                  <div class="md:col-span-1">
-                    <label class="block text-sm font-medium text-gray-600">Body</label>
-                    <input type="text" v-model="cert.certification_body" @input="e => updateArrayField('certifications', undefined, index, 'certification_body', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                  </div>
-                  <div class="md:col-span-1">
-                    <label class="block text-sm font-medium text-gray-600">Date</label>
-                    <input type="date" v-model="cert.certification_date" @input="e => updateArrayField('certifications', undefined, index, 'certification_date', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                  </div>
-                  <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
-                          class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
             </div>
 
             <div v-if="currentStep === 6" class="space-y-6">
-              <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center space-x-2">
-                  <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
-                  <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
+                <h2 class="text-xl font-semibold text-gray-700">Certifications</h2>
+                <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
+                <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
+                    Certifications
+                    <button type="button" @click="addRow('certifications')"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
+                    Add Certification
+                    </button>
+                </h3>
+                <div v-for="(cert, index) in formData.certifications" :key="index"
+                        class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
+                    <div class="md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Name</label>
+                    <input type="text" v-model="cert.certification_name" @input="e => updateArrayField('certifications', undefined, index, 'certification_name', (e.target as HTMLInputElement).value)"
+                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    </div>
+                    <div class="md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Body</label>
+                    <input type="text" v-model="cert.certification_body" @input="e => updateArrayField('certifications', undefined, index, 'certification_body', (e.target as HTMLInputElement).value)"
+                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    </div>
+                    <div class="md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Date</label>
+                    <input type="date" v-model="cert.certification_date" @input="e => updateArrayField('certifications', undefined, index, 'certification_date', (e.target as HTMLInputElement).value)"
+                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    </div>
+                    <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
+                            class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    </button>
                 </div>
-              </div>
-              <div class="mt-4">
+                </div>
+            </div>
+
+            <div v-if="currentStep === 7" class="space-y-6">
+                <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
+                    <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
+                </div>
+                </div>
+                <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-600">Resume Text</label>
                 <textarea v-model="formData.additional.resume_text" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
-              </div>
+                </div>
             </div>
           </div>
         </transition>
@@ -350,11 +361,15 @@
     <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <div class="flex justify-between items-center mb-4 border-b pb-3">
         <h2 class="text-xl font-bold text-gray-800">Applicant Data Preview</h2>
-        <button @click="router.push('/candidate/resume')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
-          Change Template
-        </button>
+        <div class="flex gap-2">
+            <button @click="downloadResume" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
+                Download Resume
+            </button>
+            <button @click="router.push('/candidate/resume')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
+              Change Template
+            </button>
+        </div>
       </div>
-      
       <component :is="currentTemplate" :resume="formData" />
 
     </div>
@@ -411,10 +426,32 @@ const prevStep = () => {
   }
 };
 
+const handleProfilePhotoUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    formData.personal.profile_photo_url = e.target?.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const handleDegreeImageUpload = (event: Event, index: number) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    formData.history.education_history[index].degree_image_url = e.target?.result;
+  };
+  reader.readAsDataURL(file);
+};
+
 const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 'education_history') => {
   if (section === 'history') {
     if (field === 'work_history') {
-      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '', employment_type: '' });
+      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '' });
     } else if (field === 'education_history') {
       formData.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '' });
     }
@@ -439,6 +476,10 @@ const updateArrayField = (section: 'history' | 'certifications', field: 'work_hi
   }
 };
 
+const downloadResume = () => {
+  console.log("Download button clicked. Initiating resume download for:", formData.personal.first_name + ' ' + formData.personal.last_name);
+  alert('Downloading resume...');
+};
 
 const submitForm = async () => {
   console.log("Form data submitted:", formData);
