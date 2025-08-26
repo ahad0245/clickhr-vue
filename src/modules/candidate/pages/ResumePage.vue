@@ -3,9 +3,11 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6">Resume Templates</h1>
     <p class="text-gray-600 mb-8">Select a template to begin building your resume.</p>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="template in templatesList" :key="template.id" class="template-card relative group">
+      <div v-for="template in templatesList" :key="template.id"
+           class="template-card relative group"
+           :class="{ 'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedTemplate === template.id }">
         <div class="template-preview-wrapper">
-          <img :src="template.previewImage" :alt="`${template.name} preview`" class="template-preview-image" />
+          <component :is="template.layoutComponent" :resume="mockData" class="transform scale-50 origin-top-left absolute top-0 left-0" />
         </div>
         <div class="p-4 flex justify-between items-center">
           <h3 class="font-semibold text-lg">{{ template.name }}</h3>
@@ -24,6 +26,7 @@
 import { useRouter } from 'vue-router';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
+import { mockData } from '@/stores/resumeStore';
 
 const router = useRouter();
 const resumeStore = useResumeStore();
@@ -46,18 +49,17 @@ function selectTemplateAndNavigate(templateId: string) {
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
+  height: 400px; /* Adjusted height for template preview */
 }
 .template-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .template-preview-wrapper {
-  height: 200px;
-  background-color: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #e2e8f0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: white;
 }
 .template-preview-image {
   width: 100%;

@@ -1,136 +1,105 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import type { FormData } from '@/types/resume';
 
-export interface FormData {
+export const mockData: FormData = {
   personal: {
-    first_name: string;
-    last_name: string;
-    headline: string;
-    country: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    state: string;
-    zip_code: string;
-    home_office: string;
-    geo_location: string;
-    school_district: string;
-    mobile_phone: string;
-    work_phone: string;
-    home_phone: string;
-    email_0: string;
-    email_1: string;
-    ssn: string;
-  };
+    first_name: 'John',
+    last_name: 'Doe',
+    headline: 'Senior Software Engineer | Vue.js Specialist',
+    country: 'United States',
+    address_1: '123 Main St',
+    address_2: '',
+    city: 'Anytown',
+    state_province_region: 'CA',
+    zip_postal_code: '12345',
+    home_office: 'Remote',
+    geo_location: '40.7128,-74.0060',
+    school_district: 'Anytown Unified',
+    mobile_phone: '555-123-4567',
+    work_phone: '555-987-6543',
+    home_phone: '',
+    email_0: 'john.doe@example.com',
+    email_1: '',
+    ssn: 'XXX-XX-XXXX'
+  },
   employment: {
-    employment_type: string;
-    talent_status: string;
-    applicant_tags: string;
-    notes: string;
-    industry: string;
-    source: string;
-    certification: string;
-    skill_set: string; // added for compatibility
-  };
+    employment_type: 'Full-time',
+    talent_status: 'Candidate',
+    applicant_tags: 'Vue, Pinia, TypeScript',
+    details_notes: 'Highly motivated and skilled engineer.',
+    industry_experience: 'Technology, Web Development',
+    applicant_source: 'LinkedIn',
+    certification: 'AWS Certified Developer'
+  },
   history: {
-    work_history: {
-      company_name: string;
-      job_title: string;
-      job_description: string;
-      start_date: string;
-      end_date: string;
-      is_current_job: boolean;
-      job_location: string;
-      job_type: string;
-      job_status: string;
-    }[];
-    education_history: {
-      institution_name: string;
-      degree: string;
-      field_of_study: string;
-      start_date: string;
-      end_date: string;
-      is_current_education: boolean;
-      education_location: string;
-      education_status: string;
-    }[];
-  };
+    work_history: [
+      {
+        company_name: 'Innovatech Solutions',
+        job_title: 'Senior Frontend Engineer',
+        job_description: 'Developed and maintained core features of the flagship application using Vue 3 and TypeScript.',
+        start_date: '2020-01-01',
+        end_date: '2024-05-31',
+        is_current_job: false,
+        job_location: 'San Francisco, CA',
+        job_type: 'Full-time',
+        job_status: 'Active',
+        employment_type: 'Full-time'
+      },
+      {
+        company_name: 'Creative Minds Agency',
+        job_title: 'Frontend Developer',
+        job_description: 'Worked on client projects, building responsive user interfaces with Vue 2.',
+        start_date: '2017-06-01',
+        end_date: '2019-12-31',
+        is_current_job: false,
+        job_location: 'Anytown, CA',
+        job_type: 'Full-time',
+        job_status: 'Active',
+        employment_type: 'Full-time'
+      }
+    ],
+    education_history: [
+      {
+        institution_name: 'State University',
+        degree: 'Bachelor of Science',
+        field_of_study: 'Computer Science',
+        start_date: '2013-09-01',
+        end_date: '2017-05-31',
+        is_current_education: false,
+        education_location: 'State, US',
+        education_status: 'Completed'
+      }
+    ]
+  },
   online_presence: {
-    linkedin: string;
-    personal_site: string;
-    github: string;
-    twitter: string;
-    facebook: string;
-    instagram: string;
-    youtube: string;
-    tiktok: string;
-  };
-  certifications: {
-    certification_name: string;
-    certification_body: string;
-    certification_date: string;
-    expiration_date: string;
-  }[];
+    linkedin: 'https://linkedin.com/in/johndoe',
+    personal_site: 'https://johndoe.dev',
+    github: 'https://github.com/johndoe',
+    twitter: 'https://twitter.com/johndoe',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    tiktok: '',
+    photoUrl: ''
+  },
+  certifications: [
+    {
+      certification_name: 'AWS Certified Developer',
+      certification_body: 'Amazon Web Services',
+      certification_date: '2022-03-15',
+      expiration_date: '2025-03-15'
+    }
+  ],
   additional: {
-    resume_text: string;
-    add_to_hotlist: boolean;
-  };
-}
+    resume_text: 'A highly motivated software engineer with 7+ years of experience in modern web development frameworks, including Vue.js and TypeScript. I have a proven track record of delivering high-quality, scalable applications. Seeking a challenging role to leverage my technical and leadership skills.',
+    add_to_hotlist: true
+  }
+};
 
 export const useResumeStore = defineStore('resume', () => {
-  const formData = ref<FormData>({
-    personal: {
-      first_name: '',
-      last_name: '',
-      headline: '',
-      country: '',
-      address_1: '',
-      address_2: '',
-      city: '',
-      state: '',
-      zip_code: '',
-      home_office: '',
-      geo_location: '',
-      school_district: '',
-      mobile_phone: '',
-      work_phone: '',
-      home_phone: '',
-      email_0: '',
-      email_1: '',
-      ssn: ''
-    },
-    employment: {
-      employment_type: '',
-      talent_status: '',
-      applicant_tags: '',
-      notes: '',
-      industry: '',
-      source: '',
-      certification: '',
-      skill_set: ''
-    },
-    history: {
-      work_history: [],
-      education_history: []
-    },
-    online_presence: {
-      linkedin: '',
-      personal_site: '',
-      github: '',
-      twitter: '',
-      facebook: '',
-      instagram: '',
-      youtube: '',
-      tiktok: ''
-    },
-    certifications: [],
-    additional: {
-      resume_text: '',
-      add_to_hotlist: false
-    }
-  });
-
-  const selectedTemplate = ref('basic-template');
+  const formData = ref<FormData>(mockData);
+  const selectedTemplate = ref('basic-ats');
 
   function switchTemplate(template: string) {
     selectedTemplate.value = template;

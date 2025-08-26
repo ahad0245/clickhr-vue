@@ -262,7 +262,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">LinkedIn Profile</label>
-                  <input type="text" v-model="formData.online_presence.linked_in_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.linkedin" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Personal Site</label>
@@ -274,7 +274,7 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Twitter Profile</label>
-                  <input type="text" v-model="formData.online_presence.twitter_profile" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.online_presence.twitter" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
               </div>
               
@@ -348,34 +348,40 @@
     </div>
 
     <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
-      <h2 class="text-xl font-bold text-gray-800 mb-1">Applicant Data Preview</h2>
-      <p class="text-gray-600 text-sm mb-4">Live summary of your application data</p>
+      <div class="flex justify-between items-center mb-4 border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800">Applicant Data Preview</h2>
+        <button @click="router.push('/candidate/resume')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
+          Change Template
+        </button>
+      </div>
 
       <div class="template-selection-buttons mb-4">
         <button 
           v-for="template in templatesList" 
           :key="template.id" 
           @click="switchTemplate(template.id)"
-          class="template-button"
+          :class="['template-button', {'bg-blue-500 text-white': resumeStore.selectedTemplate === template.id, 'bg-gray-200 text-gray-700': resumeStore.selectedTemplate !== template.id}]"
         >
           {{ template.name }}
         </button>
       </div>
       
-      <component :is="currentTemplate" :formData="formData" />
+      <component :is="currentTemplate" :resume="formData" />
 
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
-import type { FormData, WorkHistoryItem, EducationHistoryItem, CertificationItem } from '@/types/resume';
+import { useRouter } from 'vue-router';
+import type { FormData } from '@/types/resume';
 
 const currentStep = ref(1);
 const totalSteps = 7;
+const router = useRouter();
 
 const resumeStore = useResumeStore();
 const formData = resumeStore.formData;
@@ -383,7 +389,8 @@ const formData = resumeStore.formData;
 const templatesList = ATS_TEMPLATES;
 
 const currentTemplate = computed(() => {
-  return templatesList.find(template => template.id === resumeStore.selectedTemplate)?.layoutComponent;
+  const selected = templatesList.find(template => template.id === resumeStore.selectedTemplate);
+  return selected ? selected.layoutComponent : null;
 });
 
 function switchTemplate(templateId: string) {
@@ -418,12 +425,12 @@ const prevStep = () => {
 const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 'education_history') => {
   if (section === 'history') {
     if (field === 'work_history') {
-      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false });
+      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '', employment_type: '' });
     } else if (field === 'education_history') {
-      formData.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false });
+      formData.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '' });
     }
   } else if (section === 'certifications') {
-    formData.certifications.push({ certification_name: '', certification_body: '', certification_date: '' });
+    formData.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '' });
   }
 };
 
@@ -467,6 +474,7 @@ const submitForm = async () => {
 .template-selection-buttons {
   margin-bottom: 20px;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 .template-button {

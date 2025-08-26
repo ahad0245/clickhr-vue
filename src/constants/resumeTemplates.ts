@@ -1,9 +1,9 @@
 // src/constants/resumeTemplates.ts
 import type { Component } from 'vue';
-import BasicTemplate from '../components/resume/templates/BasicTemplate.vue';
-import ModernTemplate from '../components/resume/templates/ModernTemplate.vue';
-import CompactTemplate from '../components/resume/templates/CompactTemplate.vue';
-import PhotoTemplate from '../components/resume/templates/PhotoTemplate.vue';
+import BasicTemplate from '@/components/resume/templates/BasicTemplate.vue';
+import ModernTemplate from '@/components/resume/templates/ModernTemplate.vue';
+import CompactTemplate from '@/components/resume/templates/CompactTemplate.vue';
+import PhotoTemplate from '@/components/resume/templates/PhotoTemplate.vue';
 
 export interface ResumeTemplate {
     id: string;
