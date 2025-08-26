@@ -1,52 +1,66 @@
 <template>
-  <div class="professional-template font-sans border rounded-lg overflow-hidden shadow-lg p-8">
-    <div class="header pb-4 border-b-2 border-gray-300 mb-6 text-center">
-      <h1 class="text-3xl font-extrabold text-gray-900">{{ resume.personal.first_name }} {{ resume.personal.last_name }}</h1>
-      <p class="text-md text-gray-600 mt-1">{{ resume.personal.headline }}</p>
-    </div>
-
-    <div class="contact-info flex justify-center space-x-6 text-sm text-gray-500 mb-6">
-      <span>{{ resume.personal.mobile_phone }}</span>
-      <span>{{ resume.personal.email_0 }}</span>
-      <span>{{ resume.personal.city }}, {{ resume.personal.state_province_region }}</span>
-    </div>
-    
-    <div class="section mb-6">
-      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-blue-500 inline-block pr-4 pb-1">Summary</h2>
-      <p class="text-sm text-gray-700 mt-2">{{ resume.additional.resume_text }}</p>
-    </div>
-    
-    <div class="section mb-6">
-      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-blue-500 inline-block pr-4 pb-1">Experience</h2>
-      <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-4">
-        <div class="flex justify-between items-baseline">
-          <h3 class="font-bold text-md">{{ job.job_title }}</h3>
-          <span class="text-xs text-gray-500">{{ job.start_date }} - {{ job.end_date || 'Present' }}</span>
-        </div>
-        <p class="text-sm text-gray-600 italic">{{ job.company_name }}</p>
-        <p class="text-sm text-gray-700 mt-1">{{ job.job_description }}</p>
+  <div class="modern-template flex font-sans border rounded-lg overflow-hidden shadow-lg">
+    <aside class="sidebar w-1/4 p-6" style="background-color: #1d4ed8; color: #ffffff;">
+      <h2 class="text-2xl font-bold mb-1">{{ resume.personal.first_name || '' }} {{ resume.personal.last_name || '' }}</h2>
+      <p class="text-md text-blue-100">{{ resume.personal.headline || '' }}</p>
+      <div class="mt-8">
+        <h3 class="font-semibold text-blue-100 mb-2 border-b border-blue-400 pb-1">Contact</h3>
+        <p class="text-sm text-blue-100">Email: {{ resume.personal.email_0 || '' }}</p>
+        <p class="text-sm text-blue-100">Phone: {{ resume.personal.mobile_phone || '' }}</p>
+        <p class="text-sm text-blue-100">Location: {{ resume.personal.city || '' }}, {{ resume.personal.state_province_region || '' }}</p>
       </div>
-    </div>
-    
-    <div class="section mb-6">
-      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-blue-500 inline-block pr-4 pb-1">Education</h2>
-      <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-4">
-        <div class="flex justify-between items-baseline">
-          <h3 class="font-bold text-md">{{ edu.degree }} in {{ edu.field_of_study }}</h3>
-          <span class="text-xs text-gray-500">{{ edu.start_date }} - {{ edu.end_date || 'Present' }}</span>
-        </div>
-        <p class="text-sm text-gray-600 italic">{{ edu.institution_name }}</p>
+      <div class="mt-8">
+        <h3 class="font-semibold text-blue-100 mb-2 border-b border-blue-400 pb-1">Skills</h3>
+        <p class="text-sm text-blue-100">{{ resume.employment.applicant_tags || 'N/A' }}</p>
       </div>
-    </div>
+    </aside>
 
-    <div class="section">
-      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-blue-500 inline-block pr-4 pb-1">Skills</h2>
-      <p class="text-sm text-gray-700 mt-2">{{ resume.employment.applicant_tags }}</p>
-    </div>
+    <main class="content flex-1 p-8 bg-white">
+      <section v-if="resume.additional.resume_text" class="pb-6 mb-6 border-b">
+        <h2 class="text-xl font-bold text-gray-800 border-b-2 border-blue-700 pb-1 mb-4">Summary</h2>
+        <p class="text-base text-gray-700">{{ resume.additional.resume_text }}</p>
+      </section>
+      <section v-if="resume.history.education_history && resume.history.education_history.length">
+        <h2 class="text-xl font-bold text-gray-800 border-b-2 border-blue-700 pb-1 mb-4">Education</h2>
+        <div v-for="(edu, index) in resume.history.education_history" :key="index" class="card mt-4">
+          <h3 class="font-bold text-lg text-gray-800">{{ edu.degree || '' }}</h3>
+          <p class="text-sm text-gray-600">{{ edu.institution_name || '' }} | {{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }}</p>
+        </div>
+      </section>
+      
+      <section v-if="resume.history.work_history && resume.history.work_history.length" class="pb-6 mb-6 border-b">
+        <h2 class="text-xl font-bold text-gray-800 border-b-2 border-blue-700 pb-1 mb-4">Experience</h2>
+        <div v-for="(job, index) in resume.history.work_history" :key="index" class="card mt-4">
+          <h3 class="font-bold text-lg text-gray-800">{{ job.job_title || '' }}</h3>
+          <p class="text-sm text-gray-600">{{ job.company_name || '' }} | {{ job.start_date || '' }} - {{ job.end_date || 'Present' }}</p>
+          <p class="text-sm text-gray-700 mt-2">{{ job.job_description || '' }}</p>
+        </div>
+      </section>
+
+      
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { FormData } from '@/types/resume';
-defineProps<{ resume: FormData }>();
+defineProps<{
+  resume: FormData;
+}>();
 </script>
+
+<style scoped>
+.modern-template {
+  display: flex;
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 1000px;
+  margin: auto;
+  border: 1px solid #ddd;
+}
+.card {
+  background: #fff;
+  border-left: 3px solid #1d4ed8;
+  padding-left: 1rem;
+  border-radius: 4px;
+}
+</style>

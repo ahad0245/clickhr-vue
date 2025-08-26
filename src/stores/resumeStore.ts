@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { FormData } from '@/types/resume';
+import { COLOR_PALETTES } from '@/constants/colorPalettes';
 
 export const mockData: FormData = {
   personal: {
@@ -22,7 +23,7 @@ export const mockData: FormData = {
     email_0: 'john.doe@example.com',
     email_1: '',
     ssn: 'XXX-XX-XXXX',
-    profile_photo_url: null,
+    profile_photo_url: 'https://i.pravatar.cc/150?img=68',
   },
   employment: {
     employment_type: 'Full-time',
@@ -44,7 +45,8 @@ export const mockData: FormData = {
         is_current_job: false,
         job_location: 'San Francisco, CA',
         job_type: 'Full-time',
-        job_status: 'Active'
+        job_status: 'Active',
+        experience_letter_url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
       },
       {
         company_name: 'Creative Minds Agency',
@@ -55,7 +57,8 @@ export const mockData: FormData = {
         is_current_job: false,
         job_location: 'Anytown, CA',
         job_type: 'Full-time',
-        job_status: 'Active'
+        job_status: 'Active',
+        experience_letter_url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
       }
     ],
     education_history: [
@@ -68,7 +71,7 @@ export const mockData: FormData = {
         is_current_education: false,
         education_location: 'State, US',
         education_status: 'Completed',
-        degree_image_url: null,
+        degree_image_url: 'https://www.gstatic.com/devrel-devsite/prod/vc3d1f1146313b8600d33e9d0a64e1e370a4a1599540b613c2f1f6c449c2a86f9/firebase/images/social/certificate.png',
       }
     ]
   },
@@ -87,7 +90,8 @@ export const mockData: FormData = {
       certification_name: 'AWS Certified Developer',
       certification_body: 'Amazon Web Services',
       certification_date: '2022-03-15',
-      expiration_date: '2025-03-15'
+      expiration_date: '2025-03-15',
+      certificate_image_url: 'https://www.gstatic.com/devrel-devsite/prod/vc3d1f1146313b8600d33e9d0a64e1e370a4a1599540b613c2f1f6c449c2a86f9/firebase/images/social/certificate.png',
     }
   ],
   additional: {
@@ -99,10 +103,17 @@ export const mockData: FormData = {
 export const useResumeStore = defineStore('resume', () => {
   const formData = ref<FormData>(mockData);
   const selectedTemplate = ref('basic-ats');
+  const selectedPalette = ref(COLOR_PALETTES.default);
 
   function switchTemplate(template: string) {
     selectedTemplate.value = template;
   }
 
-  return { formData, selectedTemplate, switchTemplate };
+  function switchPalette(paletteId) {
+    if (COLOR_PALETTES[paletteId]) {
+      selectedPalette.value = COLOR_PALETTES[paletteId];
+    }
+  }
+
+  return { formData, selectedTemplate, selectedPalette, switchTemplate, switchPalette };
 });

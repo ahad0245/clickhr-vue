@@ -7,7 +7,7 @@
            class="template-card relative group"
            :class="{ 'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedTemplate === template.id }">
         <div class="template-preview-wrapper">
-          <img :src="template.previewImage" :alt="`${template.name} preview`" class="template-preview-image" />
+          <component :is="template.layoutComponent" :resume="mockData" class="resume-preview-component" />
         </div>
         <div class="p-4 flex justify-between items-center">
           <h3 class="font-semibold text-lg">{{ template.name }}</h3>
@@ -49,7 +49,8 @@ function selectTemplateAndNavigate(templateId: string) {
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
-  height: 400px; /* Adjusted height for template preview */
+  height: 400px;
+  width: 100%;
 }
 .template-card:hover {
   transform: translateY(-5px);
@@ -61,10 +62,16 @@ function selectTemplateAndNavigate(templateId: string) {
   overflow: hidden;
   background-color: white;
 }
-.template-preview-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+/* New CSS to render the live component sharply at a smaller scale */
+.resume-preview-component {
+  width: 200%; /* Render at a larger size */
+  height: 200%;
+  transform: scale(0.5); /* Scale down for preview, but maintain sharpness */
+  transform-origin: top left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1); /* Optional border for a crisp edge */
 }
 .use-template-button {
   background-color: #2563eb;

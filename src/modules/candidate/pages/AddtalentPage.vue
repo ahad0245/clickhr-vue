@@ -197,6 +197,11 @@
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Current Job</label>
                   </div>
+                   <div v-if="!work.is_current_job" class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600">Experience Letter (PDF/JPEG)</label>
+                    <input type="file" @change="e => handleExperienceLetterUpload(e, index)" accept="application/pdf,image/jpeg" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    <a v-if="work.experience_letter_url" :href="work.experience_letter_url as string" target="_blank" class="text-sm text-blue-500 hover:underline mt-2 inline-block">View Uploaded Document</a>
+                  </div>
                   <button v-if="formData.history.work_history.length > 1" type="button" @click="removeRow('history', index, 'work_history')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -314,6 +319,11 @@
                     <input type="date" v-model="cert.certification_date" @input="e => updateArrayField('certifications', undefined, index, 'certification_date', (e.target as HTMLInputElement).value)"
                             class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                     </div>
+                     <div class="md:col-span-3">
+                        <label class="block text-sm font-medium text-gray-600">Certificate (PDF/JPEG)</label>
+                        <input type="file" @change="e => handleCertificateUpload(e, index)" accept="application/pdf,image/jpeg" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                        <a v-if="cert.certificate_image_url" :href="cert.certificate_image_url as string" target="_blank" class="text-sm text-blue-500 hover:underline mt-2 inline-block">View Certificate</a>
+                    </div>
                     <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
                             class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -370,6 +380,18 @@
             </button>
         </div>
       </div>
+
+      <div v-if="currentTemplateHasPalette" class="mb-4">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Color Palette</h3>
+        <div class="flex space-x-2">
+          <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
+               @click="resumeStore.switchPalette(key)"
+               :class="['w-8 h-8 rounded-full cursor-pointer border-2 transition-all', {'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedPalette.name === palette.name}]"
+               :style="{backgroundColor: palette.accent}"
+               :title="palette.name">
+          </div>
+        </div>
+      </div>
       <component :is="currentTemplate" :resume="formData" />
 
     </div>
@@ -382,6 +404,7 @@ import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import { useRouter } from 'vue-router';
 import type { FormData } from '@/types/resume';
+import { COLOR_PALETTES } from '@/constants/colorPalettes';
 
 const currentStep = ref(1);
 const totalSteps = 7;
@@ -396,6 +419,12 @@ const currentTemplate = computed(() => {
   const selected = templatesList.find(template => template.id === resumeStore.selectedTemplate);
   return selected ? selected.layoutComponent : null;
 });
+
+const currentTemplateHasPalette = computed(() => {
+  const selected = templatesList.find(template => template.id === resumeStore.selectedTemplate);
+  return selected?.hasColorPalette;
+});
+
 
 function switchTemplate(templateId: string) {
   resumeStore.switchTemplate(templateId);
@@ -444,6 +473,28 @@ const handleDegreeImageUpload = (event: Event, index: number) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     formData.history.education_history[index].degree_image_url = e.target?.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const handleExperienceLetterUpload = (event: Event, index: number) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    formData.history.work_history[index].experience_letter_url = e.target?.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const handleCertificateUpload = (event: Event, index: number) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    formData.certifications[index].certificate_image_url = e.target?.result;
   };
   reader.readAsDataURL(file);
 };

@@ -6,6 +6,8 @@ import CompactTemplate from '@/components/resume/templates/CompactTemplate.vue';
 import PhotoTemplate from '@/components/resume/templates/PhotoTemplate.vue';
 import TwoColumnModern from '@/components/resume/templates/TwoColumnModern.vue';
 import ProfessionalTemplate from '@/components/resume/templates/ProfessionalTemplate.vue';
+import PhotoTwoColumn from '@/components/resume/templates/PhotoTwoColumn.vue';
+import PhotoSingleColumn from '@/components/resume/templates/PhotoSingleColumn.vue';
 
 
 export interface ResumeTemplate {
@@ -13,6 +15,7 @@ export interface ResumeTemplate {
     name: string;
     layoutComponent: Component;
     previewImage: string;
+    hasColorPalette?: boolean;
 }
 
 export const ATS_TEMPLATES: ResumeTemplate[] = [
@@ -20,42 +23,56 @@ export const ATS_TEMPLATES: ResumeTemplate[] = [
         id: 'basic-ats',
         name: 'Basic ATS Template',
         layoutComponent: BasicTemplate,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/basic-ats-preview.png',
+        hasColorPalette: false,
     },
     {
         id: 'modern-ats',
         name: 'Modern ATS Template',
         layoutComponent: ModernTemplate,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/modern-ats-preview.png',
+        hasColorPalette: true,
     },
     {
         id: 'compact',
         name: 'Compact Template',
         layoutComponent: CompactTemplate,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/compact-preview.png',
+        hasColorPalette: false,
     },
     {
         id: 'photo',
         name: 'Photo Template',
         layoutComponent: PhotoTemplate,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/photo-preview.png',
+        hasColorPalette: false,
     },
     {
         id: 'two-column-modern',
         name: 'Two-Column Modern',
         layoutComponent: TwoColumnModern,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/two-column-modern-preview.png',
+        hasColorPalette: true,
     },
     {
         id: 'professional',
         name: 'Professional Template',
         layoutComponent: ProfessionalTemplate,
-        // Corrected path to point to the public directory
         previewImage: '/resume-previews/professional-preview.png',
+        hasColorPalette: false,
+    },
+    {
+        id: 'photo-two-column',
+        name: 'Photo Two-Column',
+        layoutComponent: PhotoTwoColumn,
+        previewImage: '/resume-previews/photo-two-column-preview.png',
+        hasColorPalette: false,
+    },
+    {
+        id: 'photo-single-column',
+        name: 'Photo Single-Column',
+        layoutComponent: PhotoSingleColumn,
+        previewImage: '/resume-previews/photo-single-column-preview.png',
+        hasColorPalette: false,
     },
 ];

@@ -8,6 +8,7 @@ export interface WorkHistoryItem {
   job_location: string;
   job_type: string;
   job_status: string;
+  experience_letter_url?: string | ArrayBuffer | null;
 }
 
 export interface EducationHistoryItem {
@@ -27,6 +28,7 @@ export interface CertificationItem {
   certification_body: string;
   certification_date: string;
   expiration_date: string;
+  certificate_image_url?: string | ArrayBuffer | null;
 }
 
 export interface FormData {

@@ -22,6 +22,13 @@
       </div>
     </section>
 
+    <section v-if="resume.certifications && resume.certifications.length">
+      <h2 class="text-md font-semibold mt-4 border-b pb-1">Certifications</h2>
+      <div v-for="(cert, index) in resume.certifications" :key="index" class="certification-item mt-2">
+        <p class="text-sm"><strong>{{ cert.certification_name || '' }}</strong> from {{ cert.certification_body || '' }}</p>
+      </div>
+    </section>
+
     <section>
       <h2 class="text-md font-semibold mt-4 border-b pb-1">Skills</h2>
       <p class="text-sm mt-2">{{ resume.employment.applicant_tags || 'N/A' }}</p>
@@ -31,7 +38,6 @@
 
 <script setup lang="ts">
 import type { FormData } from '@/types/resume';
-// Corrected prop name from 'formData' to 'resume'
 defineProps<{
   resume: FormData;
 }>();
