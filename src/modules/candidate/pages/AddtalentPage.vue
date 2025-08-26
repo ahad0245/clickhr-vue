@@ -387,73 +387,25 @@ import { ref, reactive, computed } from 'vue';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import type { FormData, WorkHistoryItem, EducationHistoryItem, CertificationItem } from '@/types/resume';
+import { storeToRefs } from 'pinia';
 
 const currentStep = ref(1);
 const totalSteps = 6;
 
-const formData = reactive<FormData>({
-  personal: {
-    firstName: 'Qirrat Fatima',
-    lastName: 'Zaidi',
-    headline: 'Front-End Developer',
-    country: 'India',
-    address1: '123 Main St',
-    address2: 'Apt 101',
-    city: 'sINfH',
-    state: 'Sindh',
-    zipCode: '12345',
-    homeOffice: 'Head Office',
-    geoLocation: '24.860966, 66.990501',
-    schoolDistrict: 'Karachi',
-    mobilePhone: '123-456-7890',
-    workPhone: '098-765-4321',
-    homePhone: '555-555-5555',
-    email1: 'qirrat@example.com',
-    email2: 'fatima@example.com',
-    ssn: 'XXX-XX-1234',
-  },
-  employment: {
-    employmentType: 'Full-Time',
-    talentStatus: 'Applicant',
-    positionCategory: 'Software Engineer',
-    skillSet: 'Vue.js, JavaScript, Node.js',
-    applicantTags: 'Remote, Frontend',
-    detailsNotes: 'Looking for a new challenge.',
-    industryExperience: 'Tech',
-    applicantSource: 'LinkedIn',
-  },
-  history: {
-    workHistory: [
-      { companyName: 'Example Corp', jobTitle: 'Junior Developer', jobDescription: 'Developed and maintained web applications.', startDate: '2020-01-01', endDate: '2022-01-01', isCurrentJob: false, jobLocation: 'New York, NY', jobType: 'Full-time' },
-    ],
-    educationHistory: [
-      { institutionName: 'University of Engineering', degree: 'B.S. in Computer Science', fieldOfStudy: 'Computer Science', startDate: '2016-09-01', endDate: '2020-06-01', isCurrentEducation: false, educationLocation: 'Karachi, Sindh' }
-    ],
-  },
-  onlinePresence: {
-    linkedInProfile: 'https://linkedin.com/in/qirrat',
-    personalSite: 'https://qirrat.dev',
-    github: 'https://github.com/qirrat',
-    twitterProfile: 'https://twitter.com/qirrat',
-  },
-  certifications: [
-    { certificationName: 'AWS Certified Cloud Practitioner', certificationBody: 'Amazon Web Services', certificationDate: '2023-05-15' },
-  ],
-  additional: {
-    resumeText: 'A highly motivated and skilled frontend developer with a passion for building intuitive user interfaces. Proficient in Vue.js, JavaScript, and modern web development practices.',
-    addToHotlist: false,
-  },
+// Use storeToRefs to maintain reactivity for the whole formData object
+const resumeStore = useResumeStore();
+const { formData } = storeToRefs(resumeStore);
+
+// Template Selection Logic
+const templatesList = ATS_TEMPLATES;
+
+const currentTemplate = computed(() => {
+  return templatesList.find(template => template.id === resumeStore.selectedTemplate)?.layoutComponent;
 });
 
-const getStatusClass = (status: string | undefined) => {
-  switch (status) {
-    case 'Applicant': return 'bg-blue-100 text-blue-800';
-    case 'Candidate': return 'bg-purple-100 text-purple-800';
-    case 'Employee': return 'bg-green-100 text-green-800';
-    case 'Hired': return 'bg-emerald-100 text-emerald-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
-};
+function switchTemplate(templateId: string) {
+  resumeStore.switchTemplate(templateId);
+}
 
 const getStepName = (step: number) => {
   switch (step) {
@@ -482,31 +434,30 @@ const prevStep = () => {
 const addRow = (section: 'history' | 'certifications', field?: 'workHistory' | 'educationHistory') => {
   if (section === 'history') {
     if (field === 'workHistory') {
-      formData.history.workHistory.push({ companyName: '', jobTitle: '', jobDescription: '', startDate: '', endDate: '', isCurrentJob: false });
+      formData.value.history.workHistory.push({ companyName: '', jobTitle: '', jobDescription: '', startDate: '', endDate: '', isCurrentJob: false });
     } else if (field === 'educationHistory') {
-      formData.history.educationHistory.push({ institutionName: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', isCurrentEducation: false });
+      formData.value.history.educationHistory.push({ institutionName: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', isCurrentEducation: false });
     }
   } else if (section === 'certifications') {
-    formData.certifications.push({ certificationName: '', certificationBody: '', certificationDate: '' });
+    formData.value.certifications.push({ certificationName: '', certificationBody: '', certificationDate: '' });
   }
 };
 
 const removeRow = (section: 'history' | 'certifications', index: number, field?: 'workHistory' | 'educationHistory') => {
     if (section === 'history' && field) {
-        formData.history[field].splice(index, 1);
+        formData.value.history[field].splice(index, 1);
     } else if (section === 'certifications') {
-        formData.certifications.splice(index, 1);
+        formData.value.certifications.splice(index, 1);
     }
 };
 
 const updateArrayField = (section: 'history' | 'certifications', field: 'workHistory' | 'educationHistory' | undefined, index: number, subField: string, value: any) => {
   if (section === 'history' && field) {
-    (formData.history[field][index] as any)[subField] = value;
+    (formData.value.history[field][index] as any)[subField] = value;
   } else if (section === 'certifications') {
-    (formData.certifications[index] as any)[subField] = value;
+    (formData.value.certifications[index] as any)[subField] = value;
   }
 };
-
 
 const submitForm = async () => {
   console.log("Form data submitted:", formData);
