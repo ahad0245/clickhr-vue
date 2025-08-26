@@ -88,7 +88,7 @@ export const ATS_TEMPLATES: ResumeTemplate[] = [
         id: 'traditional',
         name: 'Traditional Template',
         layoutComponent: TraditionalTemplate,
-        previewImage: '/resume-previews/traditional-preview.png',
+        previewImage: '/resume-previews/traditional-preview.png', 
         hasColorPalette: false,
     },
 ];
