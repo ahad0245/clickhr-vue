@@ -1,4 +1,5 @@
 // src/constants/colorPalettes.ts
+
 export const COLOR_PALETTES = {
   default: {
     name: 'Default Blue',
@@ -6,6 +7,7 @@ export const COLOR_PALETTES = {
     secondary: 'text-gray-800',
     accent: 'bg-blue-700',
     border: 'border-blue-700',
+    background: '#1d4ed8',
   },
   maroon: {
     name: 'Maroon',
@@ -13,6 +15,7 @@ export const COLOR_PALETTES = {
     secondary: 'text-gray-800',
     accent: 'bg-maroon-dark',
     border: 'border-maroon-dark',
+    background: '#800000',
   },
   teal: {
     name: 'Teal',
@@ -20,8 +23,8 @@ export const COLOR_PALETTES = {
     secondary: 'text-gray-800',
     accent: 'bg-teal-700',
     border: 'border-teal-700',
+    background: '#047857',
   },
-  // Add more palettes here
 };
 
 export const getColorStyles = (palette) => {

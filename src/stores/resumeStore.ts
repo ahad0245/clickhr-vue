@@ -102,7 +102,7 @@ export const mockData: FormData = {
 
 export const useResumeStore = defineStore('resume', () => {
   const formData = ref<FormData>(mockData);
-  const selectedTemplate = ref('basic-ats');
+  const selectedTemplate = ref('modern-ats');
   const selectedPalette = ref(COLOR_PALETTES.default);
 
   function switchTemplate(template: string) {

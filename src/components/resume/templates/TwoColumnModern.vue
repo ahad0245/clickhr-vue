@@ -34,11 +34,19 @@
         </div>
       </div>
       
-      <div>
+      <div class="pb-6 mb-6 border-b border-gray-200">
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Education</h3>
         <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mb-4 text-right">
           <h4 class="font-bold text-md text-gray-800">{{ edu.degree }} in {{ edu.field_of_study }}</h4>
           <p class="text-xs text-gray-600">{{ edu.institution_name }} ({{ edu.start_date }} - {{ edu.end_date || 'Present' }})</p>
+        </div>
+      </div>
+
+      <div class="pb-6 mb-6 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Certifications</h3>
+        <div v-for="(cert, index) in resume.certifications" :key="index" class="mb-4 text-right">
+          <h4 class="font-bold text-md text-gray-800">{{ cert.certification_name }}</h4>
+          <p class="text-xs text-gray-600">Issued by {{ cert.certification_body }} on {{ cert.certification_date }}</p>
         </div>
       </div>
     </div>
