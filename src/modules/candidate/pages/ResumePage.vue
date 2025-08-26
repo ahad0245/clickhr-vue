@@ -5,26 +5,24 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="template in templatesList" :key="template.id"
            class="template-card relative group"
-           :class="{ 'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedTemplate === template.id }">
+           :class="{ 'ring-2 ring-offset-2 ring-blue-500': selectedTemplateId === template.id }">
         <div class="template-preview-wrapper">
-          <component :is="template.layoutComponent" :resume="mockData" class="resume-preview-component" />
-        </div>
-        
-        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <button @click="selectTemplateAndNavigate(template.id)" class="use-template-button">
-            Use this template
-          </button>
+          <component :is="template.layoutComponent" :resume="mockData" :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" class="resume-preview-component" />
         </div>
         
         <div v-if="template.hasColorPalette" class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full bg-white shadow-lg flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-full group-hover:translate-y-0 z-10" style="transition: transform 0.3s ease-out, opacity 0.3s ease-out;">
           <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
-               @click.stop="resumeStore.switchPalette(key); resumeStore.switchTemplate(template.id)"
-               :class="['w-6 h-6 rounded-full cursor-pointer border-2 transition-all', {'ring-2 ring-offset-2 ring-blue-500': resumeStore.selectedTemplate === template.id && resumeStore.selectedPalette.name === palette.name}]"
+               @click.stop="handlePaletteChange(template.id, palette)"
+               :class="['w-6 h-6 rounded-full cursor-pointer border-2 transition-all', {'ring-2 ring-offset-2 ring-blue-500': selectedTemplateId === template.id && selectedPalettes[template.id]?.name === palette.name}]"
                :style="{backgroundColor: palette.background}"
                :title="palette.name">
           </div>
+        </div>
+        
+        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <button @click="selectTemplateAndNavigate(template.id)" class="use-template-button">
+            Use this template
+          </button>
         </div>
       </div>
     </div>
@@ -32,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
@@ -42,8 +41,22 @@ const router = useRouter();
 const resumeStore = useResumeStore();
 const templatesList = ATS_TEMPLATES;
 
+// Local state for tracking which template is hovered/active
+const selectedTemplateId = ref(resumeStore.selectedTemplate);
+const selectedPalettes = ref({});
+
+function handlePaletteChange(templateId, palette) {
+  selectedTemplateId.value = templateId;
+  selectedPalettes.value = {
+    ...selectedPalettes.value,
+    [templateId]: palette,
+  };
+}
+
 function selectTemplateAndNavigate(templateId: string) {
+  const selectedPalette = selectedPalettes.value[templateId] || COLOR_PALETTES.default;
   resumeStore.switchTemplate(templateId);
+  resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette));
   router.push('/candidate/create-resume');
 }
 </script>
