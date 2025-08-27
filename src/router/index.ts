@@ -143,8 +143,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/candidate',
     component: DashboardLayout,
     children: [ 
-
-
       {
         path: '',
         name: 'Candidate Dashboard',
