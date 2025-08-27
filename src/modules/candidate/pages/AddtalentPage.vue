@@ -359,6 +359,8 @@
       </div>
     </div>
 
+
+    
     <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <div class="flex justify-between items-center mb-4 border-b pb-3">
         <h2 class="text-xl font-bold text-gray-800">Applicant Data Preview</h2>
@@ -372,7 +374,7 @@
         </div>
       </div>
       <component :is="currentTemplate" :resume="formData" />
-            <div class="mt-4 p-4 border rounded">
+      <div class="mt-4 p-4 border rounded">
       <h3>Resume Access</h3>
       <button @click="toggleResumeQR" class="px-4 py-2 bg-blue-600 text-white rounded">
       {{ showResumeQR ? 'Hide Resume QR' : 'Show Resume QR & Link' }}
