@@ -1,4 +1,5 @@
 <template>
+  
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans rounded-lg shadow-md">
     <div class="lg:col-span-2">
       <div class="mb-6">
@@ -8,7 +9,7 @@
       
       <div class="mb-8 flex flex-wrap justify-center sm:justify-start gap-2">
         <div v-for="stepNum in totalSteps" :key="stepNum"
-             @click="currentStep = stepNum"
+             @click="currentStep = stepNum" 
              :class="['flex items-center space-x-2 p-2 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-105',
                       currentStep === stepNum ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700',
                       currentStep > stepNum ? 'bg-green-500 text-white' : ''
@@ -371,9 +372,26 @@
         </div>
       </div>
       <component :is="currentTemplate" :resume="formData" />
+            <div class="mt-4 p-4 border rounded">
+      <h3>Resume Access</h3>
+      <button @click="toggleResumeQR" class="px-4 py-2 bg-blue-600 text-white rounded">
+      {{ showResumeQR ? 'Hide Resume QR' : 'Show Resume QR & Link' }}
+      </button>
 
+
+      <div v-if="showResumeQR" class="mt-3">
+      <p>
+      Resume Link:
+      <a :href="resumeUrl" target="_blank" class="text-blue-500 underline">
+      {{ resumeUrl }}
+      </a>
+      </p>
+      <qrcode-vue :value="resumeUrl" :size="150" class="mt-2" />
+      </div>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -382,6 +400,8 @@ import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import { useRouter } from 'vue-router';
 import type { FormData } from '@/types/resume';
+import QrcodeVue from 'qrcode.vue'
+
 
 const currentStep = ref(1);
 const totalSteps = 7;
@@ -492,6 +512,15 @@ const submitForm = async () => {
     alert('There was an error submitting your application. Please try again.');
   }
 };
+
+const resumeUrl = ref('https://your-domain.com/resumes/12345')
+
+
+// toggle QR visibility
+const showResumeQR = ref(false)
+const toggleResumeQR = () => {
+showResumeQR.value = !showResumeQR.value
+}
 </script>
 
 <style scoped>
