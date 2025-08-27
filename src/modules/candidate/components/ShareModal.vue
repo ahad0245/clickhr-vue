@@ -1,3 +1,5 @@
+// src/modules/candidate/components/ShareModal.vue
+
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div class="bg-white rounded-xl shadow-lg w-96 p-6 relative">
@@ -40,10 +42,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import QRCode from "qrcode";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const props = defineProps({
-  candidateData: { type: Object, required: true },
-  template: { type: String, required: true }
+  resumeId: { type: String, required: true },
 });
 
 const shareUrl = ref("");
@@ -51,8 +54,7 @@ const qrCanvas = ref(null);
 
 onMounted(() => {
   const baseUrl = window.location.origin;
-  const encodedData = encodeURIComponent(JSON.stringify(props.candidateData));
-  shareUrl.value = `${baseUrl}/resume-preview?template=${props.template}&data=${encodedData}`;
+  shareUrl.value = `${baseUrl}/resume-preview/${props.resumeId}`;
 
   // Generate QR Code
   QRCode.toCanvas(qrCanvas.value, shareUrl.value, { width: 200 }, (error) => {

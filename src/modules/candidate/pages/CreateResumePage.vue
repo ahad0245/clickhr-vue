@@ -400,7 +400,7 @@
             </button>
         </div>
       </div>
-      <component :is="currentTemplate" :resume="formData" />
+      <component :is="currentTemplate" :resume="formData" /> 
       
     </div>
   </div>
@@ -410,18 +410,22 @@
 import { ref, computed, onMounted } from 'vue';
 import { useResumeStore, mockData } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { COLOR_PALETTES } from '@/constants/colorPalettes';
 import type { FormData } from '@/types/resume';
 import QrcodeVue from 'qrcode.vue';
+import { nanoid } from 'nanoid';
 
 const router = useRouter();
+const route = useRoute();
 const resumeStore = useResumeStore();
 
 // UI State for Template vs. Form view
 const selectedTemplateId = ref<string | null>(null);
 const selectedTemplateIdForGallery = ref('');
 const selectedPalettes = ref({});
+const isEditing = ref(false);
+const editingResumeId = ref<string | null>(null);
 
 // Form state
 const currentStep = ref(1);
@@ -438,7 +442,28 @@ const currentTemplate = computed(() => {
 
 // QR Code state
 const showResumeQR = ref(false)
-const resumeUrl = computed(() => `http://localhost:5173/candidate/resume/${selectedTemplateId.value}`);
+const resumeUrl = computed(() => {
+  if (isEditing.value && editingResumeId.value) {
+    return `http://localhost:5173/resume/${editingResumeId.value}`;
+  }
+  return `http://localhost:5173/resume/preview`; // Placeholder for a new resume
+});
+
+onMounted(() => {
+  if (route.query.id) {
+    const resumeToEdit = resumeStore.getResumeById(route.query.id as string);
+    if (resumeToEdit) {
+      Object.assign(formData.value, resumeToEdit.data);
+      selectedTemplateId.value = resumeToEdit.templateId;
+      resumeStore.switchTemplate(resumeToEdit.templateId);
+      isEditing.value = true;
+      editingResumeId.value = resumeToEdit.id;
+    } else {
+      router.push({ name: 'CreateResume' });
+    }
+  }
+});
+
 
 // Handlers for template selection
 const selectTemplate = (templateId: string) => {
@@ -446,6 +471,10 @@ const selectTemplate = (templateId: string) => {
   const selectedPalette = selectedPalettes.value[templateId] || COLOR_PALETTES.default;
   resumeStore.switchTemplate(templateId);
   resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette) || 'default');
+  
+  if (!isEditing.value) {
+    Object.assign(formData.value, mockData);
+  }
 };
 
 const backToTemplates = () => {
@@ -529,12 +558,20 @@ const updateArrayField = (section: 'history' | 'certifications', field: 'work_hi
 };
 
 const submitForm = () => {
-  console.log("Form submitted:", formData.value);
-  alert('Resume saved!');
-  // Here you would implement your logic to save the resume to a database
-  // and redirect the user, for instance, to their list of resumes.
-};
+  const resumeId = isEditing.value && editingResumeId.value ? editingResumeId.value : nanoid();
+  const resumeTitle = `${formData.value.personal.first_name} ${formData.value.personal.last_name}'s Resume`;
 
+  const newResume = {
+    id: resumeId,
+    title: resumeTitle,
+    templateId: selectedTemplateId.value,
+    data: JSON.parse(JSON.stringify(formData.value))
+  };
+
+  resumeStore.addOrUpdateResume(newResume);
+  alert(`Resume saved successfully with ID: ${newResume.id}`);
+  router.push({ name: 'SavedResumes' });
+};
 
 
 const toggleResumeQR = () => {

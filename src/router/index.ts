@@ -20,11 +20,12 @@ import BackOfficePage from '../modules/backOffice/pages/BackOfficePage.vue';
 import CreateUser from '../modules/backOffice/pages/createUser.vue';
 import Users from '../modules/candidate/pages/Users.vue';
 import Dashboardcandidate from '../modules/candidate/pages/Dashboard.vue';
-import CreateResumePage from '../modules/candidate/pages/CreateResumePage.vue'; // New component
+import CreateResumePage from '../modules/candidate/pages/CreateResumePage.vue';
 import Jobspage from '../modules/candidate/pages/Jobspage.vue';
 import JobDetailPage from '../modules/candidate/pages/JobDetailPage.vue';
 import TalentProfile from '../modules/candidate/pages/TalentProfile.vue';
-import ResumePage from '../modules/candidate/pages/ResumePage.vue'; // The old ResumePage for template gallery
+import ResumePage from '../modules/candidate/pages/ResumePage.vue';
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -142,20 +143,21 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'create-resume',
         name: 'CreateResume',
-        component: CreateResumePage, // Use the new single component
-        meta: { title: 'Create Resume' }
+        component: CreateResumePage,
+        meta: { title: 'Create Resume' },
+        props: true,
+      },
+      {
+        path: 'resume',
+        name: 'SavedResumes',
+        component: ResumePage,
+        meta: { title: 'My Resumes' }
       },
       {
         path: 'talentprofile',
         name: 'Talent Profile',
         component: TalentProfile,
         meta: { title: 'create resume' }
-      },
-      {
-        path: 'resume',
-        name: 'Resume',
-        component: ResumePage,
-        meta: { title: 'Resume' }
       },
       {
         path: 'jobs',
