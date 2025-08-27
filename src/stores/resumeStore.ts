@@ -1,7 +1,14 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import type { FormData } from '@/types/resume';
 import { COLOR_PALETTES } from '@/constants/colorPalettes';
+
+interface ResumeInstance {
+  id: string;
+  title: string;
+  templateId: string;
+  data: FormData;
+}
 
 export const mockData: FormData = {
   personal: {
@@ -104,6 +111,20 @@ export const useResumeStore = defineStore('resume', () => {
   const formData = ref<FormData>(mockData);
   const selectedTemplate = ref('modern-ats');
   const selectedPalette = ref(COLOR_PALETTES.default);
+  const savedResumes = ref<ResumeInstance[]>([
+    {
+      id: 'resume-1',
+      title: 'My First Resume',
+      templateId: 'professional',
+      data: { ...mockData, personal: { ...mockData.personal, first_name: 'Jane', last_name: 'Doe' } }
+    },
+    {
+      id: 'resume-2',
+      title: 'Vue.js Specialist Resume',
+      templateId: 'photo-single-column',
+      data: { ...mockData, personal: { ...mockData.personal, first_name: 'Alex', last_name: 'Chen' } }
+    }
+  ]);
 
   function switchTemplate(template: string) {
     selectedTemplate.value = template;
@@ -115,5 +136,27 @@ export const useResumeStore = defineStore('resume', () => {
     }
   }
 
-  return { formData, selectedTemplate, selectedPalette, switchTemplate, switchPalette };
+  function addOrUpdateResume(resume: ResumeInstance) {
+    const index = savedResumes.value.findIndex(r => r.id === resume.id);
+    if (index !== -1) {
+      savedResumes.value[index] = resume;
+    } else {
+      savedResumes.value.push(resume);
+    }
+  }
+
+  function getResumeById(id: string): ResumeInstance | undefined {
+    return savedResumes.value.find(r => r.id === id);
+  }
+
+  return {
+    formData,
+    selectedTemplate,
+    selectedPalette,
+    savedResumes,
+    switchTemplate,
+    switchPalette,
+    addOrUpdateResume,
+    getResumeById
+  };
 });

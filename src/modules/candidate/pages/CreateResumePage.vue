@@ -1,7 +1,37 @@
+// src/modules/candidate/pages/CreateResumePage.vue
+
 <template>
-  
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans rounded-lg shadow-md">
-    <div class="lg:col-span-2">
+    <div v-if="!selectedTemplateId" class="lg:col-span-4">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Create a New Resume</h1>
+        <p class="text-gray-600 mb-8">Select a template and a color palette to get started.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-for="template in templatesList" :key="template.id"
+             class="template-card relative group"
+             :class="{ 'ring-2 ring-offset-2 ring-blue-500': selectedTemplateIdForGallery === template.id }">
+          <div class="template-preview-wrapper">
+            <component :is="template.layoutComponent" :resume="mockData" :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" class="resume-preview-component" />
+          </div>
+          <div v-if="template.hasColorPalette" class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full bg-white shadow-lg flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-full group-hover:translate-y-0 z-10" style="transition: transform 0.3s ease-out, opacity 0.3s ease-out;">
+            <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
+                 @click.stop="handlePaletteChange(template.id, palette)"
+                 :class="['w-6 h-6 rounded-full cursor-pointer border-2 transition-all', {'ring-2 ring-offset-2 ring-blue-500': selectedTemplateIdForGallery === template.id && selectedPalettes[template.id]?.name === palette.name}]"
+                 :style="{backgroundColor: palette.background}"
+                 :title="palette.name">
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <button @click="selectTemplate(template.id)" class="use-template-button">
+              Use this template
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div v-if="selectedTemplateId" class="lg:col-span-2">
       <div class="mb-6">
         <h1 class="text-3xl font-semibold text-gray-700 mb-2">Talent Application Form</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
@@ -361,76 +391,80 @@
 
 
     
-    <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
+    <div v-if="selectedTemplateId" class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
       <div class="flex justify-between items-center mb-4 border-b pb-3">
         <h2 class="text-xl font-bold text-gray-800">Applicant Data Preview</h2>
         <div class="flex gap-2">
-            <button @click="router.push('/candidate/resumes')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
+            <button @click="backToTemplates" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
               Change Template
             </button>
         </div>
       </div>
       <component :is="currentTemplate" :resume="formData" />
-
+      
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useResumeStore, mockData } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { COLOR_PALETTES } from '@/constants/colorPalettes';
 import type { FormData } from '@/types/resume';
 import QrcodeVue from 'qrcode.vue';
-import { nanoid } from 'nanoid';
 
+const router = useRouter();
+const resumeStore = useResumeStore();
+
+// UI State for Template vs. Form view
+const selectedTemplateId = ref<string | null>(null);
+const selectedTemplateIdForGallery = ref('');
+const selectedPalettes = ref({});
+
+// Form state
 const currentStep = ref(1);
 const totalSteps = 7;
-const router = useRouter();
-const route = useRoute();
+const formData = ref<FormData>(JSON.parse(JSON.stringify(mockData)));
 
-const resumeStore = useResumeStore();
-const formData = resumeStore.formData;
-
+// Computed properties for template/preview
 const templatesList = ATS_TEMPLATES;
-
 const currentTemplate = computed(() => {
-  const selected = templatesList.find(template => template.id === resumeStore.selectedTemplate);
+  if (!selectedTemplateId.value) return null;
+  const selected = templatesList.find(template => template.id === selectedTemplateId.value);
   return selected ? selected.layoutComponent : null;
 });
 
-const isNewResume = computed(() => !route.params.id || route.params.id === 'new');
+// QR Code state
+const showResumeQR = ref(false)
+const resumeUrl = computed(() => `http://localhost:5173/candidate/resume/${selectedTemplateId.value}`);
 
-onMounted(() => {
-  if (route.params.id) {
-    const resumeToEdit = resumeStore.getResumeById(route.params.id as string);
-    if (resumeToEdit) {
-      Object.assign(resumeStore.formData, resumeToEdit.data);
-      resumeStore.selectedTemplate = resumeToEdit.templateId;
-    } else {
-      // If no resume found with that ID, it's a new one.
-      Object.assign(resumeStore.formData, mockData);
-      resumeStore.selectedTemplate = 'basic-ats';
-      resumeUrl.value = `https://your-domain.com/resumes/${route.params.id}`;
-    }
-  } else {
-    // If no ID is provided in the route, default to new resume.
-    Object.assign(resumeStore.formData, mockData);
-    resumeStore.selectedTemplate = 'basic-ats';
-  }
-});
+// Handlers for template selection
+const selectTemplate = (templateId: string) => {
+  selectedTemplateId.value = templateId;
+  const selectedPalette = selectedPalettes.value[templateId] || COLOR_PALETTES.default;
+  resumeStore.switchTemplate(templateId);
+  resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette) || 'default');
+};
 
+const backToTemplates = () => {
+  selectedTemplateId.value = null;
+  currentStep.value = 1;
+};
 
+const handlePaletteChange = (templateId: string, palette: any) => {
+  selectedTemplateIdForGallery.value = templateId;
+  selectedPalettes.value = {
+    ...selectedPalettes.value,
+    [templateId]: palette,
+  };
+};
+
+// Form navigation
 const getStepName = (step: number) => {
-  switch (step) {
-    case 1: return 'Personal Info';
-    case 2: return 'Employment';
-    case 3: return 'Work History';
-    case 4: return 'Education History';
-    case 5: return 'Online Presence';
-    case 6: return 'Certifications';
-    case 7: return 'Additional Info';
-    default: return '';
-  }
+  const names = ['Personal Info', 'Employment', 'Work History', 'Education History', 'Online Presence', 'Certifications', 'Additional Info'];
+  return names[step - 1] || '';
 };
 
 const nextStep = () => {
@@ -445,13 +479,13 @@ const prevStep = () => {
   }
 };
 
+// Form actions
 const handleProfilePhotoUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = (e) => {
-    formData.personal.profile_photo_url = e.target?.result;
+    formData.value.personal.profile_photo_url = e.target?.result;
   };
   reader.readAsDataURL(file);
 };
@@ -459,10 +493,9 @@ const handleProfilePhotoUpload = (event: Event) => {
 const handleDegreeImageUpload = (event: Event, index: number) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = (e) => {
-    formData.history.education_history[index].degree_image_url = e.target?.result;
+    formData.value.history.education_history[index].degree_image_url = e.target?.result;
   };
   reader.readAsDataURL(file);
 };
@@ -470,61 +503,43 @@ const handleDegreeImageUpload = (event: Event, index: number) => {
 const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 'education_history') => {
   if (section === 'history') {
     if (field === 'work_history') {
-      formData.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '' });
+      formData.value.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '' });
     } else if (field === 'education_history') {
-      formData.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '' });
+      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '' });
     }
   } else if (section === 'certifications') {
-    formData.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '' });
+    formData.value.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '' });
   }
 };
 
 const removeRow = (section: 'history' | 'certifications', index: number, field?: 'work_history' | 'education_history') => {
     if (section === 'history' && field) {
-        formData.history[field].splice(index, 1);
+        formData.value.history[field].splice(index, 1);
     } else if (section === 'certifications') {
-        formData.certifications.splice(index, 1);
+        formData.value.certifications.splice(index, 1);
     }
 };
 
 const updateArrayField = (section: 'history' | 'certifications', field: 'work_history' | 'education_history' | undefined, index: number, subField: string, value: any) => {
   if (section === 'history' && field) {
-    (formData.history[field][index] as any)[subField] = value;
+    (formData.value.history[field][index] as any)[subField] = value;
   } else if (section === 'certifications') {
-    (formData.certifications[index] as any)[subField] = value;
+    (formData.value.certifications[index] as any)[subField] = value;
   }
 };
 
-
-const submitForm = async () => {
-  let resumeId = route.params.id as string;
-  if (isNewResume.value) {
-    resumeId = nanoid();
-  }
-
-  const resumeTitle = `${formData.personal.first_name} ${formData.personal.last_name}'s Resume`;
-
-  const newResume = {
-    id: resumeId,
-    title: resumeTitle,
-    templateId: resumeStore.selectedTemplate,
-    data: JSON.parse(JSON.stringify(formData)) // Deep copy the form data
-  };
-
-  resumeStore.addOrUpdateResume(newResume);
-  alert(`Resume saved successfully with ID: ${newResume.id}`);
-  router.push({ name: 'CandidateResumes' });
+const submitForm = () => {
+  console.log("Form submitted:", formData.value);
+  alert('Resume saved!');
+  // Here you would implement your logic to save the resume to a database
+  // and redirect the user, for instance, to their list of resumes.
 };
 
 
-const resumeUrl = computed(() => `https://your-domain.com/resumes/${route.params.id || 'new'}`);
 
-
-// toggle QR visibility
-const showResumeQR = ref(false)
 const toggleResumeQR = () => {
-showResumeQR.value = !showResumeQR.value
-}
+  showResumeQR.value = !showResumeQR.value;
+};
 </script>
 
 <style scoped>
@@ -534,21 +549,48 @@ showResumeQR.value = !showResumeQR.value
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
-.template-selection-buttons {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.template-gallery-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.template-button {
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.template-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  height: 400px;
 }
-.template-button:hover {
-  background-color: #e0e0e0;
+.template-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.template-preview-wrapper {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+}
+.resume-preview-component {
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+.use-template-button {
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  border: none;
+}
+.use-template-button:hover {
+  background-color: #1d4ed8;
 }
 </style>

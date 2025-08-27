@@ -140,7 +140,7 @@ const activeMain = ref('dashboard');
 const topMenus = [
   { key: 'dashboard', label: 'Dashboard', defaultPath: '/dashboard', roles: ['admin', 'recruiter', 'viewer'] },
   { key: 'jobs', label: 'Jobs', defaultPath: '/dashboard/jobs', roles: ['recruiter', 'viewer'] },
-  { key: 'talent', label: 'Talent', defaultPath: '/dashboard/talentoverview', roles: ['recruiter', 'viewer'] },
+   { key: 'talent', label: 'Talent', defaultPath: '/candidate/create-resume', roles: ['recruiter', 'viewer'] }, 
   { key: 'timesheet', label: 'Timesheet', defaultPath: '/timesheet', roles: ['recruiter'] },
   { key: 'companies', label: 'Companies', defaultPath: '/dashboard/companies', roles: ['recruiter'] },
   { key: 'documents', label: 'Documents', defaultPath: '/dashboard/documents', roles: ['recruiter'] }
