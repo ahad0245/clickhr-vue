@@ -212,10 +212,11 @@
                     <input type="text" v-model="work.job_title" @input="e => updateArrayField('history', 'work_history', index, 'job_title', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
+                  
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Employment Type <span class="text-red-500">*</span></label>
+                  <label class="block text-sm font-medium text-gray-600">Job Type <span class="text-red-500">*</span></label>
                   <select v-model="formData.employment.employment_type" 
-                 class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
+                    class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
                       <option value="Full-Time">Full-Time</option>
                       <option value="Part-Time">Part-Time</option>
                       <option value="Contract">Contract</option>
@@ -225,7 +226,7 @@
                     <label class="block text-sm font-medium text-gray-600">Job Location</label>
                     <input type="text" v-model="work.job_location" @input="e => updateArrayField('history', 'work_history', index, 'job_location', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                  </div>
+                </div>
                   <div class="md:col-span-4">
                     <label class="block text-sm font-medium text-gray-600">Job Description</label>
                     <textarea v-model="work.job_description" @input="e => updateArrayField('history', 'work_history', index, 'job_description', (e.target as HTMLInputElement).value)"
@@ -273,7 +274,7 @@
                 <div v-for="(edu, index) in formData.history.education_history" :key="index"
                      class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Institution Name <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-600">Instituggtion Name <span class="text-red-500">*</span></label>
                     <input type="text" v-model="edu.institution_name" @input="e => updateArrayField('history', 'education_history', index, 'institution_name', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
@@ -283,10 +284,15 @@
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Field of Study <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-600">Field of Stuhhdy <span class="text-red-500">*</span></label>
                     <input type="text" v-model="edu.field_of_study" @input="e => updateArrayField('history', 'education_history', index, 'field_of_study', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
+                  <div>
+                        <label class="block text-sm font-medium text-gray-600">Job Location</label>
+                        <input type="text" v-model="work.job_location" @input="e => updateArrayField('history', 'work_history', index, 'job_location', (e.target as HTMLInputElement).value)"
+                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-600">Start Date <span class="text-red-500">*</span></label>
                     <input type="date" v-model="edu.start_date" @input="e => updateArrayField('history', 'education_history', index, 'start_date', (e.target as HTMLInputElement).value)"
@@ -593,7 +599,7 @@ const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 
     if (field === 'work_history') {
       formData.value.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '', experience_letter_url: null });
     } else if (field === 'education_history') {
-      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', is_current_education: false, education_location: '', education_status: '', degree_image_url: null });
+      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', education_location: '', start_date: '', is_current_education: false, education_location: '', education_status: '', degree_image_url: null });
     }
   } else if (section === 'certifications') {
     formData.value.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '', certification_status: 'Completed', certificate_image_url: null });
