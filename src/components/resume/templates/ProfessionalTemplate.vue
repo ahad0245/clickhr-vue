@@ -9,9 +9,27 @@
         <p class="text-sm text-blue-100">Phone: {{ resume.personal.mobile_phone || '' }}</p>
         <p class="text-sm text-blue-100">Location: {{ resume.personal.city || '' }}, {{ resume.personal.state_province_region || '' }}</p>
       </div>
-      <div class="mt-8">
+      <div class="mt-8" v-if="resume.skills && resume.skills.length">
         <h3 class="font-semibold text-blue-100 mb-2 border-b border-blue-400 pb-1">Skills</h3>
-        <p class="text-sm text-blue-100">{{ resume.employment.applicant_tags || 'N/A' }}</p>
+        <ul class="list-none text-sm text-blue-100">
+          <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+        </ul>
+      </div>
+      <div class="mt-8" v-if="resume.projects && resume.projects.length">
+        <h3 class="font-semibold text-blue-100 mb-2 border-b border-blue-400 pb-1">Projects</h3>
+        <ul class="list-none text-sm text-blue-100">
+          <li v-for="(project, index) in resume.projects" :key="index">
+            <span class="font-bold">{{ project.proj_name }}</span>: {{ project.proj_forWhom }}
+          </li>
+        </ul>
+      </div>
+      <div class="mt-8" v-if="resume.references && resume.references.length">
+        <h3 class="font-semibold text-blue-100 mb-2 border-b border-blue-400 pb-1">References</h3>
+        <ul class="list-none text-sm text-blue-100">
+          <li v-for="(reference, index) in resume.references" :key="index">
+            <strong>{{ reference.full_name }}</strong>, {{ reference.designation }}
+          </li>
+        </ul>
       </div>
     </aside>
 
@@ -37,13 +55,21 @@
         </div>
       </section>
 
-      
+      <section v-if="resume.certifications && resume.certifications.length">
+        <h2 class="text-xl font-bold text-gray-800 border-b-2 border-blue-700 pb-1 mb-4">Certifications</h2>
+        <div v-for="(cert, index) in resume.certifications" :key="index" class="card mt-4">
+          <h3 class="font-bold text-lg text-gray-800">{{ cert.certification_name }}</h3>
+          <p class="text-sm text-gray-600">Issued by {{ cert.certification_body }} on {{ cert.certification_date }}</p>
+        </div>
+      </section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { FormData } from '@/types/resume';
+import { useResumeStore } from '@/stores/resumeStore';
+const resumeStore = useResumeStore();
 defineProps<{
   resume: FormData;
 }>();

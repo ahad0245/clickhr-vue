@@ -35,6 +35,31 @@
         <p class="text-sm text-gray-700 italic">{{ edu.institution_name || '' }}</p>
       </div>
     </section>
+
+    <section v-if="resume.skills && resume.skills.length" class="mb-6">
+      <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Skills</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+      </ul>
+    </section>
+
+    <section v-if="resume.projects && resume.projects.length" class="mb-6">
+      <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Projects</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(project, index) in resume.projects" :key="index">
+          <strong>{{ project.proj_name }}</strong>: {{ project.proj_description }}
+        </li>
+      </ul>
+    </section>
+    
+    <section v-if="resume.references && resume.references.length">
+      <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">References</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(reference, index) in resume.references" :key="index">
+          <strong>{{ reference.full_name }}</strong>, {{ reference.designation }} at {{ reference.company }}
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 

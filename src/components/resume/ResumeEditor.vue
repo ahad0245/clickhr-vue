@@ -41,7 +41,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-600">LinkedIn Profile</label>
-            <input type="text" :value="data.online_presence.linkedin" @input="updateData('online_presence.linkedin', ($event.target as HTMLInputElement).value)" class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
+            <input type="text" :value="data.online_presence.linked_in_profile" @input="updateData('online_presence.linked_in_profile', ($event.target as HTMLInputElement).value)" class="mt-1 p-2 border border-gray-300 rounded-md w-full" />
           </div>
           <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-600">Skill Set (comma separated)</label>

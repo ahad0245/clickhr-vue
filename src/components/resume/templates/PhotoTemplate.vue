@@ -19,7 +19,14 @@
       <p class="text-sm text-gray-700 mt-2">{{ resume.additional.resume_text || 'N/A' }}</p>
     </section>
 
-    <section class="mb-4">
+    <section class="mb-4" v-if="resume.skills && resume.skills.length">
+      <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">Skills</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+      </ul>
+    </section>
+
+    <section class="mb-4" v-if="resume.history.work_history && resume.history.work_history.length">
       <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">Experience</h3>
       <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-amber-700">{{ job.job_title || '' }} at {{ job.company_name || '' }}</h4>
@@ -28,7 +35,7 @@
       </div>
     </section>
 
-    <section class="mb-4">
+    <section class="mb-4" v-if="resume.history.education_history && resume.history.education_history.length">
       <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">Education</h3>
       <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-amber-700">{{ edu.degree || '' }} in {{ edu.field_of_study || '' }}</h4>
@@ -36,6 +43,24 @@
         <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }})</p>
         <img v-if="edu.degree_image_url" :src="edu.degree_image_url as string" class="mt-2 h-16 object-contain" alt="Degree Image">
       </div>
+    </section>
+
+    <section class="mb-4" v-if="resume.projects && resume.projects.length">
+      <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">Projects</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(project, index) in resume.projects" :key="index">
+          <strong>{{ project.proj_name }}</strong>: {{ project.proj_description }}
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-4" v-if="resume.references && resume.references.length">
+      <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">References</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(reference, index) in resume.references" :key="index">
+          <strong>{{ reference.full_name }}</strong>, {{ reference.designation }} at {{ reference.company }}
+        </li>
+      </ul>
     </section>
   </div>
 </template>

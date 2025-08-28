@@ -28,19 +28,58 @@
           </div>
         </section>
 
-        <section v-if="resume.history.education_history && resume.history.education_history.length">
+        <section v-if="resume.history.education_history && resume.history.education_history.length" class="mb-6">
           <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Education</h3>
           <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-4">
             <h4 class="font-bold text-lg text-gray-800">{{ edu.degree || '' }}</h4>
             <p class="text-sm text-gray-600">{{ edu.institution_name || '' }} | {{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }}</p>
           </div>
         </section>
+
+        <section v-if="resume.projects && resume.projects.length" class="mb-6">
+          <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Projects</h3>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-for="(project, index) in resume.projects" :key="index">{{ project.proj_name }}</li>
+          </ul>
+        </section>
       </div>
       
       <div class="col-span-1 border-l-2 border-gray-200 pl-6">
-        <section v-if="resume.employment.applicant_tags" class="mb-6">
+        <section v-if="resume.skills && resume.skills.length" class="mb-6">
           <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Skills</h3>
-          <p class="text-sm text-gray-700 mt-2 leading-relaxed">{{ resume.employment.applicant_tags }}</p>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+          </ul>
+        </section>
+        <section v-if="resume.certifications && resume.certifications.length" class="mb-6">
+          <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Certifications</h3>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-for="(cert, index) in resume.certifications" :key="index">
+              <strong>{{ cert.certification_name }}</strong>, {{ cert.certification_body }}
+            </li>
+          </ul>
+        </section>
+        <section v-if="resume.references && resume.references.length" class="mb-6">
+          <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">References</h3>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-for="(reference, index) in resume.references" :key="index">
+              <strong>{{ reference.full_name }}</strong>, {{ reference.designation }}
+            </li>
+          </ul>
+        </section>
+        <section v-if="resume.job_portals && Object.values(resume.job_portals).some(link => link)">
+          <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Job Portals</h3>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-if="resume.job_portals.linked_in_profile">LinkedIn: <a :href="resume.job_portals.linked_in_profile" target="_blank" class="text-blue-600 hover:underline">Link</a></li>
+            <li v-if="resume.job_portals.indeed_profile">Indeed: <a :href="resume.job_portals.indeed_profile" target="_blank" class="text-blue-600 hover:underline">Link</a></li>
+          </ul>
+        </section>
+        <section v-if="resume.version_control && Object.values(resume.version_control).some(link => link)">
+          <h3 class="text-xl font-bold text-gray-700 border-b-2 border-gray-400 pb-1">Version Control</h3>
+          <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+            <li v-if="resume.version_control.github">GitHub: <a :href="resume.version_control.github" target="_blank" class="text-blue-600 hover:underline">Link</a></li>
+            <li v-if="resume.version_control.gitlab">GitLab: <a :href="resume.version_control.gitlab" target="_blank" class="text-blue-600 hover:underline">Link</a></li>
+          </ul>
         </section>
       </div>
     </div>
@@ -49,5 +88,7 @@
 
 <script setup lang="ts">
 import type { FormData } from '@/types/resume';
+import { useResumeStore } from '@/stores/resumeStore';
+const resumeStore = useResumeStore();
 defineProps<{ resume: FormData }>();
 </script>

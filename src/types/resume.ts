@@ -6,8 +6,8 @@ export interface WorkHistoryItem {
   start_date: string;
   end_date?: string;
   is_current_job: boolean;
-  job_location?: string;
-  job_type?: string;
+  job_location: string;
+  job_type: string;
   job_status?: string;
   experience_letter_url?: string | ArrayBuffer | null;
 }
@@ -19,14 +19,14 @@ export interface EducationHistoryItem {
   start_date: string;
   end_date?: string;
   is_current_education: boolean;
-  education_location?: string;
+  education_location: string;
   education_status?: string;
   degree_image_url?: string | ArrayBuffer | null;
 }
 
 export interface CertificationItem {
   certification_name: string;
-  certification_body?: string;
+  certification_body: string;
   certification_date: string;
   expiration_date?: string;
   certification_status: 'Completed' | 'In Progress';
@@ -82,6 +82,24 @@ export interface VersionControlProfileItem {
   gitea?: string;
 }
 
+export interface SocialMediaProfileItem {
+  facebook_profile?: string;
+  twitter_profile?: string;
+  instagram_profile?: string;
+  youtube_profile?: string;
+  tiktok_profile?: string;
+  pinterest_profile?: string;
+  skype_id?: string;
+  whatsapp_number?: string;
+  wechat_id?: string;
+  viber_id?: string;
+  signal_id?: string;
+  telegram_id?: string;
+  discord_id?: string;
+  slack_id?: string;
+}
+
+
 export interface FormData {
   personal: {
     first_name: string;
@@ -116,17 +134,9 @@ export interface FormData {
     work_history: WorkHistoryItem[];
     education_history: EducationHistoryItem[];
   };
-  online_presence: {
-    linkedin?: string;
-    personal_site?: string;
-    github?: string;
-    twitter?: string;
-    facebook?: string;
-    instagram?: string;
-    youtube?: string;
-    tiktok?: string;
-  };
+  online_presence: SocialMediaProfileItem;
   certifications: CertificationItem[];
+  skills: SkillItem[];
   projects: ProjectItem[];
   references: ReferenceItem[];
   job_portals: JobPortalProfileItem;

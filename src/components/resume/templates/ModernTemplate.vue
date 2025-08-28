@@ -41,9 +41,29 @@
       </div>
     </section>
 
-    <section v-if="resume.employment.applicant_tags">
+    <section v-if="resume.skills && resume.skills.length">
       <h3 class="text-xl font-bold text-gray-800 border-b-2 pb-1" :class="resumeStore.selectedPalette.primary">Skills</h3>
-      <p class="text-sm text-gray-700 mt-2">{{ resume.employment.applicant_tags }}</p>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+      </ul>
+    </section>
+
+    <section v-if="resume.projects && resume.projects.length" class="mb-6">
+      <h3 class="text-xl font-bold text-gray-800 border-b-2 pb-1" :class="resumeStore.selectedPalette.primary">Projects</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(project, index) in resume.projects" :key="index">
+          <strong>{{ project.proj_name }}</strong>: {{ project.proj_description }}
+        </li>
+      </ul>
+    </section>
+
+    <section v-if="resume.references && resume.references.length">
+      <h3 class="text-xl font-bold text-gray-800 border-b-2 pb-1" :class="resumeStore.selectedPalette.primary">References</h3>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(reference, index) in resume.references" :key="index">
+          <strong>{{ reference.full_name }}</strong>, {{ reference.designation }} at {{ reference.company }}
+        </li>
+      </ul>
     </section>
   </div>
 </template>

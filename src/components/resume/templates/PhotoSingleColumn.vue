@@ -20,8 +20,15 @@
       <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Summary</h2>
       <p class="text-sm text-gray-700 mt-2">{{ resume.additional.resume_text }}</p>
     </section>
+
+    <section v-if="resume.skills && resume.skills.length" class="section mb-6">
+      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Skills</h2>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+      </ul>
+    </section>
     
-    <section class="section mb-6">
+    <section class="section mb-6" v-if="resume.history.work_history && resume.history.work_history.length">
       <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Experience</h2>
       <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-4">
         <div class="flex justify-between items-baseline">
@@ -32,7 +39,7 @@
       </div>
     </section>
     
-    <section class="section mb-6">
+    <section class="section mb-6" v-if="resume.history.education_history && resume.history.education_history.length">
       <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Education</h2>
       <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-4">
         <div class="flex justify-between items-baseline">
@@ -43,9 +50,21 @@
       </div>
     </section>
 
-    <section class="section">
-      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Skills</h2>
-      <p class="text-sm text-gray-700 mt-2">{{ resume.employment.applicant_tags }}</p>
+    <section class="section mb-6" v-if="resume.projects && resume.projects.length">
+      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">Projects</h2>
+      <div v-for="(project, index) in resume.projects" :key="index" class="mt-4">
+        <h3 class="font-bold text-md text-gray-800">{{ project.proj_name }}</h3>
+        <p class="text-sm text-gray-700 italic mt-1">{{ project.proj_description }}</p>
+      </div>
+    </section>
+
+    <section class="section mb-6" v-if="resume.references && resume.references.length">
+      <h2 class="text-lg font-bold text-gray-800 border-b-2 border-teal-500 inline-block pr-4 pb-1">References</h2>
+      <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+        <li v-for="(reference, index) in resume.references" :key="index">
+          <strong>{{ reference.full_name }}</strong>, {{ reference.designation }} at {{ reference.company }}
+        </li>
+      </ul>
     </section>
   </div>
 </template>

@@ -6,6 +6,11 @@
       <p class="text-xs text-gray-500">{{ resume.personal.email_0 || '' }} | {{ resume.personal.mobile_phone || '' }}</p>
     </header>
 
+    <section v-if="resume.additional.resume_text">
+      <h2 class="text-md font-semibold mt-4 border-b pb-1">Summary</h2>
+      <p class="text-sm mt-2">{{ resume.additional.resume_text || 'N/A' }}</p>
+    </section>
+
     <section v-if="resume.history.work_history && resume.history.work_history.length">
       <h2 class="text-md font-semibold mt-4 border-b pb-1">Experience</h2>
       <div v-for="(exp, index) in resume.history.work_history" :key="index" class="experience-item mt-2">
@@ -29,9 +34,23 @@
       </div>
     </section>
 
-    <section>
+    <section v-if="resume.skills && resume.skills.length">
       <h2 class="text-md font-semibold mt-4 border-b pb-1">Skills</h2>
-      <p class="text-sm mt-2">{{ resume.employment.applicant_tags || 'N/A' }}</p>
+      <p class="text-sm mt-2">{{ resume.skills.map(s => s.skill_name).join(', ') || 'N/A' }}</p>
+    </section>
+
+    <section v-if="resume.projects && resume.projects.length">
+      <h2 class="text-md font-semibold mt-4 border-b pb-1">Projects</h2>
+      <p class="text-sm mt-2" v-for="(project, index) in resume.projects" :key="index">
+        <strong>{{ project.proj_name }}</strong>: {{ project.proj_description }}
+      </p>
+    </section>
+
+    <section v-if="resume.references && resume.references.length">
+      <h2 class="text-md font-semibold mt-4 border-b pb-1">References</h2>
+      <p class="text-sm mt-2" v-for="(reference, index) in resume.references" :key="index">
+        <strong>{{ reference.full_name }}</strong>, {{ reference.designation }} at {{ reference.company }}
+      </p>
     </section>
   </div>
 </template>

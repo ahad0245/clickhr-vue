@@ -18,19 +18,35 @@
         <p class="text-sm text-gray-400 mt-1">Phone: {{ resume.personal.mobile_phone }}</p>
         <p class="text-sm text-gray-400 mt-1">Email: {{ resume.personal.email_0 }}</p>
       </div>
-      <div class="mt-8">
+      <div class="mt-8" v-if="resume.skills && resume.skills.length">
         <h3 class="text-lg font-semibold text-gray-200 mb-2">Skills</h3>
-        <p class="text-sm text-gray-400">{{ resume.employment.applicant_tags }}</p>
+        <ul class="list-none text-sm text-gray-400">
+          <li v-for="(skill, index) in resume.skills" :key="index">{{ skill.skill_name }} ({{ skill.skill_proficiency_level }})</li>
+        </ul>
+      </div>
+      <div class="mt-8" v-if="resume.certifications && resume.certifications.length">
+        <h3 class="text-lg font-semibold text-gray-200 mb-2">Certifications</h3>
+        <ul class="list-none text-sm text-gray-400">
+          <li v-for="(cert, index) in resume.certifications" :key="index">{{ cert.certification_name }}</li>
+        </ul>
+      </div>
+      <div class="mt-8" v-if="resume.references && resume.references.length">
+        <h3 class="text-lg font-semibold text-gray-200 mb-2">References</h3>
+        <ul class="list-none text-sm text-gray-400">
+          <li v-for="(reference, index) in resume.references" :key="index">
+            <strong>{{ reference.full_name }}</strong>, {{ reference.designation }}
+          </li>
+        </ul>
       </div>
     </div>
 
     <div class="main-content flex-1 p-6 bg-white">
-      <section class="pb-6 mb-6 border-b border-gray-200">
+      <section class="pb-6 mb-6 border-b border-gray-200" v-if="resume.additional.resume_text">
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Profile</h3>
         <p class="text-sm text-gray-700">{{ resume.additional.resume_text }}</p>
       </section>
 
-      <section class="pb-6 mb-6 border-b border-gray-200">
+      <section class="pb-6 mb-6 border-b border-gray-200" v-if="resume.history.work_history && resume.history.work_history.length">
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Employment History</h3>
         <div v-for="(job, index) in resume.history.work_history" :key="index" class="mb-4">
           <h4 class="font-bold text-md text-gray-800">{{ job.job_title }} at {{ job.company_name }}</h4>
@@ -39,11 +55,19 @@
         </div>
       </section>
 
-      <section>
+      <section class="pb-6 mb-6 border-b border-gray-200" v-if="resume.history.education_history && resume.history.education_history.length">
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Education</h3>
         <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mb-4">
           <h4 class="font-bold text-md text-gray-800">{{ edu.degree }} in {{ edu.field_of_study }}</h4>
           <p class="text-xs text-gray-600">{{ edu.institution_name }} ({{ edu.start_date }} - {{ edu.end_date || 'Present' }})</p>
+        </div>
+      </section>
+      
+      <section v-if="resume.projects && resume.projects.length">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Projects</h3>
+        <div v-for="(project, index) in resume.projects" :key="index" class="mb-4">
+          <h4 class="font-bold text-md text-gray-800">{{ project.proj_name }}</h4>
+          <p class="text-sm mt-1 text-gray-700">{{ project.proj_description }}</p>
         </div>
       </section>
     </div>
@@ -52,5 +76,7 @@
 
 <script setup lang="ts">
 import type { FormData } from '@/types/resume';
+import { useResumeStore } from '@/stores/resumeStore';
+const resumeStore = useResumeStore();
 defineProps<{ resume: FormData }>();
 </script>
