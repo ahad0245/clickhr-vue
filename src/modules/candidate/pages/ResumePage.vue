@@ -68,12 +68,11 @@ function getTemplateName(templateId: string) {
   return template ? template.name : 'Unknown Template';
 }
 
-function editResume(resume) {
-  // Pass the resume ID as a query parameter for consistency
+function editResume(resume: any) {
   router.push({ name: 'CreateResume', query: { id: resume.id } });
 }
 
-function openShareModal(resume) {
+function openShareModal(resume: any) {
   shareResumeData.value = resume.data;
   shareResumeTemplate.value = resume.templateId;
   showShareModal.value = true;

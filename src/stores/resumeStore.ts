@@ -1,3 +1,5 @@
+// src/stores/resumeStore.ts
+
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
 import type { FormData } from '@/types/resume';
@@ -10,10 +12,11 @@ interface ResumeInstance {
   data: FormData;
 }
 
-export const mockData: FormData = {
+// Single source of truth for the candidate's core data. This will be used to pre-fill new resumes.
+export const candidateProfile: FormData = {
   personal: {
-    first_name: 'John',
-    last_name: 'Doe',
+    first_name: 'Abdul',
+    last_name: 'Ahad',
     headline: 'Senior Software Engineer | Vue.js Specialist',
     country: 'United States',
     address_1: '123 Main St',
@@ -108,29 +111,15 @@ export const mockData: FormData = {
 };
 
 export const useResumeStore = defineStore('resume', () => {
-  const formData = ref<FormData>(mockData);
   const selectedTemplate = ref('modern-ats');
   const selectedPalette = ref(COLOR_PALETTES.default);
-  const savedResumes = ref<ResumeInstance[]>([
-    {
-      id: 'resume-1',
-      title: 'My First Resume',
-      templateId: 'professional',
-      data: { ...mockData, personal: { ...mockData.personal, first_name: 'Jane', last_name: 'Doe' } }
-    },
-    {
-      id: 'resume-2',
-      title: 'Vue.js Specialist Resume',
-      templateId: 'photo-single-column',
-      data: { ...mockData, personal: { ...mockData.personal, first_name: 'Alex', last_name: 'Chen' } }
-    }
-  ]);
+  const savedResumes = ref<ResumeInstance[]>([]); // This array is now empty by default
 
   function switchTemplate(template: string) {
     selectedTemplate.value = template;
   }
 
-  function switchPalette(paletteId) {
+  function switchPalette(paletteId: keyof typeof COLOR_PALETTES) {
     if (COLOR_PALETTES[paletteId]) {
       selectedPalette.value = COLOR_PALETTES[paletteId];
     }
@@ -144,19 +133,17 @@ export const useResumeStore = defineStore('resume', () => {
       savedResumes.value.push(resume);
     }
   }
-
+  
   function getResumeById(id: string): ResumeInstance | undefined {
     return savedResumes.value.find(r => r.id === id);
   }
 
   return {
-    formData,
     selectedTemplate,
     selectedPalette,
     savedResumes,
-    switchTemplate,
-    switchPalette,
     addOrUpdateResume,
-    getResumeById
+    getResumeById,
+    candidateProfile,
   };
 });

@@ -12,7 +12,7 @@
              class="template-card relative group"
              :class="{ 'ring-2 ring-offset-2 ring-blue-500': selectedTemplateIdForGallery === template.id }">
           <div class="template-preview-wrapper">
-            <component :is="template.layoutComponent" :resume="mockData" :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" class="resume-preview-component" />
+            <component :is="template.layoutComponent" :resume="resumeStore.candidateProfile" :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" class="resume-preview-component" />
           </div>
           <div v-if="template.hasColorPalette" class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full bg-white shadow-lg flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-full group-hover:translate-y-0 z-10" style="transition: transform 0.3s ease-out, opacity 0.3s ease-out;">
             <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
@@ -36,10 +36,10 @@
         <h1 class="text-3xl font-semibold text-gray-700 mb-2">Talent Application Form</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
       </div>
-      
+
       <div class="mb-8 flex flex-wrap justify-center sm:justify-start gap-2">
         <div v-for="stepNum in totalSteps" :key="stepNum"
-             @click="currentStep = stepNum" 
+             @click="jumpToStep(stepNum)"
              :class="['flex items-center space-x-2 p-2 rounded-full cursor-pointer transition-all duration-300 transform hover:scale-105',
                       currentStep === stepNum ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700',
                       currentStep > stepNum ? 'bg-green-500 text-white' : ''
@@ -53,6 +53,7 @@
           <span class="hidden lg:inline font-medium" :class="{'text-white': currentStep >= stepNum}">{{ getStepName(stepNum) }}</span>
         </div>
       </div>
+
       <div class="bg-white rounded-lg shadow p-6 space-y-6 mb-8">
         <transition name="fade" mode="out-in">
           <div :key="currentStep">
@@ -60,20 +61,20 @@
               <h2 class="text-xl font-semibold text-gray-700">Personal & Contact Information</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">First Name</label>
-                  <input type="text" v-model="formData.personal.first_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">First Name <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.first_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Last Name</label>
-                  <input type="text" v-model="formData.personal.last_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Last Name <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.last_name" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Headline</label>
-                  <input type="text" v-model="formData.personal.headline" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Headline <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.headline" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required/>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Country</label>
-                  <select v-model="formData.personal.country" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                  <label class="block text-sm font-medium text-gray-600">Country <span class="text-red-500">*</span></label>
+                  <select v-model="formData.personal.country" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
                     <option value="">Select Country</option>
                     <option value="United States of America">United States of America</option>
                     <option value="Canada">Canada</option>
@@ -83,16 +84,16 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Address 1</label>
-                  <input type="text" v-model="formData.personal.address_1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Address 1 <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.address_1" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Address 2</label>
                   <input type="text" v-model="formData.personal.address_2" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">City</label>
-                  <input type="text" v-model="formData.personal.city" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">City <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.city" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">State/Province/Region</label>
@@ -110,13 +111,10 @@
                   <label class="block text-sm font-medium text-gray-600">Geo Location</label>
                   <input type="text" v-model="formData.personal.geo_location" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
+                
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">School District</label>
-                  <input type="text" v-model="formData.personal.school_district" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Mobile Phone</label>
-                  <input type="text" v-model="formData.personal.mobile_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Mobile Phone <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.personal.mobile_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Work Phone</label>
@@ -127,8 +125,8 @@
                   <input type="text" v-model="formData.personal.home_phone" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Primary Email</label>
-                  <input type="email" v-model="formData.personal.email_0" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Primary Email <span class="text-red-500">*</span></label>
+                  <input type="email" v-model="formData.personal.email_0" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Secondary Email</label>
@@ -139,8 +137,8 @@
                   <input type="text" v-model="formData.personal.ssn" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-600">Profile Photo</label>
-                  <input type="file" @change="e => handleProfilePhotoUpload(e)" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Profile Photo <span class="text-red-500">*</span></label>
+                  <input type="file" @change="e => handleFileChange(e, -1, 'personal', 'profile_photo_url')" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   <img v-if="formData.personal.profile_photo_url" :src="formData.personal.profile_photo_url as string" class="mt-2 w-24 h-24 object-cover rounded-full" alt="Profile Photo Preview" />
                 </div>
               </div>
@@ -150,21 +148,33 @@
               <h2 class="text-xl font-semibold text-gray-700">Employment & Classification</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Employment Type</label>
-                  <input type="text" v-model="formData.employment.employment_type" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Talent Status</label>
-                  <select v-model="formData.employment.talent_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                    <option value="Applicant">Applicant</option>
-                    <option value="Candidate">Candidate</option>
-                    <option value="Employee">Employee</option>
-                    <option value="Hired">Hired</option>
+                  <label class="block text-sm font-medium text-gray-600">Employment Type <span class="text-red-500">*</span></label>
+                  <select v-model="formData.employment.employment_type" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
+                      
+                      <option value="Full-Time">Full-Time</option>
+                      <option value="Part-Time">Part-Time</option>
+                      <option value="Contract">Contract</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-600">Applicant Tags</label>
-                  <input type="text" v-model="formData.employment.applicant_tags" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <label class="block text-sm font-medium text-gray-600">Talent Status <span class="text-red-500">*</span></label>
+                  <select v-model="formData.employment.talent_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
+                    
+                    <option value="Active">Active</option>
+                    <option value="Applicant">Applicant</option>
+                    <option value="Deleted">Deleted</option>
+                    <option value="DNA">DNA</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Incomplete Applicant">Incomplete Applicant</option>
+                    <option value="Online Applicant">Online Applicant</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Terminated">Terminated</option>
+                    <option value="Under Review">Under Review</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Applicant Tags <span class="text-red-500">*</span></label>
+                  <input type="text" v-model="formData.employment.applicant_tags" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Details / Notes</label>
@@ -185,7 +195,6 @@
               <h2 class="text-xl font-semibold text-gray-700">Work History</h2>
               <div class="space-y-4 border border-gray-200 rounded-lg p-4">
                 <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
-                  Work History
                   <button type="button" @click="addRow('history', 'work_history')"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Work
@@ -194,13 +203,27 @@
                 <div v-for="(work, index) in formData.history.work_history" :key="index"
                      class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Company Name</label>
+                    <label class="block text-sm font-medium text-gray-600">Company Name <span class="text-red-500">*</span></label>
                     <input type="text" v-model="work.company_name" @input="e => updateArrayField('history', 'work_history', index, 'company_name', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Job Title</label>
+                    <label class="block text-sm font-medium text-gray-600">Job Title <span class="text-red-500">*</span></label>
                     <input type="text" v-model="work.job_title" @input="e => updateArrayField('history', 'work_history', index, 'job_title', (e.target as HTMLInputElement).value)"
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
+                  </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Employment Type <span class="text-red-500">*</span></label>
+                  <select v-model="formData.employment.employment_type" 
+                 class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
+                      <option value="Full-Time">Full-Time</option>
+                      <option value="Part-Time">Part-Time</option>
+                      <option value="Contract">Contract</option>
+                  </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Job Location</label>
+                    <input type="text" v-model="work.job_location" @input="e => updateArrayField('history', 'work_history', index, 'job_location', (e.target as HTMLInputElement).value)"
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
                   <div class="md:col-span-4">
@@ -209,20 +232,20 @@
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-600">Start Date</label>
+                    <label class="block text-sm font-medium text-gray-600">Start Date <span class="text-red-500">*</span></label>
                     <input type="date" v-model="work.start_date" @input="e => updateArrayField('history', 'work_history', index, 'start_date', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-600">End Date</label>
+                  <div v-if="!work.is_current_job">
+                    <label class="block text-sm font-medium text-gray-600">End Date <span class="text-red-500">*</span></label>
                     <input type="date" v-model="work.end_date" @input="e => updateArrayField('history', 'work_history', index, 'end_date', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-600">Job Location</label>
-                    <input type="text" v-model="work.job_location" @input="e => updateArrayField('history', 'work_history', index, 'job_location', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <div v-if="!work.is_current_job">
+                      <label class="block text-sm font-medium text-gray-600">Experience Letter</label>
+                      <input type="file" @change="e => handleFileChange(e, index, 'work_history', 'experience_letter_url')" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
+                  
                   <div class="flex items-center space-x-2">
                     <input type="checkbox" v-model="work.is_current_job" @change="e => updateArrayField('history', 'work_history', index, 'is_current_job', (e.target as HTMLInputElement).checked)"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
@@ -242,7 +265,6 @@
               <h2 class="text-xl font-semibold text-gray-700">Education History</h2>
               <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
                 <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
-                  Education History
                   <button type="button" @click="addRow('history', 'education_history')"
                           class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Education
@@ -251,29 +273,29 @@
                 <div v-for="(edu, index) in formData.history.education_history" :key="index"
                      class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Institution Name</label>
+                    <label class="block text-sm font-medium text-gray-600">Institution Name <span class="text-red-500">*</span></label>
                     <input type="text" v-model="edu.institution_name" @input="e => updateArrayField('history', 'education_history', index, 'institution_name', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Degree</label>
+                    <label class="block text-sm font-medium text-gray-600">Degree <span class="text-red-500">*</span></label>
                     <input type="text" v-model="edu.degree" @input="e => updateArrayField('history', 'education_history', index, 'degree', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Field of Study</label>
+                    <label class="block text-sm font-medium text-gray-600">Field of Study <span class="text-red-500">*</span></label>
                     <input type="text" v-model="edu.field_of_study" @input="e => updateArrayField('history', 'education_history', index, 'field_of_study', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-600">Start Date</label>
+                    <label class="block text-sm font-medium text-gray-600">Start Date <span class="text-red-500">*</span></label>
                     <input type="date" v-model="edu.start_date" @input="e => updateArrayField('history', 'education_history', index, 'start_date', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-600">End Date</label>
+                  <div v-if="!edu.is_current_education">
+                    <label class="block text-sm font-medium text-gray-600">End Date <span class="text-red-500">*</span></label>
                     <input type="date" v-model="edu.end_date" @input="e => updateArrayField('history', 'education_history', index, 'end_date', (e.target as HTMLInputElement).value)"
-                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                           class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                    <div class="flex items-center space-x-2">
                     <input type="checkbox" v-model="edu.is_current_education" @change="e => updateArrayField('history', 'education_history', index, 'is_current_education', (e.target as HTMLInputElement).checked)"
@@ -281,11 +303,9 @@
                     <label class="text-sm font-medium text-gray-600">Currently Enrolled</label>
                   </div>
                   <div v-if="!edu.is_current_education" class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Degree Image (Completed)</label>
-                    <input type="file" @change="e => handleDegreeImageUpload(e, index)" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                    <img v-if="edu.degree_image_url" :src="edu.degree_image_url as string" class="mt-2 w-32 object-contain" alt="Degree Image Preview" />
+                    <label class="block text-sm font-medium text-gray-600">Degree Image</label>
+                    <input type="file" @change="e => handleFileChange(e, index, 'education_history', 'degree_image_url')" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                   </div>
-
                   <button v-if="formData.history.education_history.length > 1" type="button" @click="removeRow('history', index, 'education_history')"
                           class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -298,6 +318,7 @@
 
             <div v-if="currentStep === 5" class="space-y-6">
               <h2 class="text-xl font-semibold text-gray-700">Online Presence</h2>
+              <h3 class="text-lg font-medium text-gray-700 mb-2">Social Media & Personal Sites</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-600">LinkedIn Profile</label>
@@ -309,20 +330,27 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">GitHub Profile</label>
-                  <input type="text" v-model="formData.online_presence.github" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                  <input type="text" v-model="formData.version_control.github" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-600">Twitter Profile</label>
                   <input type="text" v-model="formData.online_presence.twitter" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
+                 <div>
+                  <label class="block text-sm font-medium text-gray-600">Gitlab Profile</label>
+                  <input type="text" v-model="formData.version_control.gitlab" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Bitbucket Profile</label>
+                  <input type="text" v-model="formData.version_control.bitbucket" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
               </div>
             </div>
 
             <div v-if="currentStep === 6" class="space-y-6">
-                <h2 class="text-xl font-semibold text-gray-700">Certifications</h2>
+                <h2 class="text-xl font-semibold text-gray-700">Certifications & Skills</h2>
                 <div class="space-y-4 border border-gray-200 rounded-lg p-4 mt-6">
                 <h3 class="text-lg font-medium text-gray-700 flex justify-between items-center">
-                    Certifications
                     <button type="button" @click="addRow('certifications')"
                             class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Certification
@@ -345,6 +373,17 @@
                     <input type="date" v-model="cert.certification_date" @input="e => updateArrayField('certifications', undefined, index, 'certification_date', (e.target as HTMLInputElement).value)"
                             class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                     </div>
+                    <div class="md:col-span-1">
+                      <label class="block text-sm font-medium text-gray-600">Certification Status</label>
+                      <select v-model="cert.certification_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                          <option value="Completed">Completed</option>
+                          <option value="In Progress">In Progress</option>
+                      </select>
+                    </div>
+                    <div v-if="cert.certification_status === 'Completed'" class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-600">Certificate Picture</label>
+                        <input type="file" @change="e => handleFileChange(e, index, 'certifications', 'certificate_image_url')" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                    </div>
                     <button v-if="formData.certifications.length > 1" type="button" @click="removeRow('certifications', index)"
                             class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -357,19 +396,27 @@
 
             <div v-if="currentStep === 7" class="space-y-6">
                 <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center space-x-2">
-                    <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
-                    <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
-                </div>
+                
+                <div class="space-y-4">
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600">Resume Name <span class="text-red-500">*</span></label>
+                    <input type="text" v-model="resumeName" placeholder="e.g., Senior Vue.js Resume" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
+                  </div>
+                  <div class="flex items-center space-x-2">
+                      <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
+                      <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
+                  </div>
                 </div>
                 <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-600">Resume Text</label>
-                <textarea v-model="formData.additional.resume_text" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
+                  <label class="block text-sm font-medium text-gray-600">Resume Text</label>
+                  <textarea v-model="formData.additional.resume_text" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
                 </div>
             </div>
           </div>
         </transition>
+        <div v-if="validationError" class="mt-4 text-red-500 text-sm">
+          {{ validationError }}
+        </div>
       </div>
 
       <div class="mt-6 flex justify-between">
@@ -400,15 +447,14 @@
             </button>
         </div>
       </div>
-      <component :is="currentTemplate" :resume="formData" /> 
-      
+      <component :is="currentTemplate" :resume="formData" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useResumeStore, mockData } from '@/stores/resumeStore';
+import { useResumeStore, candidateProfile } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import { useRouter, useRoute } from 'vue-router';
 import { COLOR_PALETTES } from '@/constants/colorPalettes';
@@ -426,11 +472,13 @@ const selectedTemplateIdForGallery = ref('');
 const selectedPalettes = ref({});
 const isEditing = ref(false);
 const editingResumeId = ref<string | null>(null);
+const resumeName = ref('');
+const validationError = ref('');
 
 // Form state
 const currentStep = ref(1);
 const totalSteps = 7;
-const formData = ref<FormData>(JSON.parse(JSON.stringify(mockData)));
+const formData = ref<FormData>(JSON.parse(JSON.stringify(candidateProfile)));
 
 // Computed properties for template/preview
 const templatesList = ATS_TEMPLATES;
@@ -444,9 +492,9 @@ const currentTemplate = computed(() => {
 const showResumeQR = ref(false)
 const resumeUrl = computed(() => {
   if (isEditing.value && editingResumeId.value) {
-    return `http://localhost:5173/resume/${editingResumeId.value}`;
+    return `http://localhost:5173/resume-preview/${editingResumeId.value}`;
   }
-  return `http://localhost:5173/resume/preview`; // Placeholder for a new resume
+  return `http://localhost:5173/resume-preview/new`; // Placeholder for a new resume
 });
 
 onMounted(() => {
@@ -458,6 +506,7 @@ onMounted(() => {
       resumeStore.switchTemplate(resumeToEdit.templateId);
       isEditing.value = true;
       editingResumeId.value = resumeToEdit.id;
+      resumeName.value = resumeToEdit.title;
     } else {
       router.push({ name: 'CreateResume' });
     }
@@ -473,7 +522,7 @@ const selectTemplate = (templateId: string) => {
   resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette) || 'default');
   
   if (!isEditing.value) {
-    Object.assign(formData.value, mockData);
+    Object.assign(formData.value, candidateProfile);
   }
 };
 
@@ -497,34 +546,44 @@ const getStepName = (step: number) => {
 };
 
 const nextStep = () => {
-  if (currentStep.value < totalSteps) {
-    currentStep.value++;
+  if (validateCurrentStep()) {
+    if (currentStep.value < totalSteps) {
+      currentStep.value++;
+      validationError.value = '';
+    }
   }
 };
 
 const prevStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--;
+    validationError.value = '';
   }
 };
 
 // Form actions
+const handleFileChange = (e: Event, index: number, section: 'work_history' | 'education_history' | 'certifications', field: string) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    if (section === 'work_history' || section === 'education_history') {
+      (formData.value.history as any)[section][index][field] = event.target?.result;
+    } else {
+      (formData.value.certifications[index] as any)[field] = event.target?.result;
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+
 const handleProfilePhotoUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    formData.value.personal.profile_photo_url = e.target?.result;
-  };
-  reader.readAsDataURL(file);
-};
-
-const handleDegreeImageUpload = (event: Event, index: number) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    formData.value.history.education_history[index].degree_image_url = e.target?.result;
+    formData.value.personal.profile_photo_url = e.target?.result as string;
   };
   reader.readAsDataURL(file);
 };
@@ -532,12 +591,12 @@ const handleDegreeImageUpload = (event: Event, index: number) => {
 const addRow = (section: 'history' | 'certifications', field?: 'work_history' | 'education_history') => {
   if (section === 'history') {
     if (field === 'work_history') {
-      formData.value.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '' });
+      formData.value.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '', experience_letter_url: null });
     } else if (field === 'education_history') {
-      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '' });
+      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', is_current_education: false, education_location: '', education_status: '', degree_image_url: null });
     }
   } else if (section === 'certifications') {
-    formData.value.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '' });
+    formData.value.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '', certification_status: 'Completed', certificate_image_url: null });
   }
 };
 
@@ -549,22 +608,73 @@ const removeRow = (section: 'history' | 'certifications', index: number, field?:
     }
 };
 
-const updateArrayField = (section: 'history' | 'certifications', field: 'work_history' | 'education_history' | undefined, index: number, subField: string, value: any) => {
+const updateArrayField = (section: string, field: string | undefined, index: number, subField: string, value: any) => {
   if (section === 'history' && field) {
-    (formData.value.history[field][index] as any)[subField] = value;
+    (formData.value.history as any)[field][index][subField] = value;
   } else if (section === 'certifications') {
     (formData.value.certifications[index] as any)[subField] = value;
   }
 };
 
+const validateCurrentStep = () => {
+  validationError.value = '';
+  switch (currentStep.value) {
+    case 1:
+      if (!formData.value.personal.first_name || !formData.value.personal.last_name || !formData.value.personal.email_0 || !formData.value.personal.mobile_phone || !formData.value.personal.country || !formData.value.personal.address_1 || !formData.value.personal.city || !formData.value.personal.headline) {
+        validationError.value = 'Please fill out all mandatory fields in this step.';
+        return false;
+      }
+      break;
+    case 2:
+      if (!formData.value.employment.talent_status || !formData.value.employment.applicant_tags || !formData.value.employment.employment_type) {
+        validationError.value = 'Please fill out all mandatory fields in this step.';
+        return false;
+      }
+      break;
+    case 3:
+      if (formData.value.history.work_history.length === 0) {
+        validationError.value = 'Please add at least one work history entry.';
+        return false;
+      }
+      for (const job of formData.value.history.work_history) {
+        if (!job.company_name || !job.job_title || !job.start_date || (!job.is_current_job && !job.end_date)) {
+          validationError.value = 'All work history entries must have a company, job title, start date, and end date (if not a current job).';
+          return false;
+        }
+      }
+      break;
+    case 4:
+      if (formData.value.history.education_history.length === 0) {
+        validationError.value = 'Please add at least one education history entry.';
+        return false;
+      }
+      for (const edu of formData.value.history.education_history) {
+        if (!edu.institution_name || !edu.degree || !edu.field_of_study || !edu.start_date || (!edu.is_current_education && !edu.end_date)) {
+          validationError.value = 'All education history entries must have a school, degree, field of study, start date, and end date (if not currently enrolled).';
+          return false;
+        }
+      }
+      break;
+    case 7:
+      if (!resumeName.value) {
+        validationError.value = 'Please give your resume a name.';
+        return false;
+      }
+      break;
+  }
+  return true;
+};
+
 const submitForm = () => {
+  if (!validateCurrentStep()) return;
+
   const resumeId = isEditing.value && editingResumeId.value ? editingResumeId.value : nanoid();
-  const resumeTitle = `${formData.value.personal.first_name} ${formData.value.personal.last_name}'s Resume`;
+  const titleToSave = resumeName.value || `${formData.value.personal.first_name} ${formData.value.personal.last_name}'s Resume`;
 
   const newResume = {
     id: resumeId,
-    title: resumeTitle,
-    templateId: selectedTemplateId.value,
+    title: titleToSave,
+    templateId: selectedTemplateId.value as string,
     data: JSON.parse(JSON.stringify(formData.value))
   };
 
@@ -573,9 +683,20 @@ const submitForm = () => {
   router.push({ name: 'SavedResumes' });
 };
 
+const downloadResume = () => {
+  console.log("Download button clicked. Initiating resume download.");
+  alert('Downloading resume...');
+};
 
 const toggleResumeQR = () => {
   showResumeQR.value = !showResumeQR.value;
+};
+
+const jumpToStep = (step: number) => {
+  if (validateCurrentStep()) {
+    currentStep.value = step;
+    validationError.value = '';
+  }
 };
 </script>
 
