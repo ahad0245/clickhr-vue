@@ -1,38 +1,19 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans rounded-lg shadow-md">
-    <div v-if="!selectedTemplateId" class="lg:col-span-4">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Create a New Resume</h1>
-        <p class="text-gray-600 mb-8">Select a template and a color palette to get started.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div v-for="template in templatesList" :key="template.id"
-             class="template-card relative group"
-             :class="{ 'ring-2 ring-offset-2 ring-blue-500': selectedTemplateIdForGallery === template.id }">
-          <div class="template-preview-wrapper">
-            <component :is="template.layoutComponent" :resume="formData" :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" class="resume-preview-component" />
-          </div>
-          <div v-if="template.hasColorPalette" class="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 rounded-full bg-white shadow-lg flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-full group-hover:translate-y-0 z-10" style="transition: transform 0.3s ease-out, opacity 0.3s ease-out;">
-            <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
-                 @click.stop="handlePaletteChange(template.id, palette)"
-                 :class="['w-6 h-6 rounded-full cursor-pointer border-2 transition-all', {'ring-2 ring-offset-2 ring-blue-500': selectedTemplateIdForGallery === template.id && selectedPalettes[template.id]?.name === palette.name}]"
-                 :style="{backgroundColor: palette.background}"
-                 :title="palette.name">
-            </div>
-          </div>
-          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-            <button @click="selectTemplate(template.id)" class="use-template-button">
-              Use this template
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div v-else class="lg:col-span-2">
+    <!-- Removed template selection gallery, now focuses only on form and preview -->
+    <div class="lg:col-span-2">
       <div class="mb-6">
         <h1 class="text-3xl font-semibold text-gray-700 mb-2">{{ isEditing ? 'Edit Resume' : 'New Resume Application Form' }}</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
+        <!-- Added template info display -->
+        <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p class="text-sm text-blue-700">
+            <span class="font-medium">Selected Template:</span> {{ getTemplateName() }} 
+            <button @click="changeTemplate" class="ml-2 text-blue-600 hover:text-blue-800 underline text-sm">
+              Change Template
+            </button>
+          </p>
+        </div>
       </div>
 
       <div class="mb-8 flex flex-wrap justify-center sm:justify-start gap-2">
@@ -238,7 +219,7 @@
                     <input type="checkbox" v-model="edu.is_current_education" @change="e => {
                         updateArrayField('history', 'education_history', index, 'is_current_education', (e.target as HTMLInputElement).checked);
                         if ((e.target as HTMLInputElement).checked) {
-                            (formData.value.history.education_history as any)[index].end_date = null;
+                            (formData.history.education_history as any)[index].end_date = null;
                         }
                     }"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
@@ -317,7 +298,7 @@
                     <input type="checkbox" v-model="work.is_current_job" @change="e => {
                         updateArrayField('history', 'work_history', index, 'is_current_job', (e.target as HTMLInputElement).checked);
                         if ((e.target as HTMLInputElement).checked) {
-                            (formData.value.history.work_history as any)[index].end_date = null;
+                            (formData.history.work_history as any)[index].end_date = null;
                         }
                     }"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
@@ -586,8 +567,8 @@
                             class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm">
                     Add Project
                     </button>
-                  </h3>
-                  <div v-for="(project, index) in formData.projects" :key="index"
+                </h3>
+                <div v-for="(project, index) in formData.projects" :key="index"
                         class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-gray-200 rounded-md relative mb-4">
                         <div>
                           <label class="block text-sm font-medium text-gray-600">Project Name <span class="text-red-500">*</span></label>
@@ -603,7 +584,7 @@
                         </div>
                         <div>
                           <label class="block text-sm font-medium text-gray-600">Relevant Link</label>
-                          <input type="text" v-model="project.proj_relevantLink" @input="e => updateArrayField('projects', undefined, index, 'proj_relevantLink', (e.target as HTMLInputElement).value)" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                          <input type="text" v-model="project.proj_relevantLink" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                         </div>
                         <div>
                           <label class="block text-sm font-medium text-gray-600">For Whom <span class="text-red-500">*</span></label>
@@ -659,535 +640,363 @@
                               <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                           </svg>
                         </button>
-                   </div>
-                 </div>
+                  </div>
+                </div>
             </div>
 
             <div v-if="currentStep === 10" class="space-y-6">
-                <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
-                
-                <div class="space-y-4">
-                  <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-600">Resume Title <span class="text-red-500">*</span></label>
-                    <input type="text" v-model="resumeName" placeholder="e.g., Senior Vue.js Resume" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
-                  </div>
-                  <div class="flex items-center space-x-2">
-                      <input type="checkbox" id="hotlist" v-model="formData.additional.add_to_hotlist" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
-                      <label for="hotlist" class="text-sm font-medium text-gray-600">Add to Hotlist</label>
-                  </div>
+              <h2 class="text-xl font-semibold text-gray-700">Additional Information</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Driving License</label>
+                  <input type="text" v-model="formData.personal.driving_license" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
-                <div class="mt-4">
-                  <label class="block text-sm font-medium text-gray-600">Resume Text</label>
-                  <textarea v-model="formData.additional.resume_text" rows="10" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm"></textarea>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Passport</label>
+                  <input type="text" v-model="formData.personal.passport" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
                 </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Visa Status</label>
+                  <input type="text" v-model="formData.personal.visa_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Security Clearance</label>
+                  <input type="text" v-model="formData.personal.security_clearance" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+              </div>
             </div>
           </div>
         </transition>
-        <div v-if="validationError" class="mt-4 text-red-500 text-sm">
-          {{ validationError }}
-        </div>
       </div>
 
-      <div class="mt-6 flex justify-between">
-        <button v-if="currentStep > 1" @click="prevStep"
-                class="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors shadow-sm">
+      <div class="flex justify-between">
+        <button @click="currentStep--" :disabled="currentStep === 1"
+                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           Previous
         </button>
-        <div v-else></div>
-        <button v-if="currentStep < totalSteps" @click="nextStep"
-                class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md">
+        <button @click="currentStep++" :disabled="currentStep === totalSteps"
+                class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           Next
-        </button>
-        <button v-else @click="submitForm"
-                class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-md">
-          Save Changes
         </button>
       </div>
     </div>
 
-
-    
-    <div v-if="selectedTemplateId" class="lg:col-span-2 bg-white p-4 rounded-lg shadow-md"> 
-      <div class="flex justify-between items-center mb-4 border-b pb-3">
-        <h2 class="text-xl font-bold text-gray-800">Applicant Data Preview</h2>
-        <div class="flex gap-2">
-            <button @click="downloadResume" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
-                Download Resume
-            </button>
-            <button @click="backToTemplates" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">
-              Change Template
-            </button>
+    <div class="lg:col-span-2">
+      <div class="sticky top-4">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Resume Preview</h2>
+        <div class="bg-white rounded-lg shadow p-6">
+          <!-- Placeholder for Resume Preview -->
+          <p class="text-gray-500">Resume preview will be displayed here.</p>
         </div>
-      </div>
-      <component :is="currentTemplate" :resume="formData" />
-      <div class="mt-4 p-4 border rounded">
-      <h3>Resume Access</h3>
-      <button @click="toggleResumeQR" class="px-4 py-2 bg-blue-600 text-white rounded">
-      {{ showResumeQR ? 'Hide Resume QR' : 'Show Resume QR & Link' }}
-      </button>
-
-
-      <div v-if="showResumeQR" class="mt-3">
-      <p>
-      Resume Link:
-      <a :href="resumeUrl" target="_blank" class="text-blue-500 underline">
-      {{ resumeUrl }}
-      </a>
-      </p>
-      <qrcode-vue :value="resumeUrl" :size="150" class="mt-2" />
-      </div>
+        <button @click="resumeStore.saveResume(formData)" class="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+          Save Resume
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { useResumeStore, candidateProfile } from '@/stores/resumeStore';
-import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
-import { useRouter, useRoute } from 'vue-router';
-import { COLOR_PALETTES } from '@/constants/colorPalettes';
-import type { FormData } from '@/types/resume';
-import QrcodeVue from 'qrcode.vue';
-import { nanoid } from 'nanoid';
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useResumeStore } from '@/stores/resumeStore'
+import { ATS_TEMPLATES } from '@/constants/resumeTemplates'
+import type { ResumeData } from '@/types/resume'
 
-const router = useRouter();
-const route = useRoute();
-const resumeStore = useResumeStore();
+const router = useRouter()
+const route = useRoute()
+const resumeStore = useResumeStore()
 
-// UI State for Template vs. Form view
-const selectedTemplateId = ref<string | null>(null);
-const selectedTemplateIdForGallery = ref('');
-const selectedPalettes = ref<{ [key: string]: any }>({});
-const isEditing = ref(false);
-const editingResumeId = ref<string | null>(null);
-const resumeName = ref('');
-const validationError = ref('');
+const currentStep = ref(1)
+const totalSteps = computed(() => 10)
+const isEditing = computed(() => !!route.query.id)
 
-// Form state
-const currentStep = ref(1);
-const totalSteps = 10;
-const formData = ref<FormData>(JSON.parse(JSON.stringify({
-  ...candidateProfile,
-  history: {
-    work_history: [],
-    education_history: [],
+// Initialize form data structure
+const formData = reactive<ResumeData>({
+  personal: {
+    first_name: '',
+    last_name: '',
+    headline: '',
+    country: '',
+    address_1: '',
+    address_2: '',
+    city: '',
+    state_province_region: '',
+    zip_postal_code: '',
+    home_office: '',
+    geo_location: '',
+    school_district: '',
+    mobile_phone: '',
+    work_phone: '',
+    home_phone: '',
+    email_0: '',
+    email_1: '',
+    ssn: '',
+    profile_photo_url: ''
   },
-  online_presence: {},
-  certifications: [],
-  skills: [],
-  projects: [],
-  references: [],
-  job_portals: {},
-  version_control: {},
-})));
+  employment: {
+    employment_type: '',
+    talent_status: '',
+    applicant_tags: '',
+    details_notes: '',
+    industry_experience: '',
+    applicant_source: ''
+  },
+  history: {
+    education_history: [{
+      institution_name: '',
+      degree: '',
+      field_of_study: '',
+      education_location: '',
+      start_date: '',
+      end_date: '',
+      is_current_education: false,
+      degree_image_url: ''
+    }],
+    work_history: [{
+      company_name: '',
+      job_title: '',
+      job_type: '',
+      job_location: '',
+      job_description: '',
+      start_date: '',
+      end_date: '',
+      is_current_job: false,
+      experience_letter_url: ''
+    }]
+  },
+  online_presence: {
+    facebook_profile: '',
+    twitter_profile: '',
+    instagram_profile: '',
+    youtube_profile: '',
+    tiktok_profile: '',
+    pinterest_profile: '',
+    skype_id: '',
+    whatsapp_number: '',
+    wechat_id: '',
+    viber_id: '',
+    signal_id: '',
+    telegram_id: '',
+    discord_id: '',
+    slack_id: ''
+  },
+  job_portals: {
+    linked_in_profile: '',
+    indeed_profile: '',
+    monster_profile: '',
+    glassdoor_profile: '',
+    zip_recruiter_profile: '',
+    career_builder_profile: '',
+    simply_hired_profile: '',
+    upwork_profile: '',
+    freelancer_profile: '',
+    guru_profile: '',
+    people_per_hour_profile: '',
+    fiverr_profile: ''
+  },
+  version_control: {
+    github: '',
+    gitlab: '',
+    bitbucket: '',
+    sourceforge: '',
+    codeberg: '',
+    gitea: ''
+  },
+  skills: [{
+    skill_category_name: '',
+    skill_name: '',
+    skill_proficiency_level: '',
+    skill_years_of_experience: 0,
+    notes: ''
+  }],
+  certifications: [{
+    certification_name: '',
+    certification_body: '',
+    certification_date: '',
+    certification_status: 'Completed',
+    expiration_date: '',
+    certificate_image_url: ''
+  }],
+  projects: [{
+    proj_name: '',
+    proj_description: '',
+    proj_date: '',
+    proj_relevantLink: '',
+    proj_forWhom: ''
+  }],
+  references: [{
+    full_name: '',
+    email: '',
+    contact: '',
+    designation: '',
+    company: '',
+    relation: ''
+  }]
+})
 
-// Computed properties for template/preview
-const templatesList = ATS_TEMPLATES;
-const currentTemplate = computed(() => {
-  if (!selectedTemplateId.value) return null;
-  const selected = templatesList.find(template => template.id === selectedTemplateId.value);
-  return selected ? selected.layoutComponent : null;
-});
-
-// Auto-save logic
-watch(formData, (newVal) => {
-  if (selectedTemplateId.value) {
-    const resumeToUpdate = {
-      id: editingResumeId.value || nanoid(),
-      title: resumeName.value || 'Untitled Resume',
-      templateId: selectedTemplateId.value,
-      data: newVal
-    };
-    resumeStore.addOrUpdateResume(resumeToUpdate);
-  }
-}, { deep: true, immediate: true });
-
-
-// Progress indicator
-const progress = computed(() => {
-  const filledFields = countFilledFields(formData.value);
-  const totalFields = countTotalFields(formData.value);
-  return totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
-});
-
-function countFilledFields(data: any): number {
-  let count = 0;
-  for (const key in data) {
-    if (Array.isArray(data[key])) {
-      data[key].forEach((item: any) => {
-        for (const subKey in item) {
-          if (item[subKey] && item[subKey] !== '' && item[subKey] !== null) {
-            count++;
-          }
-        }
-      });
-    } else if (typeof data[key] === 'object' && data[key] !== null) {
-      count += countFilledFields(data[key]);
-    } else if (data[key] && data[key] !== '' && data[key] !== null) {
-      count++;
-    }
-  }
-  return count;
+function getTemplateName(): string {
+  const templateId = resumeStore.selectedTemplate?.id || 'template1'
+  const template = ATS_TEMPLATES.find(t => t.id === templateId)
+  return template?.name || 'Professional Template'
 }
 
-function countTotalFields(data: any): number {
-  let count = 0;
-  for (const key in data) {
-    if (Array.isArray(data[key])) {
-      data[key].forEach((item: any) => {
-        for (const subKey in item) {
-          count++;
-        }
-      });
-    } else if (typeof data[key] === 'object' && data[key] !== null) {
-      count += countTotalFields(data[key]);
-    } else {
-      count++;
-    }
-  }
-  return count;
+function changeTemplate() {
+  router.push({ name: 'TemplateGallery' })
 }
 
+function jumpToStep(stepNum: number) {
+  currentStep.value = stepNum
+}
 
-// QR Code state
-const showResumeQR = ref(false)
-const resumeUrl = computed(() => {
-  if (isEditing.value && editingResumeId.value) {
-    return `http://localhost:5173/resume-preview/${editingResumeId.value}`;
-  }
-  return `http://localhost:5173/resume-preview/new`; // Placeholder for a new resume
-});
+function getStepName(stepNum: number): string {
+  const stepNames = [
+    'Personal Info',
+    'Employment',
+    'Education',
+    'Work History',
+    'Social Profiles',
+    'Skills',
+    'Certifications',
+    'Projects',
+    'References',
+    'Additional Info'
+  ]
+  return stepNames[stepNum - 1] || `Step ${stepNum}`
+}
 
-onMounted(() => {
-  if (route.query.id) {
-    const resumeToEdit = resumeStore.getResumeById(route.query.id as string);
-    if (resumeToEdit) {
-      // Set the formData to a deep copy of the selected resume's data
-      Object.assign(formData.value, JSON.parse(JSON.stringify(resumeToEdit.data)));
-      selectedTemplateId.value = resumeToEdit.templateId;
-      // Set the selected palette from the store
-      resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === resumeStore.selectedPalette) || 'default');
-      isEditing.value = true;
-      editingResumeId.value = resumeToEdit.id;
-      resumeName.value = resumeToEdit.title;
-    } else {
-      router.push({ name: 'CreateResume' });
+function addRow(section: string, subsection?: string) {
+  if (section === 'history' && subsection) {
+    if (subsection === 'education_history') {
+      formData.history.education_history.push({
+        institution_name: '',
+        degree: '',
+        field_of_study: '',
+        education_location: '',
+        start_date: '',
+        end_date: '',
+        is_current_education: false,
+        degree_image_url: ''
+      })
+    } else if (subsection === 'work_history') {
+      formData.history.work_history.push({
+        company_name: '',
+        job_title: '',
+        job_type: '',
+        job_location: '',
+        job_description: '',
+        start_date: '',
+        end_date: '',
+        is_current_job: false,
+        experience_letter_url: ''
+      })
     }
-  } else {
-    // This is the key fix: when creating a new resume, set the template ID to null and reset the form.
-    selectedTemplateId.value = null;
-    resumeName.value = '';
-    Object.assign(formData.value, resumeStore.getNewCandidateProfile());
-  }
-});
-
-
-// Handlers for template selection
-const selectTemplate = (templateId: string) => {
-  selectedTemplateId.value = templateId;
-  const selectedPalette = selectedPalettes.value[templateId] || COLOR_PALETTES.default;
-  resumeStore.switchTemplate(templateId);
-  // Set the selected palette in the store immediately after selecting a template
-  resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette) || 'default');
-  
-  if (!isEditing.value) {
-    // Use the deep copy from the store action to ensure independence
-    Object.assign(formData.value, resumeStore.getNewCandidateProfile());
-  }
-};
-
-const backToTemplates = () => {
-  selectedTemplateId.value = null;
-  currentStep.value = 1;
-};
-
-const handlePaletteChange = (templateId: string, palette: any) => {
-  selectedTemplateIdForGallery.value = templateId;
-  selectedPalettes.value = {
-    ...selectedPalettes.value,
-    [templateId]: palette,
-  };
-  // Also set the palette in the store so the live preview updates
-  resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === palette) || 'default');
-};
-
-// Form navigation
-const getStepName = (step: number) => {
-  const names = ['Personal Info', 'Employment', 'Education History', 'Work History', 'Social & Dev Profiles', 'Skills', 'Certifications', 'Projects', 'References', 'Additional Info'];
-  return names[step - 1] || '';
-};
-
-const nextStep = () => {
-  if (validateCurrentStep()) {
-    if (currentStep.value < totalSteps) {
-      currentStep.value++;
-      validationError.value = '';
-    }
-  }
-};
-
-const prevStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--;
-    validationError.value = '';
-  }
-};
-
-// Form actions
-const handleFileChange = (e: Event, index: number, section: 'work_history' | 'education_history' | 'certifications' | 'personal', field: string) => {
-  const file = (e.target as HTMLInputElement).files?.[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    if (section === 'personal') {
-      (formData.value.personal as any)[field] = event.target?.result;
-    } else if (section === 'work_history' || section === 'education_history') {
-      (formData.value.history as any)[section][index][field] = event.target?.result;
-    } else if (section === 'certifications') {
-      (formData.value.certifications[index] as any)[field] = event.target?.result;
-    }
-  };
-  reader.readAsDataURL(file);
-};
-
-const addRow = (section: 'skills' | 'projects' | 'references' | 'certifications' | 'history', field?: 'work_history' | 'education_history') => {
-  if (section === 'skills') {
-      formData.value.skills.push({ skill_category_name: '', skill_name: '', skill_proficiency_level: '', skill_years_of_experience: null, notes: '' });
-  } else if (section === 'projects') {
-      formData.value.projects.push({ proj_name: '', proj_description: '', proj_date: '', proj_forWhom: '', proj_relevantLink: '' });
-  } else if (section === 'references') {
-      formData.value.references.push({ full_name: '', email: '', designation: '', company: '', contact: '', relation: '' });
-  } else if (section === 'certifications') {
-    formData.value.certifications.push({ certification_name: '', certification_body: '', certification_date: '', expiration_date: '', certification_status: 'Completed', certificate_image_url: null });
-  } else if (section === 'history') {
-    if (field === 'work_history') {
-      formData.value.history.work_history.push({ company_name: '', job_title: '', job_description: '', start_date: '', end_date: '', is_current_job: false, job_location: '', job_type: '', job_status: '', experience_letter_url: null });
-    } else if (field === 'education_history') {
-      formData.value.history.education_history.push({ institution_name: '', degree: '', field_of_study: '', start_date: '', end_date: '', is_current_education: false, education_location: '', education_status: '', degree_image_url: null });
-    }
-  }
-};
-
-const removeRow = (section: 'skills' | 'projects' | 'references' | 'certifications' | 'history', index: number, field?: 'work_history' | 'education_history') => {
-  if (section === 'skills') {
-      formData.value.skills.splice(index, 1);
-  } else if (section === 'projects') {
-      formData.value.projects.splice(index, 1);
-  } else if (section === 'references') {
-      formData.value.references.splice(index, 1);
-  } else if (section === 'certifications') {
-      formData.value.certifications.splice(index, 1);
-  } else if (section === 'history' && field) {
-      formData.value.history[field].splice(index, 1);
-  }
-};
-
-const updateArrayField = (section: string, field: string | undefined, index: number, subField: string, value: any) => {
-  if (section === 'history' && field) {
-    (formData.value.history as any)[field][index][subField] = value;
-  } else if (section === 'certifications') {
-    (formData.value.certifications[index] as any)[subField] = value;
   } else if (section === 'skills') {
-    (formData.value.skills[index] as any)[subField] = value;
+    formData.skills.push({
+      skill_category_name: '',
+      skill_name: '',
+      skill_proficiency_level: '',
+      skill_years_of_experience: 0,
+      notes: ''
+    })
+  } else if (section === 'certifications') {
+    formData.certifications.push({
+      certification_name: '',
+      certification_body: '',
+      certification_date: '',
+      certification_status: 'Completed',
+      expiration_date: '',
+      certificate_image_url: ''
+    })
   } else if (section === 'projects') {
-    (formData.value.projects[index] as any)[subField] = value;
+    formData.projects.push({
+      proj_name: '',
+      proj_description: '',
+      proj_date: '',
+      proj_relevantLink: '',
+      proj_forWhom: ''
+    })
   } else if (section === 'references') {
-    (formData.value.references[index] as any)[subField] = value;
-  } else if (section === 'online_presence') {
-    (formData.value.online_presence as any)[subField] = value;
-  } else if (section === 'job_portals') {
-    (formData.value.job_portals as any)[subField] = value;
-  } else if (section === 'version_control') {
-    (formData.value.version_control as any)[subField] = value;
+    formData.references.push({
+      full_name: '',
+      email: '',
+      contact: '',
+      designation: '',
+      company: '',
+      relation: ''
+    })
   }
-};
+}
 
-const validateCurrentStep = () => {
-  validationError.value = '';
-  switch (currentStep.value) {
-    case 1:
-      if (!formData.value.personal.first_name || !formData.value.personal.last_name || !formData.value.personal.email_0 || !formData.value.personal.mobile_phone || !formData.value.personal.country || !formData.value.personal.address_1 || !formData.value.personal.city || !formData.value.personal.headline || !formData.value.personal.profile_photo_url) {
-        validationError.value = 'Please fill out all mandatory fields in this step.';
-        return false;
-      }
-      break;
-    case 2:
-      if (!formData.value.employment.talent_status || !formData.value.employment.applicant_tags || !formData.value.employment.employment_type) {
-        validationError.value = 'Please fill out all mandatory fields in this step.';
-        return false;
-      }
-      break;
-    case 3:
-      if (formData.value.history.education_history.length === 0) {
-        validationError.value = 'Please add at least one education history entry.';
-        return false;
-      }
-      for (const edu of formData.value.history.education_history) {
-        if (!edu.institution_name || !edu.degree || !edu.field_of_study || !edu.start_date || !edu.education_location || (!edu.is_current_education && (!edu.end_date || !edu.degree_image_url))) {
-          validationError.value = 'All education history entries must have a school, degree, field of study, start date, education location, and end date/degree image (if not currently enrolled).';
-          return false;
-        }
-      }
-      break;
-    case 4:
-      if (formData.value.history.work_history.length === 0) {
-        validationError.value = 'Please add at least one work history entry.';
-        return false;
-      }
-      for (const job of formData.value.history.work_history) {
-        if (!job.company_name || !job.job_title || !job.start_date || !job.job_location || !job.job_type || (!job.is_current_job && (!job.end_date || !job.experience_letter_url))) {
-          validationError.value = 'All work history entries must have a company, job title, start date, job location, job type, and end date/experience letter (if not a current job).';
-          return false;
-        }
-      }
-      break;
-    case 5:
-      // No mandatory fields for Social & Dev Profiles
-      break;
-    case 6:
-      if (formData.value.skills.length === 0) {
-        validationError.value = 'Please add at least one skill entry.';
-        return false;
-      }
-      for (const skill of formData.value.skills) {
-        if (!skill.skill_category_name || !skill.skill_name || !skill.skill_proficiency_level) {
-          validationError.value = 'All skill entries must have a category, name, and proficiency level.';
-          return false;
-        }
-      }
-      break;
-    case 7:
-      if (formData.value.certifications.length === 0) {
-        validationError.value = 'Please add at least one certification entry.';
-        return false;
-      }
-      for (const cert of formData.value.certifications) {
-        if (!cert.certification_name || !cert.certification_body || !cert.certification_date || (!cert.certification_status === 'In Progress' && !cert.expiration_date) || (cert.certification_status === 'Completed' && !cert.certificate_image_url)) {
-          validationError.value = 'All certification entries must have a name, body, date, and status. Expiration date is required if not in progress. Certificate picture is required if completed.';
-          return false;
-        }
-      }
-      break;
-    case 8:
-      if (formData.value.projects.length === 0) {
-        validationError.value = 'Please add at least one project entry.';
-        return false;
-      }
-      for (const project of formData.value.projects) {
-        if (!project.proj_name || !project.proj_description || !project.proj_forWhom) {
-          validationError.value = 'All project entries must have a name, description, and "for whom" field.';
-          return false;
-        }
-      }
-      break;
-    case 9:
-      if (formData.value.references.length === 0) {
-        validationError.value = 'Please add at least one reference entry.';
-        return false;
-      }
-      for (const ref of formData.value.references) {
-        if (!ref.full_name || !ref.email || !ref.designation || !ref.company) {
-          validationError.value = 'All reference entries must have a full name, email, designation, and company.';
-          return false;
-        }
-      }
-      break;
-    case 10:
-      if (!resumeName.value) {
-        validationError.value = 'Please give your resume a name.';
-        return false;
-      }
-      break;
+function removeRow(section: string, index: number, subsection?: string) {
+  if (section === 'history' && subsection) {
+    if (subsection === 'education_history') {
+      formData.history.education_history.splice(index, 1)
+    } else if (subsection === 'work_history') {
+      formData.history.work_history.splice(index, 1)
+    }
+  } else if (section === 'skills') {
+    formData.skills.splice(index, 1)
+  } else if (section === 'certifications') {
+    formData.certifications.splice(index, 1)
+  } else if (section === 'projects') {
+    formData.projects.splice(index, 1)
+  } else if (section === 'references') {
+    formData.references.splice(index, 1)
   }
-  return true;
-};
+}
 
-const submitForm = () => {
-  if (!validateCurrentStep()) return;
-
-  const resumeId = isEditing.value && editingResumeId.value ? editingResumeId.value : nanoid();
-  const titleToSave = resumeName.value || `${formData.value.personal.first_name} ${formData.value.personal.last_name}'s Resume`;
-
-  const newResume = {
-    id: resumeId,
-    title: titleToSave,
-    templateId: selectedTemplateId.value as string,
-    data: JSON.parse(JSON.stringify(formData.value))
-  };
-
-  resumeStore.addOrUpdateResume(newResume);
-  alert(`Resume saved successfully with ID: ${newResume.id}`);
-  router.push({ name: 'SavedResumes' });
-};
-
-const downloadResume = () => {
-  console.log("Download button clicked. Initiating resume download.");
-  alert('Downloading resume...');
-};
-
-const toggleResumeQR = () => {
-  showResumeQR.value = !showResumeQR.value;
-};
-
-const jumpToStep = (step: number) => {
-  if (validateCurrentStep()) {
-    currentStep.value = step;
-    validationError.value = '';
+function updateArrayField(section: string, subsection: string | undefined, index: number, field: string, value: any) {
+  if (section === 'history' && subsection) {
+    if (subsection === 'education_history') {
+      (formData.history.education_history[index] as any)[field] = value
+    } else if (subsection === 'work_history') {
+      (formData.history.work_history[index] as any)[field] = value
+    }
+  } else if (section === 'skills') {
+    (formData.skills[index] as any)[field] = value
+  } else if (section === 'certifications') {
+    (formData.certifications[index] as any)[field] = value
+  } else if (section === 'projects') {
+    (formData.projects[index] as any)[field] = value
+  } else if (section === 'references') {
+    (formData.references[index] as any)[field] = value
   }
-};
+}
+
+function handleFileChange(event: Event, index: number, section: string, field: string) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      if (section === 'personal') {
+        (formData.personal as any)[field] = result
+      } else if (section === 'education_history') {
+        (formData.history.education_history[index] as any)[field] = result
+      } else if (section === 'work_history') {
+        (formData.history.work_history[index] as any)[field] = result
+      } else if (section === 'certifications') {
+        (formData.certifications[index] as any)[field] = result
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+// Load existing resume data if editing
+onMounted(() => {
+  if (isEditing.value && route.query.id) {
+    const existingResume = resumeStore.savedResumes.find(r => r.id === route.query.id)
+    if (existingResume) {
+      Object.assign(formData, existingResume.data)
+    }
+  }
+})
+
+// Auto-save functionality
+watch(formData, () => {
+  resumeStore.updateCurrentResume(formData)
+}, { deep: true })
 </script>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-.template-gallery-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.template-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
-  height: 400px;
-}
-.template-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.template-preview-wrapper {
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  background-color: white;
-}
-.resume-preview-component {
-  width: 200%;
-  height: 200%;
-  transform: scale(0.5);
-  transform-origin: top left;
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
-}
-.use-template-button {
-  background-color: #2563eb;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: 600;
-  transition: background-color 0.2s;
-  border: none;
-}
-.use-template-button:hover {
-  background-color: #1d4ed8;
-}
-</style>

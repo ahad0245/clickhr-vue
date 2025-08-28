@@ -10,8 +10,25 @@
       </button>
     </div>
     
+    <!-- Added search bar for client-side filtering -->
+    <div class="mb-6">
+      <div class="relative max-w-md">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search resumes by title or template..."
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <p class="text-sm text-gray-500 mt-2">{{ filteredResumes.length }} of {{ resumeStore.savedResumes.length }} resumes</p>
+    </div>
+    
+    <!-- Updated grid to use filtered resumes -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="resume in resumeStore.savedResumes" :key="resume.id" class="resume-card-wrapper">
+      <div v-for="resume in filteredResumes" :key="resume.id" class="resume-card-wrapper">
         <div class="resume-card relative group border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
           <div class="template-preview-wrapper h-64 overflow-hidden relative">
             <component :is="getTemplateComponent(resume.templateId)"
@@ -39,12 +56,21 @@
       </div>
     </div>
 
+    <!-- Added empty state for no search results -->
+    <div v-if="filteredResumes.length === 0 && searchQuery" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No resumes found</h3>
+      <p class="mt-1 text-sm text-gray-500">Try adjusting your search terms.</p>
+    </div>
+
     <ShareModal v-if="showShareModal" :resumeId="shareResumeId" @close="closeShareModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef } from 'vue';
+import { ref, shallowRef, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
@@ -57,6 +83,21 @@ const templatesList = ATS_TEMPLATES;
 const showShareModal = ref(false);
 const shareResumeId = ref('');
 
+const searchQuery = ref('');
+
+const filteredResumes = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return resumeStore.savedResumes;
+  }
+  
+  const query = searchQuery.value.toLowerCase().trim();
+  return resumeStore.savedResumes.filter(resume => {
+    const titleMatch = resume.title.toLowerCase().includes(query);
+    const templateMatch = getTemplateName(resume.templateId).toLowerCase().includes(query);
+    return titleMatch || templateMatch;
+  });
+});
+
 function getTemplateComponent(templateId: string) {
   const template = templatesList.find(t => t.id === templateId);
   return template ? shallowRef(template.layoutComponent) : null;
@@ -68,7 +109,7 @@ function getTemplateName(templateId: string) {
 }
 
 function createNewResume() {
-  router.push({ name: 'CreateResume' });
+  router.push({ name: 'TemplateGallery' });
 }
 
 function editResume(resume: any) {
@@ -76,7 +117,7 @@ function editResume(resume: any) {
 }
 
 function previewResume(resume: any) {
-    router.push({ name: 'ResumePreview', params: { id: resume.id } });
+  router.push({ name: 'ResumePreview', params: { id: resume.id } });
 }
 
 function openShareModal(resume: any) {

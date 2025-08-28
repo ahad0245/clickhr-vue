@@ -1,195 +1,200 @@
 // src/router/index.ts
 
-import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } from 'vue-router';
-import DashboardLayout from '../layouts/DashboardLayout.vue';
-import DashboardOverviewPage from '../modules/backOffice/pages/DashboardOverviewPage.vue';
-import AnalyticsPage from '../modules/backOffice/pages/AnalyticsPage.vue';
-import SettingsPage from '../modules/backOffice/pages/SettingsPage.vue';
-import LandingPage from '../modules/backOffice/pages/LandingPage.vue';
-import LoginPage from '../modules/backOffice/pages/LoginPage.vue';
-import SignupPage from '../modules/backOffice/pages/SignupPage.vue';
-import NotFoundPage from '../modules/backOffice/pages/NotFoundPage.vue';
-import UsersPage from '../modules/backOffice/pages/UsersPage.vue';
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router"
+import DashboardLayout from "../layouts/DashboardLayout.vue"
+import DashboardOverviewPage from "../modules/backOffice/pages/DashboardOverviewPage.vue"
+import AnalyticsPage from "../modules/backOffice/pages/AnalyticsPage.vue"
+import SettingsPage from "../modules/backOffice/pages/SettingsPage.vue"
+import LandingPage from "../modules/backOffice/pages/LandingPage.vue"
+import LoginPage from "../modules/backOffice/pages/LoginPage.vue"
+import SignupPage from "../modules/backOffice/pages/SignupPage.vue"
+import NotFoundPage from "../modules/backOffice/pages/NotFoundPage.vue"
+import UsersPage from "../modules/backOffice/pages/UsersPage.vue"
 
-import AppConfigPage from '../modules/backOffice/pages/AppConfigPage.vue';
-import OverviewTalentPage from '../modules/backOffice/pages/OverviewTalentPage.vue';
-import AddTalentpageBackoffice from '../modules/backOffice/pages/AddTalentpage.vue';
-import OverviewCompaniesPage from '../modules/backOffice/pages/OverviewCompaniesPage.vue';
-import AddCompaniesPage from '../modules/backOffice/pages/AddCompaniesPage.vue';
-import BackOfficePage from '../modules/backOffice/pages/BackOfficePage.vue';
-import CreateUser from '../modules/backOffice/pages/createUser.vue';
-import Users from '../modules/candidate/pages/Users.vue';
-import Dashboardcandidate from '../modules/candidate/pages/Dashboard.vue';
-import CreateResumePage from '../modules/candidate/pages/CreateResumePage.vue';
-import ResumePreviewPage from '../modules/candidate/pages/ResumePreviewPage.vue'; // New component
-import Jobspage from '../modules/candidate/pages/Jobspage.vue';
-import JobDetailPage from '../modules/candidate/pages/JobDetailPage.vue';
-import TalentProfile from '../modules/candidate/pages/TalentProfile.vue';
-import ResumePage from '../modules/candidate/pages/ResumePage.vue';
-
+import AppConfigPage from "../modules/backOffice/pages/AppConfigPage.vue"
+import OverviewTalentPage from "../modules/backOffice/pages/OverviewTalentPage.vue"
+import AddTalentpageBackoffice from "../modules/backOffice/pages/AddTalentpage.vue"
+import OverviewCompaniesPage from "../modules/backOffice/pages/OverviewCompaniesPage.vue"
+import AddCompaniesPage from "../modules/backOffice/pages/AddCompaniesPage.vue"
+import BackOfficePage from "../modules/backOffice/pages/BackOfficePage.vue"
+import CreateUser from "../modules/backOffice/pages/createUser.vue"
+import Users from "../modules/candidate/pages/Users.vue"
+import Dashboardcandidate from "../modules/candidate/pages/Dashboard.vue"
+import CreateResumePage from "../modules/candidate/pages/CreateResumePage.vue"
+import ResumePreviewPage from "../modules/candidate/pages/ResumePreviewPage.vue"
+import Jobspage from "../modules/candidate/pages/Jobspage.vue"
+import JobDetailPage from "../modules/candidate/pages/JobDetailPage.vue"
+import TalentProfile from "../modules/candidate/pages/TalentProfile.vue"
+import ResumePage from "../modules/candidate/pages/ResumePage.vue"
+import TemplateGalleryPage from "../modules/candidate/pages/TemplateGalleryPage.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Landing',
+    path: "/",
+    name: "Landing",
     component: LandingPage,
-    meta: { title: 'Welcome' }
+    meta: { title: "Welcome" },
   },
   {
-    path: '/login',
-    name: 'Login',
+    path: "/login",
+    name: "Login",
     component: LoginPage,
-    meta: { title: 'Login' }
+    meta: { title: "Login" },
   },
   {
-    path: '/signup',
-    name: 'Signup',
+    path: "/signup",
+    name: "Signup",
     component: SignupPage,
-    meta: { title: 'Sign Up' }
+    meta: { title: "Sign Up" },
   },
   {
-    path: '/dashboard',
+    path: "/dashboard",
     component: DashboardLayout,
     children: [
       {
-        path: '',
-        name: 'DashboardOverview',
+        path: "",
+        name: "DashboardOverview",
         component: DashboardOverviewPage,
-        meta: { title: 'Overview' }
+        meta: { title: "Overview" },
       },
       {
-        path: 'analytics',
-        name: 'Analytics',
+        path: "analytics",
+        name: "Analytics",
         component: AnalyticsPage,
-        meta: { title: 'Analytics' }
+        meta: { title: "Analytics" },
       },
       {
-        path: 'settings',
-        name: 'Settings',
+        path: "settings",
+        name: "Settings",
         component: SettingsPage,
-        meta: { title: 'Settings' }
+        meta: { title: "Settings" },
       },
       {
-        path: 'users',
-        name: 'Users',
+        path: "users",
+        name: "Users",
         component: UsersPage,
-        meta: { title: 'Users' }
+        meta: { title: "Users" },
       },
       {
-        path: 'app-config',
-        name: 'Application Confiq',
+        path: "app-config",
+        name: "Application Confiq",
         component: AppConfigPage,
-        meta: { title: 'Application Config' }
+        meta: { title: "Application Config" },
       },
       {
-        path: 'addtalent',
-        name: 'Add Talent',
+        path: "addtalent",
+        name: "Add Talent",
         component: AddTalentpageBackoffice,
-        meta: { title: 'Add Talent' }
+        meta: { title: "Add Talent" },
       },
       {
-        path: 'talentoverview',
-        name: 'Talent Overview',
+        path: "talentoverview",
+        name: "Talent Overview",
         component: OverviewTalentPage,
-        meta: { title: 'Talent Overview' }
+        meta: { title: "Talent Overview" },
       },
       {
-        path: 'companies',
-        name: 'Companies Overview',
+        path: "companies",
+        name: "Companies Overview",
         component: OverviewCompaniesPage,
-        meta: { title: 'Companies Overview' }
+        meta: { title: "Companies Overview" },
       },
       {
-        path: 'addcompanies',
-        name: 'Add Companies',
+        path: "addcompanies",
+        name: "Add Companies",
         component: AddCompaniesPage,
-        meta: { title: 'Add Companies' }
+        meta: { title: "Add Companies" },
       },
       {
-        path: 'dummyUsers',
-        name: 'total Users',
+        path: "dummyUsers",
+        name: "total Users",
         component: Users,
-        meta: { title: 'Total' }
+        meta: { title: "Total" },
       },
     ],
   },
   {
-    path: '/backoffice',
+    path: "/backoffice",
     component: DashboardLayout,
     children: [
       {
-        path: '',
-        name: 'Back Office',
+        path: "",
+        name: "Back Office",
         component: BackOfficePage,
-        meta: { title: 'Back Office' }
+        meta: { title: "Back Office" },
       },
       {
-        path: 'createUser',
-        name: 'Create Back Office',
+        path: "createUser",
+        name: "Create Back Office",
         component: CreateUser,
-        meta: { title: 'create user' }
+        meta: { title: "create user" },
       },
     ],
   },
   {
-    path: '/candidate',
+    path: "/candidate",
     component: DashboardLayout,
     children: [
       {
-        path: '',
-        name: 'Candidate Dashboard',
+        path: "",
+        name: "Candidate Dashboard",
         component: Dashboardcandidate,
-        meta: { title: 'Back Office' }
+        meta: { title: "Back Office" },
       },
       {
-        path: 'create-resume',
-        name: 'CreateResume',
+        path: "templates",
+        name: "TemplateGallery",
+        component: TemplateGalleryPage,
+        meta: { title: "Choose Template" },
+      },
+      {
+        path: "create-resume",
+        name: "CreateResume",
         component: CreateResumePage,
-        meta: { title: 'Create Resume' },
+        meta: { title: "Create Resume" },
         props: true,
       },
       {
-        path: 'resume',
-        name: 'SavedResumes',
+        path: "resume",
+        name: "SavedResumes",
         component: ResumePage,
-        meta: { title: 'My Resumes' }
+        meta: { title: "My Resumes" },
       },
       {
-        path: 'talentprofile',
-        name: 'Talent Profile',
+        path: "talentprofile",
+        name: "Talent Profile",
         component: TalentProfile,
-        meta: { title: 'create resume' }
+        meta: { title: "create resume" },
       },
       {
-        path: 'jobs',
-        name: 'Jobs',
+        path: "jobs",
+        name: "Jobs",
         component: Jobspage,
-        meta: { title: 'Users' }
+        meta: { title: "Users" },
       },
       {
-        path: '/jobs/:id',
-        name: 'Jobs-Details',
+        path: "/jobs/:id",
+        name: "Jobs-Details",
         component: JobDetailPage,
-        meta: { title: 'jobs details' },
-        props: route => ({ jobId: parseInt(route.params.id as string) })
+        meta: { title: "jobs details" },
+        props: (route) => ({ jobId: Number.parseInt(route.params.id as string) }),
       },
     ],
   },
-  // New route for the public/shared resume preview
   {
-    path: '/resume-preview/:id',
-    name: 'ResumePreview',
+    path: "/resume-preview/:id",
+    name: "ResumePreview",
     component: ResumePreviewPage,
-    meta: { title: 'Resume Preview' },
+    meta: { title: "Resume Preview" },
     props: true,
   },
   {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
     component: NotFoundPage,
-    meta: { title: 'Page Not Found' }
+    meta: { title: "Page Not Found" },
   },
-];
+]
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -197,15 +202,15 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     } else {
-      return { top: 0 };
+      return { top: 0 }
     }
-  }
-});
+  },
+})
 
 router.afterEach((to) => {
-  document.title = to.meta.title ? `Click-HR - ${to.meta.title}` : 'Click-HR';
-});
+  document.title = to.meta.title ? `Click-HR - ${to.meta.title}` : "Click-HR"
+})
 
-export default router;
+export default router

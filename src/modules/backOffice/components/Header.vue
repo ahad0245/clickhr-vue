@@ -78,7 +78,7 @@
             <input
               type="search"
               placeholder="Search..."
-              class="flex-grow px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-500 focus:outline-none"
+              class="flex-grow px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             <NotificationDropdown />
             <UserProfileDropdown />
@@ -122,7 +122,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
-// 1. Import 'useRouter'
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../../../stores/useAuthStore';
 import NotificationDropdown from './NotificationDropdown.vue';
@@ -130,146 +129,114 @@ import UserProfileDropdown from './UserProfileDropdown.vue';
 
 const route = useRoute();
 const auth = useAuthStore();
-// 2. Instantiate the router
 const router = useRouter();
 
 const sidebarOpen = ref(false);
 const activeMain = ref('dashboard');
 
-// --- DATA STRUCTURES FOR NAVIGATION (No changes here) ---
 const topMenus = [
-  { key: 'dashboard', label: 'Dashboard', defaultPath: '/dashboard', roles: ['admin', 'recruiter', 'viewer'] },
-  { key: 'jobs', label: 'Jobs', defaultPath: '/dashboard/jobs', roles: ['recruiter', 'viewer'] },
-  { key: 'talent', label: 'Talent', defaultPath: '/candidate/resume', roles: ['recruiter', 'viewer'] },
-  { key: 'timesheet', label: 'Timesheet', defaultPath: '/timesheet', roles: ['recruiter'] },
-  { key: 'companies', label: 'Companies', defaultPath: '/dashboard/companies', roles: ['recruiter'] },
-  { key: 'documents', label: 'Documents', defaultPath: '/dashboard/documents', roles: ['recruiter'] }
+  { key: 'dashboard', label: 'Dashboard', defaultPath: '/dashboard', roles: ['admin', 'recruiter', 'viewer'] },
+  { key: 'jobs', label: 'Jobs', defaultPath: '/dashboard/jobs', roles: ['recruiter', 'viewer'] },
+  { key: 'talent', label: 'Talent', defaultPath: '/candidate/templates', roles: ['recruiter', 'viewer'] },
+  { key: 'timesheet', label: 'Timesheet', defaultPath: '/timesheet', roles: ['recruiter'] },
+  { key: 'companies', label: 'Companies', defaultPath: '/dashboard/companies', roles: ['recruiter'] },
+  { key: 'documents', label: 'Documents', defaultPath: '/dashboard/documents', roles: ['recruiter'] }
 ];
 
 const submenus: Record<string, { label: string; path: string; roles: string[] }[]> = {
-  dashboard: [
-    { label: 'Overview', path: '/dashboard', roles: ['recruiter'] },
-    { label: 'Overview', path: '/candidate', roles: ['viewer'] },
-    { label: 'Admin Overview', path: '/backoffice', roles: ['admin'] },
-    { label: 'Create Backoffice User', path: '/backoffice/createuser', roles: ['admin'] },
-    { label: 'Setup', path: '/backoffice/setup', roles: ['admin'] },
-    { label: 'Tasks', path: '/dashboard/tasks', roles: ['recruiter'] },
-    { label: 'Application Config', path: '/dashboard/app-config', roles: ['recruiter'] },
-    { label: 'Add Users', path: '/dashboard/users', roles: ['recruiter'] },
-    { label: 'Setting', path: '/dashboard/settings', roles: ['viewer', 'recruiter'] }
-  ],
-  jobs: [
-    { label: 'Job Board', path: '/dashboard/jobs', roles: ['recruiter'] },
-    { label: 'My Jobs', path: '/candidate/jobs', roles: ['viewer'] },
-    { label: 'My Applications', path: '/dashboard/jobs/my-applications', roles: ['recruiter'] },
-    { label: 'Create Job', path: '/dashboard/jobs/create', roles: ['recruiter'] }
-  ],
-  talent: [
-    { label: 'Talent Overview', path: '/dashboard/talentoverview', roles: ['recruiter'] },
-    { label: 'Add Talent', path: '/dashboard/addtalent', roles: ['recruiter'] },
-    { label: 'Create Resume', path: '/candidate/create-resume', roles: ['viewer'] },
-    { label: 'Resume', path: '/candidate/resume', roles: ['viewer'] }
-  ],
-  timesheet: [
-    { label: 'My Timesheets', path: '/timesheet', roles: ['recruiter'] },
-    { label: 'Submit Timesheet', path: '/timesheet/submit', roles: ['recruiter'] }
-  ],
-  companies: [
-    { label: 'Companies List', path: '/dashboard/companies', roles: ['recruiter'] },
-    { label: 'Add Companies', path: '/dashboard/addcompanies', roles: ['recruiter'] }
-  ],
-  documents: [
-    { label: 'My Documents', path: '/dashboard/documents', roles: ['recruiter'] },
-    { label: 'Upload Document', path: '/dashboard/documents/upload', roles: ['recruiter'] }
-  ]
+  dashboard: [
+    { label: 'Overview', path: '/dashboard', roles: ['recruiter'] },
+    { label: 'Overview', path: '/candidate', roles: ['viewer'] },
+    { label: 'Admin Overview', path: '/backoffice', roles: ['admin'] },
+    { label: 'Create Backoffice User', path: '/backoffice/createuser', roles: ['admin'] },
+    { label: 'Setup', path: '/backoffice/setup', roles: ['admin'] },
+    { label: 'Tasks', path: '/dashboard/tasks', roles: ['recruiter'] },
+    { label: 'Application Config', path: '/dashboard/app-config', roles: ['recruiter'] },
+    { label: 'Add Users', path: '/dashboard/users', roles: ['recruiter'] },
+    { label: 'Setting', path: '/dashboard/settings', roles: ['viewer', 'recruiter'] }
+  ],
+  jobs: [
+    { label: 'Job Board', path: '/dashboard/jobs', roles: ['recruiter'] },
+    { label: 'My Jobs', path: '/candidate/jobs', roles: ['viewer'] },
+    { label: 'My Applications', path: '/dashboard/jobs/my-applications', roles: ['recruiter'] },
+    { label: 'Create Job', path: '/dashboard/jobs/create', roles: ['recruiter'] }
+  ],
+  talent: [
+    { label: 'Talent Overview', path: '/dashboard/talentoverview', roles: ['recruiter'] },
+    { label: 'Add Talent', path: '/dashboard/addtalent', roles: ['recruiter'] },
+    { label: 'Create Resume', path: '/candidate/templates', roles: ['viewer'] },
+    { label: 'My Resumes', path: '/candidate/resume', roles: ['viewer'] }
+  ],
+  timesheet: [
+    { label: 'My Timesheets', path: '/timesheet', roles: ['recruiter'] },
+    { label: 'Submit Timesheet', path: '/timesheet/submit', roles: ['recruiter'] }
+  ],
+  companies: [
+    { label: 'Companies List', path: '/dashboard/companies', roles: ['recruiter'] },
+    { label: 'Add Companies', path: '/dashboard/addcompanies', roles: ['recruiter'] }
+  ],
+  documents: [
+    { label: 'My Documents', path: '/dashboard/documents', roles: ['recruiter'] },
+    { label: 'Upload Document', path: '/dashboard/documents/upload', roles: ['recruiter'] }
+  ]
 };
 
-
-// --- COMPUTED PROPERTIES FOR DYNAMIC UI (No changes here) ---
-
 const visibleTopMenus = computed(() => {
-  const userRole = auth.userRole || 'viewer';
-  return topMenus.filter(item => !item.roles || item.roles.includes(userRole));
+  const userRole = auth.userRole || 'viewer';
+  return topMenus.filter(item => !item.roles || item.roles.includes(userRole));
 });
 
 const activeSubmenus = computed(() => {
-  const userRole = auth.userRole || 'viewer';
-  const items = submenus[activeMain.value] || [];
-  return items.filter(item => !item.roles || item.roles.includes(userRole));
+  const userRole = auth.userRole || 'viewer';
+  const items = submenus[activeMain.value] || [];
+  return items.filter(item => !item.roles || item.roles.includes(userRole));
 });
 
-// --- HELPER FUNCTIONS (No changes here) ---
-
-const getActiveMainFromRoute = (currentPath: string): string => {
-  let bestMatch = { key: '', length: -1 };
-  for (const menu of visibleTopMenus.value) {
-    const associatedSubmenus = submenus[menu.key] || [];
-    for (const sub of associatedSubmenus) {
-      if (currentPath.startsWith(sub.path) && sub.path.length > bestMatch.length) {
-        bestMatch = { key: menu.key, length: sub.path.length };
-      }
-    }
-  }
-  if (bestMatch.key) {
-    return bestMatch.key;
-  }
-  for (const menu of visibleTopMenus.value) {
-    if (menu.defaultPath && currentPath === menu.defaultPath) {
-      return menu.key;
-    }
-  }
-  return visibleTopMenus.value[0]?.key || 'dashboard';
-};
-
-// --- HANDLERS ---
-
 function toggleSidebar() {
-  sidebarOpen.value = !sidebarOpen.value;
+  sidebarOpen.value = !sidebarOpen.value;
 }
 
 function closeSidebar() {
-  sidebarOpen.value = false;
+  sidebarOpen.value = false;
 }
 
-/**
- * 3. MODIFIED: When a main menu item is clicked, this function now navigates
- * to the first available submenu link for the current user's role.
- */
 function handleMainMenuClick(menuKey: string) {
-  // Set the clicked menu as active
-  activeMain.value = menuKey;
+  activeMain.value = menuKey;
 
-  // Find all potential submenus for the clicked menu
-  const potentialSubmenus = submenus[menuKey] || [];
-  const userRole = auth.userRole || 'viewer';
+  const potentialSubmenus = submenus[menuKey] || [];
+  const userRole = auth.userRole || 'viewer';
 
-  // Filter them to get only the ones the user has permission to see
-  const accessibleSubmenus = potentialSubmenus.filter(sub =>
-    !sub.roles || sub.roles.includes(userRole)
-  );
+  const accessibleSubmenus = potentialSubmenus.filter(sub =>
+    !sub.roles || sub.roles.includes(userRole)
+  );
 
-  // If there are accessible submenus, navigate to the path of the first one
-  if (accessibleSubmenus.length > 0) {
-    const firstSubmenuPath = accessibleSubmenus[0].path;
-    router.push(firstSubmenuPath);
-  }
+  if (accessibleSubmenus.length > 0) {
+    const firstSubmenuPath = accessibleSubmenus[0].path;
+    router.push(firstSubmenuPath);
+  }
 }
 
-
-// --- LIFECYCLE & WATCHERS (No changes here) ---
+function getActiveMainFromRoute(path: string): string {
+  for (const menu of topMenus) {
+    if (path.startsWith(menu.defaultPath)) {
+      return menu.key;
+    }
+  }
+  return 'dashboard';
+}
 
 onMounted(() => {
-  activeMain.value = getActiveMainFromRoute(route.path);
+  activeMain.value = getActiveMainFromRoute(route.path);
 });
 
 watch(() => route.path, (newPath) => {
-  activeMain.value = getActiveMainFromRoute(newPath);
+  activeMain.value = getActiveMainFromRoute(newPath);
 });
 
 watch(() => window.innerWidth, (newWidth) => {
-  if (newWidth >= 1024 && sidebarOpen.value) {
-    closeSidebar();
-  }
+  if (newWidth >= 1024 && sidebarOpen.value) {
+    closeSidebar();
+  }
 }, { immediate: true });
 </script>
 
