@@ -19,7 +19,7 @@
       <h3 class="text-xl font-bold text-gray-800 border-b-2 pb-1" :class="resumeStore.selectedPalette.primary">Experience</h3>
       <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-4 pl-4 border-l-4 border-gray-200">
         <h4 class="font-bold text-lg text-gray-800">{{ job.job_title || '' }} at {{ job.company_name || '' }}</h4>
-        <p class="text-sm text-gray-600">({{ job.start_date || '' }} - {{ job.end_date || 'Present' }})</p>
+        <p class="text-sm text-gray-600">({{ job.start_date || '' }} - {{ job.is_current_job ? 'Present' : (job.end_date || '') }})</p>
         <p class="text-sm text-gray-700 mt-1">{{ job.job_description || '' }}</p>
       </div>
     </section>
@@ -29,7 +29,7 @@
       <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-4 pl-4 border-l-4 border-gray-200">
         <h4 class="font-bold text-lg text-gray-800">{{ edu.degree || '' }}</h4>
         <p class="text-sm text-gray-600">in {{ edu.field_of_study || '' }} from {{ edu.institution_name || '' }}</p>
-        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }})</p>
+        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.is_current_education ? 'Present' : (edu.end_date || '') }})</p>
       </div>
     </section>
 

@@ -21,6 +21,7 @@ import CreateUser from '../modules/backOffice/pages/createUser.vue';
 import Users from '../modules/candidate/pages/Users.vue';
 import Dashboardcandidate from '../modules/candidate/pages/Dashboard.vue';
 import CreateResumePage from '../modules/candidate/pages/CreateResumePage.vue';
+import ResumePreviewPage from '../modules/candidate/pages/ResumePreviewPage.vue'; // New component
 import Jobspage from '../modules/candidate/pages/Jobspage.vue';
 import JobDetailPage from '../modules/candidate/pages/JobDetailPage.vue';
 import TalentProfile from '../modules/candidate/pages/TalentProfile.vue';
@@ -170,9 +171,17 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Jobs-Details',
         component: JobDetailPage,
         meta: { title: 'jobs details' },
-        props: route => ({ jobId: parseInt(route.params.id) })
+        props: route => ({ jobId: parseInt(route.params.id as string) })
       },
     ],
+  },
+  // New route for the public/shared resume preview
+  {
+    path: '/resume-preview/:id',
+    name: 'ResumePreview',
+    component: ResumePreviewPage,
+    meta: { title: 'Resume Preview' },
+    props: true,
   },
   {
     path: '/:pathMatch(.*)*',

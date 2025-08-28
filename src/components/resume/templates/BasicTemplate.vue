@@ -23,7 +23,7 @@
       <h3 class="text-lg font-semibold text-gray-700 border-b-2 pb-1">Experience</h3>
       <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-gray-800">{{ job.job_title || '' }} at {{ job.company_name || '' }}</h4>
-        <p class="text-xs text-gray-500">{{ job.start_date || '' }} - {{ job.end_date || 'Present' }}</p>
+        <p class="text-xs text-gray-500">{{ job.start_date || '' }} - {{ job.is_current_job ? 'Present' : (job.end_date || '') }}</p>
         <p class="text-sm text-gray-700 mt-1">{{ job.job_description || 'N/A' }}</p>
       </div>
     </section>
@@ -33,7 +33,7 @@
       <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-gray-800">{{ edu.degree || '' }} in {{ edu.field_of_study || '' }}</h4>
         <p class="text-sm text-gray-700">at {{ edu.institution_name || '' }}</p>
-        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }})</p>
+        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.is_current_education ? 'Present' : (edu.end_date || '') }})</p>
       </div>
     </section>
 
@@ -56,3 +56,10 @@
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { FormData } from '@/types/resume';
+defineProps<{
+  resume: FormData;
+}>();
+</script>

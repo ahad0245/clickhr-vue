@@ -1,11 +1,9 @@
-// src/modules/candidate/pages/ResumePage.vue
-
 <template>
   <div class="template-gallery-container p-8">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-3xl font-bold text-gray-800">My Resumes</h1>
       <button
-        @click="router.push('/candidate/create-resume')"
+        @click="createNewResume"
         class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
       >
         Create Another Resume
@@ -14,8 +12,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="resume in resumeStore.savedResumes" :key="resume.id" class="resume-card-wrapper">
-        <div class="resume-card relative group border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-             @click="editResume(resume)">
+        <div class="resume-card relative group border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
           <div class="template-preview-wrapper h-64 overflow-hidden relative">
             <component :is="getTemplateComponent(resume.templateId)"
                        :resume="resume.data"
@@ -30,7 +27,10 @@
               <button @click.stop="editResume(resume)" class="text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                 Edit
               </button>
-              <button @click.stop="openShareModal(resume)" class="text-white bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition">
+              <button @click.stop="previewResume(resume)" class="text-white bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                Preview
+              </button>
+              <button @click.stop="openShareModal(resume)" class="text-white bg-yellow-600 px-4 py-2 rounded-lg hover:bg-yellow-700 transition">
                 Get Link
               </button>
             </div>
@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <ShareModal v-if="showShareModal" :candidateData="shareResumeData" :template="shareResumeTemplate" @close="closeShareModal" />
+    <ShareModal v-if="showShareModal" :resumeId="shareResumeId" @close="closeShareModal" />
   </div>
 </template>
 
@@ -55,8 +55,7 @@ const resumeStore = useResumeStore();
 const templatesList = ATS_TEMPLATES;
 
 const showShareModal = ref(false);
-const shareResumeData = ref({});
-const shareResumeTemplate = ref('');
+const shareResumeId = ref('');
 
 function getTemplateComponent(templateId: string) {
   const template = templatesList.find(t => t.id === templateId);
@@ -68,13 +67,20 @@ function getTemplateName(templateId: string) {
   return template ? template.name : 'Unknown Template';
 }
 
+function createNewResume() {
+  router.push({ name: 'CreateResume' });
+}
+
 function editResume(resume: any) {
   router.push({ name: 'CreateResume', query: { id: resume.id } });
 }
 
+function previewResume(resume: any) {
+    router.push({ name: 'ResumePreview', params: { id: resume.id } });
+}
+
 function openShareModal(resume: any) {
-  shareResumeData.value = resume.data;
-  shareResumeTemplate.value = resume.templateId;
+  shareResumeId.value = resume.id;
   showShareModal.value = true;
 }
 

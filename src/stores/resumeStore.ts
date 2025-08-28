@@ -187,6 +187,7 @@ export const useResumeStore = defineStore('resume', () => {
     savedResumes,
     addOrUpdateResume,
     getResumeById,
-    candidateProfile,
+    // Provide a function to get a deep clone of the base profile
+    getNewCandidateProfile: () => JSON.parse(JSON.stringify(candidateProfile)),
   };
 });

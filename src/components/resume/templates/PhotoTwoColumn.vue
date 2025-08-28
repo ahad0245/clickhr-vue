@@ -50,7 +50,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Employment History</h3>
         <div v-for="(job, index) in resume.history.work_history" :key="index" class="mb-4">
           <h4 class="font-bold text-md text-gray-800">{{ job.job_title }} at {{ job.company_name }}</h4>
-          <p class="text-xs text-gray-600">{{ job.start_date }} - {{ job.end_date || 'Present' }}</p>
+          <p class="text-xs text-gray-600">{{ job.start_date }} - {{ job.is_current_job ? 'Present' : (job.end_date || '') }}</p>
           <p class="text-sm mt-1 text-gray-700">{{ job.job_description }}</p>
         </div>
       </section>
@@ -59,7 +59,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Education</h3>
         <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mb-4">
           <h4 class="font-bold text-md text-gray-800">{{ edu.degree }} in {{ edu.field_of_study }}</h4>
-          <p class="text-xs text-gray-600">{{ edu.institution_name }} ({{ edu.start_date }} - {{ edu.end_date || 'Present' }})</p>
+          <p class="text-xs text-gray-600">{{ edu.institution_name }} ({{ edu.start_date }} - {{ edu.is_current_education ? 'Present' : (edu.end_date || '') }})</p>
         </div>
       </section>
       

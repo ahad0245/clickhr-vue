@@ -30,7 +30,7 @@
       <h3 class="text-lg font-semibold text-amber-800 border-b border-gray-300 pb-1">Experience</h3>
       <div v-for="(job, index) in resume.history.work_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-amber-700">{{ job.job_title || '' }} at {{ job.company_name || '' }}</h4>
-        <p class="text-sm text-gray-600">({{ job.start_date || '' }} - {{ job.end_date || 'Present' }})</p>
+        <p class="text-sm text-gray-600">({{ job.start_date || '' }} - {{ job.is_current_job ? 'Present' : (job.end_date || '') }})</p>
         <p class="text-sm text-gray-700 mt-1">{{ job.job_description || 'N/A' }}</p>
       </div>
     </section>
@@ -40,7 +40,7 @@
       <div v-for="(edu, index) in resume.history.education_history" :key="index" class="mt-2">
         <h4 class="font-bold text-md text-amber-700">{{ edu.degree || '' }} in {{ edu.field_of_study || '' }}</h4>
         <p class="text-sm text-gray-600">at {{ edu.institution_name || '' }}</p>
-        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.end_date || 'Present' }})</p>
+        <p class="text-xs text-gray-500">({{ edu.start_date || '' }} - {{ edu.is_current_education ? 'Present' : (edu.end_date || '') }})</p>
         <img v-if="edu.degree_image_url" :src="edu.degree_image_url as string" class="mt-2 h-16 object-contain" alt="Degree Image">
       </div>
     </section>

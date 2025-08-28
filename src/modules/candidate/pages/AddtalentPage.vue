@@ -1,5 +1,3 @@
-// src/modules/candidate/pages/CreateResumePage.vue
-
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans rounded-lg shadow-md">
     <div v-if="!selectedTemplateId" class="lg:col-span-4">
@@ -31,9 +29,9 @@
       </div>
     </div>
     
-    <div v-if="selectedTemplateId" class="lg:col-span-2">
+    <div v-else class="lg:col-span-2">
       <div class="mb-6">
-        <h1 class="text-3xl font-semibold text-gray-700 mb-2">Talent Application Form</h1>
+        <h1 class="text-3xl font-semibold text-gray-700 mb-2">{{ isEditing ? 'Edit Resume' : 'New Resume Application Form' }}</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
       </div>
 
@@ -237,7 +235,12 @@
                            class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                    <div class="flex items-center space-x-2">
-                    <input type="checkbox" v-model="edu.is_current_education" @change="e => updateArrayField('history', 'education_history', index, 'is_current_education', (e.target as HTMLInputElement).checked)"
+                    <input type="checkbox" v-model="edu.is_current_education" @change="e => {
+                        updateArrayField('history', 'education_history', index, 'is_current_education', (e.target as HTMLInputElement).checked);
+                        if ((e.target as HTMLInputElement).checked) {
+                            (formData.value.history.education_history as any)[index].end_date = null;
+                        }
+                    }"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Currently Enrolled</label>
                   </div>
@@ -311,7 +314,12 @@
                       <input type="file" @change="e => handleFileChange(e, index, 'work_history', 'experience_letter_url')" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required />
                   </div>
                   <div class="flex items-center space-x-2">
-                    <input type="checkbox" v-model="work.is_current_job" @change="e => updateArrayField('history', 'work_history', index, 'is_current_job', (e.target as HTMLInputElement).checked)"
+                    <input type="checkbox" v-model="work.is_current_job" @change="e => {
+                        updateArrayField('history', 'work_history', index, 'is_current_job', (e.target as HTMLInputElement).checked);
+                        if ((e.target as HTMLInputElement).checked) {
+                            (formData.value.history.work_history as any)[index].end_date = null;
+                        }
+                    }"
                            class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500" />
                     <label class="text-sm font-medium text-gray-600">Current Job</label>
                   </div>
@@ -750,7 +758,7 @@ const resumeStore = useResumeStore();
 // UI State for Template vs. Form view
 const selectedTemplateId = ref<string | null>(null);
 const selectedTemplateIdForGallery = ref('');
-const selectedPalettes = ref({});
+const selectedPalettes = ref<{ [key: string]: any }>({});
 const isEditing = ref(false);
 const editingResumeId = ref<string | null>(null);
 const resumeName = ref('');
@@ -855,9 +863,11 @@ onMounted(() => {
   if (route.query.id) {
     const resumeToEdit = resumeStore.getResumeById(route.query.id as string);
     if (resumeToEdit) {
-      Object.assign(formData.value, resumeToEdit.data);
+      // Set the formData to a deep copy of the selected resume's data
+      Object.assign(formData.value, JSON.parse(JSON.stringify(resumeToEdit.data)));
       selectedTemplateId.value = resumeToEdit.templateId;
-      resumeStore.switchTemplate(resumeToEdit.templateId);
+      // Set the selected palette from the store
+      resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === resumeStore.selectedPalette) || 'default');
       isEditing.value = true;
       editingResumeId.value = resumeToEdit.id;
       resumeName.value = resumeToEdit.title;
@@ -873,6 +883,7 @@ const selectTemplate = (templateId: string) => {
   selectedTemplateId.value = templateId;
   const selectedPalette = selectedPalettes.value[templateId] || COLOR_PALETTES.default;
   resumeStore.switchTemplate(templateId);
+  // Set the selected palette in the store immediately after selecting a template
   resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === selectedPalette) || 'default');
   
   if (!isEditing.value) {
@@ -891,6 +902,8 @@ const handlePaletteChange = (templateId: string, palette: any) => {
     ...selectedPalettes.value,
     [templateId]: palette,
   };
+  // Also set the palette in the store so the live preview updates
+  resumeStore.switchPalette(Object.keys(COLOR_PALETTES).find(key => COLOR_PALETTES[key] === palette) || 'default');
 };
 
 // Form navigation
