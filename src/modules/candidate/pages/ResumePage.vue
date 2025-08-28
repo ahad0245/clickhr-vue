@@ -1,7 +1,11 @@
 <template>
   <div class="template-gallery-container p-8">
+    <!-- Enhanced header with consistent talent navigation context -->
     <div class="mb-6 flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-gray-800">My Resumes</h1>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">My Resumes</h1>
+        <p class="text-sm text-gray-500 mt-1">Manage and share your professional resumes</p>
+      </div>
       <button
         @click="createNewResume"
         class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
@@ -109,14 +113,17 @@ function getTemplateName(templateId: string) {
 }
 
 function createNewResume() {
+  // Navigate to template gallery while maintaining talent context
   router.push({ name: 'TemplateGallery' });
 }
 
 function editResume(resume: any) {
+  // Navigate to edit while maintaining talent context
   router.push({ name: 'CreateResume', query: { id: resume.id } });
 }
 
 function previewResume(resume: any) {
+  // Navigate to preview while maintaining talent context
   router.push({ name: 'ResumePreview', params: { id: resume.id } });
 }
 

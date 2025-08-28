@@ -211,17 +211,38 @@ function handleMainMenuClick(menuKey: string) {
   );
 
   if (accessibleSubmenus.length > 0) {
+    // For talent menu, prioritize resume-related routes for viewers
+    if (menuKey === 'talent' && userRole === 'viewer') {
+      const resumeRoute = accessibleSubmenus.find(sub => sub.path.includes('/candidate/templates'));
+      if (resumeRoute) {
+        router.push(resumeRoute.path);
+        return;
+      }
+    }
+    
     const firstSubmenuPath = accessibleSubmenus[0].path;
     router.push(firstSubmenuPath);
   }
 }
 
 function getActiveMainFromRoute(path: string): string {
+  // Check for candidate/talent routes first to ensure talent navigation stays active
+  if (path.startsWith('/candidate/') || path.startsWith('/resume-preview/')) {
+    return 'talent';
+  }
+  
+  // Check other main menu routes
   for (const menu of topMenus) {
     if (path.startsWith(menu.defaultPath)) {
       return menu.key;
     }
   }
+  
+  // Special cases for specific routes
+  if (path.startsWith('/backoffice')) {
+    return 'dashboard';
+  }
+  
   return 'dashboard';
 }
 
@@ -230,7 +251,10 @@ onMounted(() => {
 });
 
 watch(() => route.path, (newPath) => {
-  activeMain.value = getActiveMainFromRoute(newPath);
+  const newActiveMain = getActiveMainFromRoute(newPath);
+  if (activeMain.value !== newActiveMain) {
+    activeMain.value = newActiveMain;
+  }
 });
 
 watch(() => window.innerWidth, (newWidth) => {
