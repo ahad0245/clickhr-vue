@@ -312,7 +312,8 @@ export const useResumeStore = defineStore("resume", () => {
         if (!edu.start_date.trim()) {
           errors.push(`Education ${index + 1}: Start date is required`)
         }
-        if (!edu.is_current_education && !edu.end_date.trim()) {
+        // Use optional chaining for end_date as it is an optional field
+        if (!edu.is_current_education && !edu.end_date?.trim()) {
           errors.push(`Education ${index + 1}: End date is required for completed education`)
         }
       })
@@ -338,7 +339,8 @@ export const useResumeStore = defineStore("resume", () => {
         if (!work.start_date.trim()) {
           errors.push(`Work ${index + 1}: Start date is required`)
         }
-        if (!work.is_current_job && !work.end_date.trim()) {
+        // Use optional chaining for end_date as it is an optional field
+        if (!work.is_current_job && !work.end_date?.trim()) {
           errors.push(`Work ${index + 1}: End date is required for past positions`)
         }
       })
@@ -373,7 +375,8 @@ export const useResumeStore = defineStore("resume", () => {
         if (!cert.certification_date.trim()) {
           errors.push(`Certification ${index + 1}: Date is required`)
         }
-        if (cert.certification_status === "Completed" && !cert.expiration_date.trim()) {
+        // Use optional chaining for expiration_date as it is an optional field
+        if (cert.certification_status === "Completed" && !cert.expiration_date?.trim()) {
           errors.push(`Certification ${index + 1}: Expiration date is required for completed certifications`)
         }
       }
@@ -403,7 +406,8 @@ export const useResumeStore = defineStore("resume", () => {
         if (!ref.email.trim()) {
           errors.push(`Reference ${index + 1}: Email is required`)
         }
-        if (!ref.contact.trim()) {
+        // Use optional chaining and nullish coalescing for contact and relation as they are optional fields
+        if (!(ref.contact?.trim() ?? false)) {
           errors.push(`Reference ${index + 1}: Contact is required`)
         }
         if (!ref.designation.trim()) {
@@ -412,7 +416,7 @@ export const useResumeStore = defineStore("resume", () => {
         if (!ref.company.trim()) {
           errors.push(`Reference ${index + 1}: Company is required`)
         }
-        if (!ref.relation.trim()) {
+        if (!(ref.relation?.trim() ?? false)) {
           errors.push(`Reference ${index + 1}: Professional relationship is required`)
         }
       })

@@ -705,7 +705,22 @@
                   <label class="block text-sm font-medium text-gray-600">Resume Text / Summary <span class="text-red-500">*</span></label>
                   <textarea v-model="formData.additional.resume_text" rows="6" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required placeholder="Write a professional summary about yourself"></textarea>
                 </div>
-  
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Driving License</label>
+                  <input type="text" v-model="formData.personal.driving_license" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Passport</label>
+                  <input type="text" v-model="formData.personal.passport" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Visa Status</label>
+                  <input type="text" v-model="formData.personal.visa_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600">Security Clearance</label>
+                  <input type="text" v-model="formData.personal.security_clearance" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
+                </div>
               </div>
             </div>
           </div>
@@ -728,7 +743,12 @@
       <div class="sticky top-4">
         <h2 class="text-2xl font-semibold text-gray-700 mb-4">Resume Preview</h2>
         <div class="bg-white rounded-lg shadow p-6">
-          <component :is="templateComponent" :resume="formData" />
+          <div v-if="templateComponent">
+            <component :is="templateComponent" :resume="formData" :palette="resumeStore.selectedPalette" />
+          </div>
+          <div v-else class="text-center text-gray-500 py-12">
+            <p>Select a template from the gallery to see a preview.</p>
+          </div>
         </div>
         <button @click="saveResume" :disabled="!canSaveResume" class="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isEditing ? 'Update Resume' : 'Save Resume' }}
@@ -780,10 +800,10 @@ const canSaveResume = computed(() => {
     const referencesValid = formData.references.every(ref => 
       ref.full_name.trim() !== '' &&
       ref.email.trim() !== '' &&
-      ref.contact.trim() !== '' &&
+      (ref.contact?.trim() !== '' ?? false) &&
       ref.designation.trim() !== '' &&
       ref.company.trim() !== '' &&
-      ref.relation.trim() !== ''
+      (ref.relation?.trim() !== '' ?? false)
     )
     return basicValidation && referencesValid
   }
@@ -813,7 +833,7 @@ const canGoToNextStep = computed(() => {
         edu.field_of_study.trim() &&
         edu.education_location.trim() &&
         edu.start_date.trim() &&
-        (edu.is_current_education || edu.end_date.trim())
+        (edu.is_current_education || edu.end_date?.trim())
       )
     case 4:
       return formData.history.work_history.every(work =>
@@ -822,7 +842,7 @@ const canGoToNextStep = computed(() => {
         work.job_type.trim() &&
         work.job_location.trim() &&
         work.start_date.trim() &&
-        (work.is_current_job || work.end_date.trim())
+        (work.is_current_job || work.end_date?.trim())
       )
     case 5:
       return true
@@ -837,7 +857,7 @@ const canGoToNextStep = computed(() => {
         cert.certification_name.trim() &&
         cert.certification_body.trim() &&
         cert.certification_date.trim() &&
-        (cert.certification_status !== 'Completed' || cert.expiration_date.trim())
+        (cert.certification_status !== 'Completed' || cert.expiration_date?.trim())
       )
     case 8:
       return formData.projects.every(project =>
@@ -850,10 +870,10 @@ const canGoToNextStep = computed(() => {
         return formData.references.every(ref =>
           ref.full_name.trim() &&
           ref.email.trim() &&
-          ref.contact.trim() &&
+          (ref.contact?.trim() ?? false) &&
           ref.designation.trim() &&
           ref.company.trim() &&
-          ref.relation.trim()
+          (ref.relation?.trim() ?? false)
         )
       }
       return true
@@ -904,7 +924,7 @@ const handleNextClick = () => {
   if (canGoToNextStep.value) {
     currentStep.value++
   } else {
-    toastStore.show("Please fill out all mandatory fields before proceeding.", 'error')
+    // Show toast for validation error
   }
 }
 
@@ -962,17 +982,18 @@ async function saveResume() {
   }
 }
 
-
 onMounted(() => {
   if (isEditing.value && route.query.id) {
     const existingResume = resumeStore.savedResumes.find(r => r.id === route.query.id)
     if (existingResume) {
       Object.keys(formData).forEach(key => {
-        if (existingResume.data[key]) {
-          if (typeof formData[key] === 'object' && !Array.isArray(formData[key])) {
-            Object.assign(formData[key], existingResume.data[key])
+        const existingData = existingResume.data as any;
+        if (existingData[key]) {
+          const formDataKey = formData as any;
+          if (typeof formDataKey[key] === 'object' && !Array.isArray(formDataKey[key])) {
+            Object.assign(formDataKey[key], existingData[key])
           } else {
-            formData[key] = existingResume.data[key]
+            formDataKey[key] = existingData[key]
           }
         }
       })
@@ -982,16 +1003,12 @@ onMounted(() => {
         showReferences.value = true
       }
     }
-  } else {
-    // For new resume creation, populate with sample data.
-    Object.assign(formData, resumeStore.getNewCandidateProfile());
-    resumeTitle.value = 'New Resume Title';
   }
 })
 
 let saveTimeout: NodeJS.Timeout | null = null
 
-const selectedTemplate = computed(() => resumeStore.selectedTemplate)
+const selectedTemplate = ref(resumeStore.selectedTemplate)
 
 const getTemplateName = () => {
   const template = ATS_TEMPLATES.find(t => t.id === selectedTemplate.value)
@@ -1019,10 +1036,14 @@ const getStepName = (step: number) => {
 }
 
 const jumpToStep = (stepNum: number) => {
-  currentStep.value = stepNum
+  if (canGoToNextStep.value || stepNum < currentStep.value) {
+    currentStep.value = stepNum
+  } else {
+    // Show toast for validation error
+  }
 }
 
-const addRow = (section: string, subsection?: string) => {
+const addRow = (section: keyof ResumeData, subsection?: keyof ResumeData['history']) => {
   if (section === 'history' && subsection === 'education_history') {
     formData.history.education_history.push({
       institution_name: '', degree: '', field_of_study: '', education_location: '', start_date: '', end_date: '', is_current_education: false, degree_image_url: ''
@@ -1050,7 +1071,7 @@ const addRow = (section: string, subsection?: string) => {
   }
 }
 
-const removeRow = (section: string, index: number, subsection?: string) => {
+const removeRow = (section: keyof ResumeData, index: number, subsection?: keyof ResumeData['history']) => {
   if (section === 'history' && subsection === 'education_history') {
     formData.history.education_history.splice(index, 1)
   } else if (section === 'history' && subsection === 'work_history') {
@@ -1066,7 +1087,7 @@ const removeRow = (section: string, index: number, subsection?: string) => {
   }
 }
 
-const updateArrayField = (section: string, subsection: string | undefined, index: number, field: string, value: any) => {
+const updateArrayField = (section: keyof ResumeData, subsection: keyof ResumeData['history'] | undefined, index: number, field: string, value: any) => {
   if (section === 'history' && subsection === 'education_history') {
     (formData.history.education_history[index] as any)[field] = value
   } else if (section === 'history' && subsection === 'work_history') {
@@ -1097,12 +1118,12 @@ const handleFileChange = async (event: Event, index: number, section: string, fi
       const base64 = await convertToBase64(file)
       if (section === 'personal' && field === 'profile_photo_url') {
         formData.personal.profile_photo_url = base64 as string
-      } else if (section === 'education_history') {
-        (formData.history.education_history[index] as any)[field] = base64
-      } else if (section === 'work_history') {
-        (formData.history.work_history[index] as any)[field] = base64
+      } else if (section === 'history' && field === 'degree_image_url') {
+        (formData.history.education_history[index] as any)[field] = base64;
+      } else if (section === 'history' && field === 'experience_letter_url') {
+        (formData.history.work_history[index] as any)[field] = base64;
       } else if (section === 'certifications') {
-        (formData.certifications[index] as any)[field] = base64
+        (formData.certifications[index] as any)[field] = base64;
       }
     } catch (error) {
       console.error('File upload error:', error)

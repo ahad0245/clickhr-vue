@@ -6,24 +6,28 @@
         <p class="text-gray-600 text-lg">Select a professional template and customize the color palette to match your style.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div v-for="template in templatesList" :key="template.id"
              @mouseenter="hoverTemplateId = template.id"
              @mouseleave="hoverTemplateId = null"
              class="template-card relative group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
 
-          <div class="template-preview-wrapper h-48 overflow-hidden relative bg-gray-50">
-            <component :is="template.layoutComponent"
-                       :resume="sampleData"
-                       :palette="selectedPalettes[template.id] || COLOR_PALETTES.default"
-                       class="resume-preview-component transform scale-[0.15] origin-top-left absolute w-[666%] h-[666%]" />
+          <div class="template-preview-wrapper h-64 overflow-hidden relative bg-gray-50 flex items-center justify-center">
+            <div class="preview-scale-container" :style="{ transform: 'scale(0.35)', transformOrigin: 'center' }">
+              <component :is="template.layoutComponent"
+                         :resume="sampleData"
+                         :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" />
+            </div>
           </div>
 
           <div class="p-4">
             <h3 class="font-bold text-lg text-gray-800 mb-1">{{ template.name }}</h3>
             <p class="text-xs text-gray-500 mb-3">Professional and ATS-friendly</p>
-            
-            <div :class="['space-y-3 transition-opacity duration-300', { 'opacity-100': hoverTemplateId === template.id, 'opacity-0': hoverTemplateId !== template.id }]">
+          </div>
+
+          <div :class="['absolute inset-0 top-0 left-0 w-full h-full p-4 flex flex-col justify-end transition-all duration-300',
+                       (hoverTemplateId === template.id) ? 'bg-white bg-opacity-95 opacity-100' : 'bg-transparent opacity-0 pointer-events-none']">
+            <div class="space-y-3">
               <div v-if="template.hasColorPalette">
                 <p class="text-xs font-medium text-gray-700 mb-2">Choose Color:</p>
                 <div class="flex space-x-1">
@@ -56,13 +60,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, computed } from 'vue';
+import { ref, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useResumeStore } from '@/stores/resumeStore';
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
 import { COLOR_PALETTES } from '@/constants/colorPalettes';
-import type { ResumeData } from '@/types/resume'
-import type { Component } from 'vue'
+import type { ResumeData } from '@/types/resume';
+import type { Component } from 'vue';
 
 const router = useRouter();
 const resumeStore = useResumeStore();
@@ -71,7 +75,7 @@ const templatesList = ATS_TEMPLATES;
 const hoverTemplateId = ref<string | null>(null);
 const selectedPalettes = ref<{ [key: string]: any }>({});
 
-// Sample data for template preview
+// Sample data to fill the preview templates
 const sampleData: ResumeData = {
   personal: {
     first_name: "Abdul",
@@ -132,7 +136,6 @@ const selectTemplate = (templateId: string) => {
 const goToSavedResumes = () => {
   router.push({ name: 'SavedResumes' });
 };
-
 </script>
 
 <style scoped>
@@ -146,20 +149,17 @@ const goToSavedResumes = () => {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.resume-preview-component {
-  width: 666%;
-  height: 666%;
-  transform: scale(0.15);
+/* Adjust the scale to properly fit the resume within the preview box */
+.preview-scale-container {
+  width: 100%;
+  height: 100%;
   transform-origin: top left;
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.template-card:hover .resume-preview-component {
-  transform: scale(0.16);
+.template-card:hover .preview-scale-container {
+  transform: scale(0.26);
   transition: transform 0.3s ease;
 }
 </style>

@@ -150,4 +150,4 @@ export interface FormData {
   }
 }
 
-export type ResumeData = FormData
+export type ResumeData = FormData 
