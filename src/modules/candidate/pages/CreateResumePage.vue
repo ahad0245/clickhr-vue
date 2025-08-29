@@ -1,11 +1,9 @@
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans rounded-lg shadow-md">
-    <!-- Removed template selection gallery, now focuses only on form and preview -->
     <div class="lg:col-span-2">
       <div class="mb-6">
         <h1 class="text-3xl font-semibold text-gray-700 mb-2">{{ isEditing ? 'Edit Resume' : 'New Resume Application Form' }}</h1>
         <p class="text-gray-500 max-w-md">Please verify and update your information to complete the application.</p>
-        <!-- Added template info display -->
         <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <p class="text-sm text-blue-700">
             <span class="font-medium">Selected Template:</span> {{ getTemplateName() }} 
@@ -601,7 +599,6 @@
 
             <div v-if="currentStep === 9" class="space-y-6">
                 <h2 class="text-xl font-semibold text-gray-700">References</h2>
-                <!-- Enhanced references section with optional logic and better validation -->
                 <div class="mb-4">
                   <div v-if="!showReferences" class="text-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                     <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -708,22 +705,7 @@
                   <label class="block text-sm font-medium text-gray-600">Resume Text / Summary <span class="text-red-500">*</span></label>
                   <textarea v-model="formData.additional.resume_text" rows="6" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" required placeholder="Write a professional summary about yourself"></textarea>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Driving License</label>
-                  <input type="text" v-model="formData.personal.driving_license" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Passport</label>
-                  <input type="text" v-model="formData.personal.passport" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Visa Status</label>
-                  <input type="text" v-model="formData.personal.visa_status" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600">Security Clearance</label>
-                  <input type="text" v-model="formData.personal.security_clearance" class="mt-1 p-2 border border-gray-300 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 shadow-sm" />
-                </div>
+  
               </div>
             </div>
           </div>
@@ -735,7 +717,7 @@
                 class="px-6 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           Previous
         </button>
-        <button @click="currentStep++" :disabled="currentStep === totalSteps"
+        <button v-if="currentStep < totalSteps" @click="handleNextClick" :disabled="!canGoToNextStep"
                 class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           Next
         </button>
@@ -746,8 +728,7 @@
       <div class="sticky top-4">
         <h2 class="text-2xl font-semibold text-gray-700 mb-4">Resume Preview</h2>
         <div class="bg-white rounded-lg shadow p-6">
-          <!-- Placeholder for Resume Preview -->
-          <p class="text-gray-500">Resume preview will be displayed here.</p>
+          <component :is="templateComponent" :resume="formData" />
         </div>
         <button @click="saveResume" :disabled="!canSaveResume" class="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isEditing ? 'Update Resume' : 'Save Resume' }}
@@ -761,15 +742,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch, shallowRef } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useResumeStore } from '@/stores/resumeStore'
+import { useToastStore } from '@/stores/useToastStore'
 import { ATS_TEMPLATES } from '@/constants/resumeTemplates'
 import type { ResumeData } from '@/types/resume'
+import type { Component } from 'vue'
 
 const router = useRouter()
 const route = useRoute()
 const resumeStore = useResumeStore()
+const toastStore = useToastStore()
 
 const currentStep = ref(1)
 const totalSteps = computed(() => 10)
@@ -780,6 +764,11 @@ const resumeTitle = ref('')
 const saveMessage = ref('')
 const isSaving = ref(false)
 
+const templateComponent = computed<Component | null>(() => {
+  const template = ATS_TEMPLATES.find(t => t.id === resumeStore.selectedTemplate);
+  return template ? shallowRef(template.layoutComponent) : null;
+});
+
 const canSaveResume = computed(() => {
   const basicValidation = resumeTitle.value.trim() !== '' && 
          formData.additional.resume_text.trim() !== '' &&
@@ -787,7 +776,6 @@ const canSaveResume = computed(() => {
          formData.personal.last_name.trim() !== '' &&
          formData.personal.email_0.trim() !== ''
   
-  // If references are enabled, validate all reference fields
   if (showReferences.value) {
     const referencesValid = formData.references.every(ref => 
       ref.full_name.trim() !== '' &&
@@ -803,155 +791,132 @@ const canSaveResume = computed(() => {
   return basicValidation
 })
 
-const formData = reactive<ResumeData>({
-  personal: {
-    first_name: '',
-    last_name: '',
-    headline: '',
-    country: '',
-    address_1: '',
-    address_2: '',
-    city: '',
-    state_province_region: '',
-    zip_postal_code: '',
-    home_office: '',
-    geo_location: '',
-    school_district: '',
-    mobile_phone: '',
-    work_phone: '',
-    home_phone: '',
-    email_0: '',
-    email_1: '',
-    ssn: '',
-    profile_photo_url: '',
-    driving_license: '',
-    passport: '',
-    visa_status: '',
-    security_clearance: ''
-  },
-  employment: {
-    employment_type: '',
-    talent_status: '',
-    applicant_tags: '',
-    details_notes: '',
-    industry_experience: '',
-    applicant_source: ''
-  },
-  history: {
-    education_history: [{
-      institution_name: '',
-      degree: '',
-      field_of_study: '',
-      education_location: '',
-      start_date: '',
-      end_date: '',
-      is_current_education: false,
-      degree_image_url: ''
-    }],
-    work_history: [{
-      company_name: '',
-      job_title: '',
-      job_type: '',
-      job_location: '',
-      job_description: '',
-      start_date: '',
-      end_date: '',
-      is_current_job: false,
-      experience_letter_url: ''
-    }]
-  },
-  online_presence: {
-    facebook_profile: '',
-    twitter_profile: '',
-    instagram_profile: '',
-    youtube_profile: '',
-    tiktok_profile: '',
-    pinterest_profile: '',
-    skype_id: '',
-    whatsapp_number: '',
-    wechat_id: '',
-    viber_id: '',
-    signal_id: '',
-    telegram_id: '',
-    discord_id: '',
-    slack_id: ''
-  },
-  job_portals: {
-    linked_in_profile: '',
-    indeed_profile: '',
-    monster_profile: '',
-    glassdoor_profile: '',
-    zip_recruiter_profile: '',
-    career_builder_profile: '',
-    simply_hired_profile: '',
-    upwork_profile: '',
-    freelancer_profile: '',
-    guru_profile: '',
-    people_per_hour_profile: '',
-    fiverr_profile: ''
-  },
-  version_control: {
-    github: '',
-    gitlab: '',
-    bitbucket: '',
-    sourceforge: '',
-    codeberg: '',
-    gitea: ''
-  },
-  skills: [{
-    skill_category_name: '',
-    skill_name: '',
-    skill_proficiency_level: '',
-    skill_years_of_experience: 0,
-    notes: ''
-  }],
-  certifications: [{
-    certification_name: '',
-    certification_body: '',
-    certification_date: '',
-    certification_status: 'Completed',
-    expiration_date: '',
-    certificate_image_url: ''
-  }],
-  projects: [{
-    proj_name: '',
-    proj_description: '',
-    proj_date: '',
-    proj_relevantLink: '',
-    proj_forWhom: ''
-  }],
-  references: [{
-    full_name: '',
-    email: '',
-    contact: '',
-    designation: '',
-    company: '',
-    relation: ''
-  }],
-  additional: {
-    resume_text: '',
-    add_to_hotlist: false
+const canGoToNextStep = computed(() => {
+  switch (currentStep.value) {
+    case 1:
+      return formData.personal.first_name.trim() &&
+             formData.personal.last_name.trim() &&
+             formData.personal.headline.trim() &&
+             formData.personal.country.trim() &&
+             formData.personal.address_1.trim() &&
+             formData.personal.city.trim() &&
+             formData.personal.mobile_phone.trim() &&
+             formData.personal.email_0.trim()
+    case 2:
+      return formData.employment.employment_type.trim() &&
+             formData.employment.talent_status.trim() &&
+             formData.employment.applicant_tags.trim()
+    case 3:
+      return formData.history.education_history.every(edu => 
+        edu.institution_name.trim() &&
+        edu.degree.trim() &&
+        edu.field_of_study.trim() &&
+        edu.education_location.trim() &&
+        edu.start_date.trim() &&
+        (edu.is_current_education || edu.end_date.trim())
+      )
+    case 4:
+      return formData.history.work_history.every(work =>
+        work.company_name.trim() &&
+        work.job_title.trim() &&
+        work.job_type.trim() &&
+        work.job_location.trim() &&
+        work.start_date.trim() &&
+        (work.is_current_job || work.end_date.trim())
+      )
+    case 5:
+      return true
+    case 6:
+      return formData.skills.every(skill =>
+        skill.skill_category_name.trim() &&
+        skill.skill_name.trim() &&
+        skill.skill_proficiency_level.trim()
+      )
+    case 7:
+        return formData.certifications.every(cert =>
+        cert.certification_name.trim() &&
+        cert.certification_body.trim() &&
+        cert.certification_date.trim() &&
+        (cert.certification_status !== 'Completed' || cert.expiration_date.trim())
+      )
+    case 8:
+      return formData.projects.every(project =>
+        project.proj_name.trim() &&
+        project.proj_description.trim() &&
+        project.proj_forWhom.trim()
+      )
+    case 9:
+      if (showReferences.value) {
+        return formData.references.every(ref =>
+          ref.full_name.trim() &&
+          ref.email.trim() &&
+          ref.contact.trim() &&
+          ref.designation.trim() &&
+          ref.company.trim() &&
+          ref.relation.trim()
+        )
+      }
+      return true
+    case 10:
+      return resumeTitle.value.trim() &&
+             formData.additional.resume_text.trim()
+    default:
+      return true
   }
 })
 
+const formData = reactive<ResumeData>({
+  personal: {
+    first_name: '', last_name: '', headline: '', country: '', address_1: '', address_2: '', city: '', state_province_region: '', zip_postal_code: '', home_office: '', geo_location: '', school_district: '', mobile_phone: '', work_phone: '', home_phone: '', email_0: '', email_1: '', ssn: '', profile_photo_url: '', driving_license: '', passport: '', visa_status: '', security_clearance: ''
+  },
+  employment: {
+    employment_type: '', talent_status: '', applicant_tags: '', details_notes: '', industry_experience: '', applicant_source: ''
+  },
+  history: {
+    education_history: [{
+      institution_name: '', degree: '', field_of_study: '', education_location: '', start_date: '', end_date: '', is_current_education: false, degree_image_url: ''
+    }],
+    work_history: [{
+      company_name: '', job_title: '', job_type: '', job_location: '', job_description: '', start_date: '', end_date: '', is_current_job: false, experience_letter_url: ''
+    }]
+  },
+  online_presence: {},
+  job_portals: {},
+  version_control: {},
+  skills: [{
+    skill_category_name: '', skill_name: '', skill_proficiency_level: '', skill_years_of_experience: 0, notes: ''
+  }],
+  certifications: [{
+    certification_name: '', certification_body: '', certification_date: '', certification_status: 'Completed', expiration_date: '', certificate_image_url: ''
+  }],
+  projects: [{
+    proj_name: '', proj_description: '', proj_date: '', proj_relevantLink: '', proj_forWhom: ''
+  }],
+  references: [{
+    full_name: '', email: '', contact: '', designation: '', company: '', relation: ''
+  }],
+  additional: {
+    resume_text: '', add_to_hotlist: false
+  }
+})
+
+const handleNextClick = () => {
+  if (canGoToNextStep.value) {
+    currentStep.value++
+  } else {
+    toastStore.show("Please fill out all mandatory fields before proceeding.", 'error')
+  }
+}
+
 function enableReferences() {
   showReferences.value = true
-  // Ensure at least one reference entry exists
   if (formData.references.length === 0) {
-    formData.references.push({
-      full_name: '',
-      email: '',
-      contact: '',
-      designation: '',
-      company: '',
-      relation: ''
-    })
+    formData.references.push({ full_name: '', email: '', contact: '', designation: '', company: '', relation: '' })
   }
 }
 
 function removeAllReferences() {
   showReferences.value = false
-  // Reset references array to empty
   formData.references = []
 }
 
@@ -974,7 +939,6 @@ async function saveResume() {
       templateId: resumeStore.selectedTemplate,
       data: { 
         ...formData,
-        // Only include references if they are enabled and have data
         references: showReferences.value ? formData.references : []
       }
     }
@@ -1003,7 +967,6 @@ onMounted(() => {
   if (isEditing.value && route.query.id) {
     const existingResume = resumeStore.savedResumes.find(r => r.id === route.query.id)
     if (existingResume) {
-      // Merge existing data with default structure to handle missing fields
       Object.keys(formData).forEach(key => {
         if (existingResume.data[key]) {
           if (typeof formData[key] === 'object' && !Array.isArray(formData[key])) {
@@ -1019,12 +982,16 @@ onMounted(() => {
         showReferences.value = true
       }
     }
+  } else {
+    // For new resume creation, populate with sample data.
+    Object.assign(formData, resumeStore.getNewCandidateProfile());
+    resumeTitle.value = 'New Resume Title';
   }
 })
 
 let saveTimeout: NodeJS.Timeout | null = null
 
-const selectedTemplate = ref(resumeStore.selectedTemplate)
+const selectedTemplate = computed(() => resumeStore.selectedTemplate)
 
 const getTemplateName = () => {
   const template = ATS_TEMPLATES.find(t => t.id === selectedTemplate.value)
@@ -1058,60 +1025,27 @@ const jumpToStep = (stepNum: number) => {
 const addRow = (section: string, subsection?: string) => {
   if (section === 'history' && subsection === 'education_history') {
     formData.history.education_history.push({
-      institution_name: '',
-      degree: '',
-      field_of_study: '',
-      education_location: '',
-      start_date: '',
-      end_date: '',
-      is_current_education: false,
-      degree_image_url: ''
+      institution_name: '', degree: '', field_of_study: '', education_location: '', start_date: '', end_date: '', is_current_education: false, degree_image_url: ''
     })
   } else if (section === 'history' && subsection === 'work_history') {
     formData.history.work_history.push({
-      company_name: '',
-      job_title: '',
-      job_type: '',
-      job_location: '',
-      job_description: '',
-      start_date: '',
-      end_date: '',
-      is_current_job: false,
-      experience_letter_url: ''
+      company_name: '', job_title: '', job_type: '', job_location: '', job_description: '', start_date: '', end_date: '', is_current_job: false, experience_letter_url: ''
     })
   } else if (section === 'skills') {
     formData.skills.push({
-      skill_category_name: '',
-      skill_name: '',
-      skill_proficiency_level: '',
-      skill_years_of_experience: 0,
-      notes: ''
+      skill_category_name: '', skill_name: '', skill_proficiency_level: '', skill_years_of_experience: 0, notes: ''
     })
   } else if (section === 'certifications') {
     formData.certifications.push({
-      certification_name: '',
-      certification_body: '',
-      certification_date: '',
-      certification_status: 'Completed',
-      expiration_date: '',
-      certificate_image_url: ''
+      certification_name: '', certification_body: '', certification_date: '', certification_status: 'Completed', expiration_date: '', certificate_image_url: ''
     })
   } else if (section === 'projects') {
     formData.projects.push({
-      proj_name: '',
-      proj_description: '',
-      proj_date: '',
-      proj_relevantLink: '',
-      proj_forWhom: ''
+      proj_name: '', proj_description: '', proj_date: '', proj_relevantLink: '', proj_forWhom: ''
     })
   } else if (section === 'references') {
     formData.references.push({
-      full_name: '',
-      email: '',
-      contact: '',
-      designation: '',
-      company: '',
-      relation: ''
+      full_name: '', email: '', contact: '', designation: '', company: '', relation: ''
     })
   }
 }
@@ -1192,7 +1126,7 @@ watch(formData, () => {
   }
   saveTimeout = setTimeout(() => {
     resumeStore.updateCurrentResume(formData)
-  }, 1000) // Debounce auto-save by 1 second
+  }, 1000)
 }, { deep: true })
 </script>
 
