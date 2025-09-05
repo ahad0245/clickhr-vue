@@ -1,6 +1,6 @@
 <template>
   <div class="template-gallery-container p-8">
-    <!-- Enhanced header with consistent talent navigation context -->
+    <!-- header -->
     <div class="mb-6 flex justify-between items-center">
       <div>
         <h1 class="text-3xl font-bold text-gray-800">My Resumes</h1>
@@ -13,8 +13,8 @@
         Create Another Resume
       </button>
     </div>
-    
-    <!-- Added search bar for client-side filtering -->
+
+    <!-- search -->
     <div class="mb-6">
       <div class="relative max-w-md">
         <input
@@ -29,15 +29,19 @@
       </div>
       <p class="text-sm text-gray-500 mt-2">{{ filteredResumes.length }} of {{ resumeStore.savedResumes.length }} resumes</p>
     </div>
-    
-    <!-- Updated grid to use filtered resumes -->
+
+    <!-- grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="resume in filteredResumes" :key="resume.id" class="resume-card-wrapper">
         <div class="resume-card relative group border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
           <div class="template-preview-wrapper h-64 overflow-hidden relative">
-            <component :is="getTemplateComponent(resume.templateId)"
-                       :resume="resume.data"
-                       class="resume-preview-component transform scale-[0.35] origin-top-left absolute w-[285%] h-[285%]" />
+            <!-- ✅ feed a real component and a palette -->
+            <component
+              :is="getTemplateComponent(resume.templateId)"
+              :resume="resume.data"
+              :palette="resume.palette || resumeStore.selectedPalette"
+              class="resume-preview-component transform scale-[0.35] origin-top-left absolute w-[285%] h-[285%]"
+            />
           </div>
           <div class="p-4 bg-white">
             <h3 class="font-bold text-lg text-gray-800">{{ resume.title }}</h3>
@@ -60,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Added empty state for no search results -->
+    <!-- empty state -->
     <div v-if="filteredResumes.length === 0 && searchQuery" class="text-center py-12">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -74,99 +78,85 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useResumeStore } from '@/stores/resumeStore';
-import { ATS_TEMPLATES } from '@/constants/resumeTemplates';
-import ShareModal from '../components/ShareModal.vue';
+import { ref, computed, unref } from 'vue'          // ⬅️ use unref instead of shallowRef
+import { useRouter } from 'vue-router'
+import { useResumeStore } from '@/stores/resumeStore'
+import { ATS_TEMPLATES } from '@/constants/resumeTemplates'
+import ShareModal from '../components/ShareModal.vue'
 
-const router = useRouter();
-const resumeStore = useResumeStore();
-const templatesList = ATS_TEMPLATES;
+const router = useRouter()
+const resumeStore = useResumeStore()
+const templatesList = ATS_TEMPLATES
 
-const showShareModal = ref(false);
-const shareResumeId = ref('');
+const showShareModal = ref(false)
+const shareResumeId = ref('')
 
-const searchQuery = ref('');
+const searchQuery = ref('')
 
 const filteredResumes = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return resumeStore.savedResumes;
-  }
-  
-  const query = searchQuery.value.toLowerCase().trim();
-  return resumeStore.savedResumes.filter(resume => {
-    const titleMatch = resume.title.toLowerCase().includes(query);
-    const templateMatch = getTemplateName(resume.templateId).toLowerCase().includes(query);
-    return titleMatch || templateMatch;
-  });
-});
+  if (!searchQuery.value.trim()) return resumeStore.savedResumes
+  const q = searchQuery.value.toLowerCase().trim()
+  return resumeStore.savedResumes.filter(r =>
+    r.title.toLowerCase().includes(q) ||
+    getTemplateName(r.templateId).toLowerCase().includes(q)
+  )
+})
 
 function getTemplateComponent(templateId: string) {
-  const template = templatesList.find(t => t.id === templateId);
-  return template ? shallowRef(template.layoutComponent) : null;
+  const t = templatesList.find(t => t.id === templateId)
+  // ✅ return the actual component (works whether it's a direct SFC or an async component)
+  return t ? (unref(t.layoutComponent) as any) : null
 }
 
 function getTemplateName(templateId: string) {
-  const template = templatesList.find(t => t.id === templateId);
-  return template ? template.name : 'Unknown Template';
+  const t = templatesList.find(t => t.id === templateId)
+  return t ? t.name : 'Unknown Template'
 }
 
-function createNewResume() {
-  // Navigate to template gallery while maintaining talent context
-  router.push({ name: 'TemplateGallery' });
-}
+function createNewResume() { router.push({ name: 'TemplateGallery' }) }
+function editResume(resume: any) { router.push({ name: 'CreateResume', query: { id: resume.id } }) }
+function previewResume(resume: any) { router.push({ name: 'ResumePreview', params: { id: resume.id } }) }
 
-function editResume(resume: any) {
-  // Navigate to edit while maintaining talent context
-  router.push({ name: 'CreateResume', query: { id: resume.id } });
-}
-
-function previewResume(resume: any) {
-  // Navigate to preview while maintaining talent context
-  router.push({ name: 'ResumePreview', params: { id: resume.id } });
-}
-
-function openShareModal(resume: any) {
-  shareResumeId.value = resume.id;
-  showShareModal.value = true;
-}
-
-function closeShareModal() {
-  showShareModal.value = false;
-}
+function openShareModal(resume: any) { shareResumeId.value = resume.id; showShareModal.value = true }
+function closeShareModal() { showShareModal.value = false }
 </script>
 
 <style scoped>
-.template-gallery-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.template-gallery-container { max-width: 1200px; margin: 0 auto; }
+
+/* Remove fixed height from wrapper */
+.resume-card-wrapper { 
+  border-radius: 8px; 
+  overflow: hidden; 
+  box-shadow: 0 2px 4px rgba(0,0,0,.05); 
+  transition: transform .2s, box-shadow .2s;
+  /* height: 400px;  <-- REMOVE THIS */
 }
-.resume-card-wrapper {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
-  height: 400px;
-}
-.resume-card-wrapper:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.template-preview-wrapper {
-  height: 100%;
-  position: relative;
-  overflow: hidden;
+.resume-card-wrapper:hover { transform: translateY(-5px); box-shadow: 0 4px 8px rgba(0,0,0,.1); }
+
+/* Control the preview area with aspect ratio */
+.template-preview-wrapper { 
+  /* Standard US Letter aspect ratio (8.5 / 11) */
+  aspect-ratio: 8.5 / 11;
+  position: relative; 
+  overflow: hidden; 
   background-color: white;
+  border-bottom: 1px solid #eee;
 }
-.resume-preview-component {
-  width: 285%;
-  height: 285%;
-  transform: scale(0.35);
-  transform-origin: top left;
-  position: absolute;
-  top: 0;
-  left: 0;
+
+/* Ensure the component scales correctly within the wrapper */
+.resume-preview-component { 
+  /* Calculation: 100 / 35 ≈ 285.7. Your 285% is correct. */
+  width: 285.7%; 
+  height: 285.7%; 
+  transform: scale(0.35); 
+  transform-origin: top left; 
+  position: absolute; 
+  
+  top: 0; 
+  left: 0; 
+  /* Add this to prevent interaction with the scaled-down model */
+  pointer-events: none;
   box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
 }
 </style>

@@ -762,7 +762,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch, shallowRef } from 'vue'
+import { ref, reactive, computed, onMounted, watch, unref } from 'vue' // ⬅️ replaced shallowRef with unref
 import { useRouter, useRoute } from 'vue-router'
 import { useResumeStore } from '@/stores/resumeStore'
 import { useToastStore } from '@/stores/useToastStore'
@@ -784,10 +784,11 @@ const resumeTitle = ref('')
 const saveMessage = ref('')
 const isSaving = ref(false)
 
+/* ✅ Return the actual component (not a Ref) */
 const templateComponent = computed<Component | null>(() => {
-  const template = ATS_TEMPLATES.find(t => t.id === resumeStore.selectedTemplate);
-  return template ? shallowRef(template.layoutComponent) : null;
-});
+  const template = ATS_TEMPLATES.find(t => t.id === resumeStore.selectedTemplate)
+  return template ? (unref(template.layoutComponent) as Component) : null
+})
 
 const canSaveResume = computed(() => {
   const basicValidation = resumeTitle.value.trim() !== '' && 
@@ -1150,6 +1151,7 @@ watch(formData, () => {
   }, 1000)
 }, { deep: true })
 </script>
+
 
 <style scoped>
 /* Enhanced styles for better UX */

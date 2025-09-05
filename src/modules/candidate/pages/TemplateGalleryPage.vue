@@ -13,7 +13,7 @@
              class="template-card relative group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
 
           <div class="template-preview-wrapper h-64 overflow-hidden relative bg-gray-50 flex items-center justify-center">
-            <div class="preview-scale-container" :style="{ transform: 'scale(0.35)', transformOrigin: 'center' }">
+            <div class="preview-scale-container" :style="{ transform: 'scale(0.8)', transformOrigin: 'bottom center' }">
               <component :is="template.layoutComponent"
                          :resume="sampleData"
                          :palette="selectedPalettes[template.id] || COLOR_PALETTES.default" />
@@ -86,7 +86,7 @@ const sampleData: ResumeData = {
     city: "Anytown",
     state_province_region: "CA",
     mobile_phone: "555-123-4567",
-    email_0: "abdul.ahad@example.com",
+    email_0: "abdul@example.com",
   },
   employment: {
     employment_type: "Full-Time",
