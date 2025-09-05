@@ -28,7 +28,7 @@
           <div :class="['absolute inset-0 top-0 left-0 w-full h-full p-4 flex flex-col justify-end transition-all duration-300',
                        (hoverTemplateId === template.id) ? 'bg-white bg-opacity-95 opacity-100' : 'bg-transparent opacity-0 pointer-events-none']">
             <div class="space-y-3">
-              <div v-if="template.hasColorPalette">
+              <!-- <div v-if="template.hasColorPalette">
                 <p class="text-xs font-medium text-gray-700 mb-2">Choose Color:</p>
                 <div class="flex space-x-1">
                   <div v-for="(palette, key) in COLOR_PALETTES" :key="key"
@@ -39,7 +39,7 @@
                        :title="palette.name">
                   </div>
                 </div>
-              </div>
+              </div> -->
               <button @click.stop="selectTemplate(template.id)"
                       class="w-full bg-blue-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md text-sm">
                 Use This Template
